@@ -1,16 +1,16 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { Directive, ElementRef, input, inject } from '@angular/core';
 
 @Directive({
   selector: '[appAutoFocus]',
   standalone: true
 })
 export class AutoFocusDirective {
-  @Input() appAutoFocus = true;
+  private el = inject(ElementRef);
 
-  constructor(private el: ElementRef) {}
+  appAutoFocus = input<boolean>(true);
 
   ngAfterViewInit(): void {
-    if (this.appAutoFocus) {
+    if (this.appAutoFocus()) {
       setTimeout(() => {
         this.el.nativeElement.focus();
       }, 100);

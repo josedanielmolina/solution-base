@@ -1,0 +1,83 @@
+<div class="user-detail-container">
+  <div class="header">
+    <h2>User Details</h2>
+    <button class="btn btn-secondary" (click)="goBack()">← Back</button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">Loading user details...</div>
+  }
+
+  @if (error()) {
+    <div class="error">{{ error() }}</div>
+  }
+
+  @if (!loading() && user()) {
+    <div class="user-detail-card">
+      <div class="detail-section">
+        <h3>Personal Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>ID:</label>
+            <span>{{ user()!.id }}</span>
+          </div>
+          <div class="detail-item">
+            <label>First Name:</label>
+            <span>{{ user()!.firstName }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Last Name:</label>
+            <span>{{ user()!.lastName }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Email:</label>
+            <span>{{ user()!.email }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h3>Status & Activity</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Status:</label>
+            <span [class]="user()!.isActive ? 'status-active' : 'status-inactive'">
+              {{ user()!.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </div>
+          <div class="detail-item">
+            <label>Email Verified:</label>
+            <span [class]="user()!.isEmailVerified ? 'status-active' : 'status-inactive'">
+              {{ user()!.isEmailVerified ? 'Yes' : 'No' }}
+            </span>
+          </div>
+          <div class="detail-item">
+            <label>Created At:</label>
+            <span>{{ user()!.createdAt | date: 'medium' }}</span>
+          </div>
+          @if (user()!.updatedAt) {
+            <div class="detail-item">
+              <label>Updated At:</label>
+              <span>{{ user()!.updatedAt | date: 'medium' }}</span>
+            </div>
+          }
+          @if (user()!.lastLoginAt) {
+            <div class="detail-item">
+              <label>Last Login:</label>
+              <span>{{ user()!.lastLoginAt | date: 'medium' }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-warning" (click)="editUser()">
+          ✏️ Edit User
+        </button>
+        <button class="btn btn-danger" (click)="deleteUser()">
+          🗑️ Delete User
+        </button>
+      </div>
+    </div>
+  }
+</div>

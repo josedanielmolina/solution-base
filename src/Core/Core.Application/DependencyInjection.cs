@@ -1,5 +1,6 @@
 using Core.Application.Facades;
 using Core.Application.Operations.Users;
+using Core.Application.Operations.Auth;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,9 +18,11 @@ public static class DependencyInjection
         services.AddScoped<GetUserOperation>();
         services.AddScoped<UpdateUserOperation>();
         services.AddScoped<DeleteUserOperation>();
+        services.AddScoped<LoginOperation>();
 
         // Register Facades
         services.AddScoped<IUserFacade, UserFacade>();
+        services.AddScoped<IAuthFacade, AuthFacade>();
 
         return services;
     }

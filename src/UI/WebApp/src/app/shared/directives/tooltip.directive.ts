@@ -1,20 +1,20 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { Directive, ElementRef, HostListener, input, inject } from '@angular/core';
 
 @Directive({
   selector: '[appTooltip]',
   standalone: true
 })
 export class TooltipDirective {
-  @Input('appTooltip') tooltipText: string = '';
-  @Input() tooltipPosition: 'top' | 'bottom' | 'left' | 'right' = 'top';
+  private el = inject(ElementRef);
+
+  tooltipText = input.required<string>({ alias: 'appTooltip' });
+  tooltipPosition = input<'top' | 'bottom' | 'left' | 'right'>('top');
 
   private tooltipElement: HTMLElement | null = null;
 
-  constructor(private el: ElementRef) {}
-
   @HostListener('mouseenter')
   onMouseEnter(): void {
-    if (!this.tooltipText) return;
+    if (!this.tooltipText()) return;
     this.show();
   }
 
@@ -25,7 +25,7 @@ export class TooltipDirective {
 
   private show(): void {
     this.tooltipElement = document.createElement('div');
-    this.tooltipElement.textContent = this.tooltipText;
+    this.tooltipElement.textContent = this.tooltipText();
     this.tooltipElement.className = 'tooltip-container';
 
     document.body.appendChild(this.tooltipElement);
@@ -36,7 +36,7 @@ export class TooltipDirective {
     let top = 0;
     let left = 0;
 
-    switch (this.tooltipPosition) {
+    switch (this.tooltipPosition()) {
       case 'top':
         top = hostPos.top - tooltipPos.height - 10;
         left = hostPos.left + (hostPos.width - tooltipPos.width) / 2;

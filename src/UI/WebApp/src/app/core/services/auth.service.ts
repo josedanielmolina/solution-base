@@ -1,7 +1,7 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, BehaviorSubject } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { StorageUtils } from '../utils/common.utils';
 
@@ -29,18 +29,13 @@ export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'auth_user';
 
-  private tokenSubject = new BehaviorSubject<string | null>(this.getToken());
-  private userSubject = new BehaviorSubject<AuthUser | null>(this.getUser());
+  private http = inject(HttpClient);
+  private router = inject(Router);
 
   // Signals
   token = signal<string | null>(this.getToken());
   currentUser = signal<AuthUser | null>(this.getUser());
   isAuthenticated = computed(() => !!this.token());
-
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {}
 
   login(credentials: LoginCredentials): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, credentials)
@@ -50,8 +45,6 @@ export class AuthService {
           this.setUser(response.user);
           this.token.set(response.token);
           this.currentUser.set(response.user);
-          this.tokenSubject.next(response.token);
-          this.userSubject.next(response.user);
         })
       );
   }
@@ -98,8 +91,6 @@ export class AuthService {
     StorageUtils.remove(this.USER_KEY);
     this.token.set(null);
     this.currentUser.set(null);
-    this.tokenSubject.next(null);
-    this.userSubject.next(null);
   }
 
   private decodeToken(token: string): any {
@@ -120,8 +111,6 @@ export class AuthService {
     if (token && user && this.isLoggedIn()) {
       this.token.set(token);
       this.currentUser.set(user);
-      this.tokenSubject.next(token);
-      this.userSubject.next(user);
     } else {
       this.clearAuth();
     }

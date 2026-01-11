@@ -12,6 +12,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IStorageService, StorageService>();
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddSingleton<CacheService>();
 
         // Add Memory Cache

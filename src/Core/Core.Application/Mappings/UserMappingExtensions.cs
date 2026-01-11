@@ -7,18 +7,17 @@ public static class UserMappingExtensions
 {
     public static UserDto ToDto(this User user)
     {
-        return new UserDto
-        {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            IsActive = user.IsActive,
-            IsEmailVerified = user.IsEmailVerified,
-            LastLoginAt = user.LastLoginAt,
-            CreatedAt = user.CreatedAt,
-            UpdatedAt = user.UpdatedAt
-        };
+        return new UserDto(
+            user.Id,
+            user.FirstName,
+            user.LastName,
+            user.Email,
+            user.IsActive,
+            user.IsEmailVerified,
+            user.LastLoginAt,
+            user.CreatedAt,
+            user.UpdatedAt
+        );
     }
 
     public static User ToEntity(this CreateUserDto dto, string passwordHash)

@@ -1,0 +1,65 @@
+<div class="user-list">
+  <div class="header">
+    <h2>Users Management</h2>
+    <button class="btn btn-primary" (click)="navigateToCreate()">
+      <span class="icon">+</span> Create User
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">Loading users...</div>
+  }
+
+  @if (error()) {
+    <div class="error">{{ error() }}</div>
+  }
+
+  @if (!loading() && users().length === 0) {
+    <div class="empty-state">
+      <p>No users found. Create your first user!</p>
+    </div>
+  }
+
+  @if (!loading() && users().length > 0) {
+    <div class="table-container">
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            <tr>
+              <td>{{ user.id }}</td>
+              <td>{{ user.firstName }} {{ user.lastName }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span [class]="user.isActive ? 'status-active' : 'status-inactive'">
+                  {{ user.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+              <td>{{ user.createdAt | date: 'short' }}</td>
+              <td class="actions">
+                <button class="btn btn-sm btn-info" (click)="viewUser(user.id)" title="View">
+                  👁️
+                </button>
+                <button class="btn btn-sm btn-warning" (click)="editUser(user.id)" title="Edit">
+                  ✏️
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="deleteUser(user.id)" title="Delete">
+                  🗑️
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

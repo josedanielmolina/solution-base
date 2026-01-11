@@ -1,16 +1,16 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { Directive, ElementRef, HostListener, input, inject } from '@angular/core';
 
 @Directive({
   selector: '[appDebounceClick]',
   standalone: true
 })
 export class DebounceClickDirective {
-  @Input() debounceTime = 500;
-  @Input() appDebounceClick: (() => void) | undefined;
+  private el = inject(ElementRef);
+
+  debounceTime = input<number>(500);
+  appDebounceClick = input<(() => void) | undefined>(undefined);
 
   private timeoutId: any;
-
-  constructor(private el: ElementRef) {}
 
   @HostListener('click', ['$event'])
   onClick(event: Event): void {
@@ -20,9 +20,10 @@ export class DebounceClickDirective {
     clearTimeout(this.timeoutId);
 
     this.timeoutId = setTimeout(() => {
-      if (this.appDebounceClick) {
-        this.appDebounceClick();
+      const clickHandler = this.appDebounceClick();
+      if (clickHandler) {
+        clickHandler();
       }
-    }, this.debounceTime);
+    }, this.debounceTime());
   }
 }
