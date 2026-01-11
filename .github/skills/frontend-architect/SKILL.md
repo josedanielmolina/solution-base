@@ -1,7 +1,9 @@
-# Skill: Frontend Architecture (Angular 20)
+# Skill: Frontend Architecture (Angular 20 + Tailwind CSS)
 
 ## Descripción
-Este skill define las reglas de arquitectura, patrones y convenciones para el desarrollo frontend con Angular 20 que TODO el código nuevo debe seguir.
+Este skill define las reglas de arquitectura, patrones y convenciones para el desarrollo frontend con Angular 20 y Tailwind CSS que TODO el código nuevo debe seguir.
+
+> **📎 Skill Relacionado:** Para lineamientos visuales y componentes UI, ver [UI Design System Skill](./skill-ui-design-system.md)
 
 **⚠️ IMPORTANTE - SEPARACIÓN DE ARCHIVOS:**
 - **TODOS los componentes deben tener archivos separados: .ts, .html y .css**
@@ -34,6 +36,87 @@ src/app/
 ├── layouts/                   # Layouts de la aplicación
 └── environments/              # Configuración por ambiente
 ```
+
+---
+
+## 1.1 ESTILOS CON TAILWIND CSS
+
+**Tailwind CSS es el sistema de estilos obligatorio. NO usar CSS custom salvo casos excepcionales.**
+
+### Configuración Base
+
+```javascript
+// tailwind.config.js
+module.exports = {
+  darkMode: "class",
+  content: ["./src/**/*.{html,ts}"],
+  theme: {
+    extend: {
+      colors: {
+        "primary": "#FF6B00",
+        "primary-hover": "#E65F00",
+        "neutral-black": "#1A1A1A",
+        "neutral-gray": "#F4F4F4",
+        "surface-dark": "#121212",
+        "surface-dark-alt": "#1A1A1A",
+      },
+      fontFamily: {
+        "display": ["Lexend", "sans-serif"]
+      },
+      // Estilo Brutalist: sin bordes redondeados
+      borderRadius: {
+        "none": "0px",
+        "DEFAULT": "0px",
+        "full": "9999px"  // Solo para círculos
+      },
+    },
+  },
+}
+```
+
+### Reglas de Estilos
+
+```typescript
+// ✅ CORRECTO - Usar clases de Tailwind en el HTML
+// component.html
+<button class="bg-primary hover:bg-primary-hover text-white px-6 py-3 font-bold transition-all">
+  Submit
+</button>
+
+// ✅ CORRECTO - Archivo CSS solo para @apply en casos complejos
+// component.css
+.custom-scrollbar {
+  @apply scrollbar-thin scrollbar-thumb-gray-400;
+}
+
+// ❌ INCORRECTO - No escribir CSS custom
+.button {
+  background-color: #FF6B00;
+  padding: 12px 24px;
+}
+
+// ❌ INCORRECTO - No usar estilos inline en TypeScript
+@Component({
+  styles: [`button { background: orange; }`]  // PROHIBIDO
+})
+```
+
+### Dark Mode Obligatorio
+
+```html
+<!-- ✅ SIEMPRE incluir variantes dark: -->
+<div class="bg-white dark:bg-surface-dark text-neutral-black dark:text-white">
+  <p class="text-gray-500 dark:text-gray-400">Content</p>
+</div>
+
+<!-- ❌ NUNCA olvidar dark mode -->
+<div class="bg-white text-black">...</div>
+```
+
+### Referencia Visual
+
+Para paleta de colores completa, tipografía, iconografía y componentes UI, consultar:
+**[UI Design System Skill](./skill-ui-design-system.md)**
 
 ---
 
@@ -931,7 +1014,8 @@ features/
 18. **HABILITAR hidratación con Event Replay** - provideClientHydration(withEventReplay())
 19. **CONSIDERAR Partial Hydration** - Para componentes estáticos en apps grandes
 20. **TODO el código en inglés**
-21. **NO usar CSS preprocessors** - Solo CSS puro
+21. **USAR Tailwind CSS** - No CSS custom (ver [UI Design System](./skill-ui-design-system.md))
+22. **SIEMPRE incluir variantes dark:** - Dark mode obligatorio
 
 ---
 
@@ -1332,7 +1416,10 @@ export class ProductFormComponent implements OnInit {
 - [ ] Hidratación con Event Replay habilitada
 - [ ] Zoneless development considerado
 - [ ] Código en inglés
-- [ ] CSS puro sin preprocessors
+- [ ] Estilos con Tailwind CSS (no CSS custom)
+- [ ] Variantes `dark:` incluidas en todos los elementos
+- [ ] Colores del sistema de diseño (`primary`, `neutral-black`, etc.)
+- [ ] Cumple con [UI Design System Skill](./skill-ui-design-system.md)
 - [ ] **Documentación actualizada** (ver [Feature Documentation Skill](../feature-documentation/SKILL.md))
 
 ---
@@ -1396,7 +1483,7 @@ Componente/Servicio Completo → Actualizar Docs → Commit (código + docs) →
 - Angular 20
 - TypeScript 5.5+
 - RxJS 7.x (solo para servicios HTTP)
-- CSS puro (sin preprocessors)
+- **Tailwind CSS 4.x** (sistema de estilos obligatorio)
 - Standalone Components (NgModule es legacy)
 - Signals API (Signal-first architecture)
 - Control Flow Syntax (@if, @for, @switch) - 90% más rápido

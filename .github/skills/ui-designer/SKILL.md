@@ -1,0 +1,1153 @@
+# 🎾 PadelTourney UI Design System
+
+> **Skill de lineamientos visuales para Angular 20 + Tailwind CSS**
+> Aplicación de gestión de torneos de pádel
+
+**📎 Skill Relacionado:** Para arquitectura, patrones y convenciones de desarrollo, ver [Frontend Architecture Skill](./skill-frontend.md)
+
+**⚠️ IMPORTANTE - ARCHIVOS SEPARADOS:**
+- Los ejemplos de componentes Angular en este documento son **solo ilustrativos**
+- En código de producción, **SIEMPRE** usar archivos separados: `.ts`, `.html`, `.css`
+- Ver [Frontend Architecture Skill](./skill-frontend.md) para reglas de estructura de archivos
+
+---
+
+## 📋 Índice
+
+1. [Filosofía de Diseño](#filosofía-de-diseño)
+2. [Configuración de Tailwind](#configuración-de-tailwind)
+3. [Sistema de Colores](#sistema-de-colores)
+4. [Tipografía](#tipografía)
+5. [Iconografía](#iconografía)
+6. [Componentes Base](#componentes-base)
+7. [Patrones de Layout](#patrones-de-layout)
+8. [Estados y Feedback](#estados-y-feedback)
+9. [Modo Oscuro](#modo-oscuro)
+10. [Ejemplos de Componentes](#ejemplos-de-componentes)
+
+---
+
+## Filosofía de Diseño
+
+### Integración con Angular 20
+
+Este skill define **QUÉ** estilos usar. Para **CÓMO** estructurar el código Angular, seguir:
+
+| Aspecto | Este Skill (UI) | Frontend Skill |
+|---------|-----------------|----------------|
+| Clases Tailwind | ✅ Definido aquí | Referencia aquí |
+| Colores, tipografía | ✅ Definido aquí | Usa este skill |
+| Estructura de archivos | Referencia allá | ✅ Definido allá |
+| Signals, inject() | Referencia allá | ✅ Definido allá |
+| @if/@for syntax | Referencia allá | ✅ Definido allá |
+
+### Principios Fundamentales
+
+| Principio | Descripción |
+|-----------|-------------|
+| **Brutalist** | Bordes cuadrados (`rounded-none`), sin curvas suaves. Solo `rounded-full` para elementos circulares (avatares, badges de estado) |
+| **Alto Contraste** | Negro sobre blanco, naranja como acento dominante |
+| **Tipografía Bold** | Uso intensivo de `font-bold`, `font-black`, `uppercase`, `tracking-wider` |
+| **Jerarquía Clara** | Tamaños de texto muy diferenciados, espaciado generoso |
+| **Dark Mode Obligatorio** | Todos los componentes DEBEN tener variantes `dark:` |
+
+### Identidad Visual
+
+```
+┌─────────────────────────────────────────────┐
+│  ESTILO: Industrial / Deportivo / Premium   │
+│  SENSACIÓN: Profesional, Energético, Limpio │
+│  INSPIRACIÓN: Apps deportivas de élite      │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+## Configuración de Tailwind
+
+### tailwind.config.js
+
+```javascript
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        // === COLORES PRIMARIOS ===
+        "primary": "#FF6B00",
+        "primary-hover": "#E65F00",
+        "primary-light": "#FF8533",
+        
+        // === NEUTRALES ===
+        "neutral-black": "#1A1A1A",
+        "neutral-dark": "#111111",
+        "neutral-gray": "#F4F4F4",
+        
+        // === SUPERFICIES DARK MODE ===
+        "surface-dark": "#121212",
+        "surface-dark-alt": "#1A1A1A",
+        "sidebar-dark": "#000000",
+        
+        // === ESTADOS SEMÁNTICOS ===
+        "success": "#22C55E",
+        "success-light": "#DCFCE7",
+        "warning": "#F59E0B",
+        "warning-light": "#FEF3C7",
+        "error": "#EF4444",
+        "error-light": "#FEE2E2",
+        "info": "#3B82F6",
+        "info-light": "#DBEAFE",
+      },
+      fontFamily: {
+        "display": ["Lexend", "sans-serif"]
+      },
+      // === BRUTALIST: SIN BORDES REDONDEADOS ===
+      borderRadius: {
+        "none": "0px",
+        "DEFAULT": "0px",
+        "sm": "0px",
+        "md": "0px",
+        "lg": "0px",
+        "xl": "0px",
+        "2xl": "0px",
+        "full": "9999px"  // Solo para círculos
+      },
+    },
+  },
+}
+```
+
+### Estilos Base Globales
+
+```css
+/* styles.css o en <style> del componente raíz */
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+body {
+  font-family: 'Lexend', sans-serif;
+  @apply bg-white dark:bg-surface-dark text-neutral-black dark:text-white;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Iconos rellenos (para estados activos) */
+.material-symbols-filled {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+```
+
+---
+
+## Sistema de Colores
+
+### Paleta Principal
+
+| Nombre | Valor | Uso |
+|--------|-------|-----|
+| `primary` | `#FF6B00` | CTAs, enlaces activos, acentos, bordes destacados |
+| `primary-hover` | `#E65F00` | Hover en botones primarios |
+| `neutral-black` | `#1A1A1A` | Texto principal, fondos de botones secundarios |
+| `neutral-gray` | `#F4F4F4` | Fondos de secciones, cards alternativas |
+
+### Aplicación de Colores
+
+```html
+<!-- ✅ CORRECTO: Texto principal -->
+<p class="text-neutral-black dark:text-white">Contenido</p>
+
+<!-- ✅ CORRECTO: Texto secundario -->
+<p class="text-gray-500 dark:text-gray-400">Subtítulo</p>
+
+<!-- ✅ CORRECTO: Texto terciario/labels -->
+<span class="text-gray-400 dark:text-gray-500">Label pequeño</span>
+
+<!-- ✅ CORRECTO: Acento primario -->
+<span class="text-primary">Destacado</span>
+
+<!-- ✅ CORRECTO: Fondo de sección -->
+<div class="bg-neutral-gray dark:bg-surface-dark-alt">...</div>
+
+<!-- ✅ CORRECTO: Borde sutil -->
+<div class="border border-gray-200 dark:border-zinc-800">...</div>
+```
+
+### Gradientes y Acentos
+
+```html
+<!-- Borde lateral de acento (muy usado en cards) -->
+<div class="border-l-4 border-primary pl-6">
+  <!-- Contenido con acento visual -->
+</div>
+
+<!-- Badge con fondo de primary transparente -->
+<span class="bg-primary/10 text-primary px-3 py-1">
+  Categoría
+</span>
+```
+
+---
+
+## Tipografía
+
+### Escala Tipográfica
+
+| Elemento | Clases Tailwind |
+|----------|-----------------|
+| **H1 - Títulos de página** | `text-4xl md:text-5xl font-black uppercase tracking-tight` |
+| **H2 - Títulos de sección** | `text-2xl md:text-3xl font-bold tracking-tight` |
+| **H3 - Títulos de card** | `text-xl font-bold uppercase tracking-tight` |
+| **H4 - Subtítulos** | `text-lg font-semibold` |
+| **Body** | `text-base font-medium` |
+| **Body small** | `text-sm font-medium` |
+| **Caption/Label** | `text-xs font-bold uppercase tracking-wider` |
+| **Micro** | `text-[10px] font-black uppercase tracking-widest` |
+
+### Ejemplos de Uso
+
+```html
+<!-- Título de página con etiqueta superior -->
+<div class="flex flex-col gap-2">
+  <span class="text-primary text-xs font-black uppercase tracking-[4px]">
+    Panel de Jugador
+  </span>
+  <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tight text-neutral-black dark:text-white">
+    Explorar Torneos
+  </h1>
+  <p class="text-gray-500 dark:text-gray-400 text-lg font-medium">
+    Descripción secundaria del contexto.
+  </p>
+</div>
+
+<!-- Título de card -->
+<h3 class="text-xl font-black uppercase tracking-tight group-hover:text-primary transition-colors">
+  Summer Open 2024
+</h3>
+
+<!-- Labels de tabla -->
+<th class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+  Categoría
+</th>
+```
+
+---
+
+## Iconografía
+
+### Configuración de Material Symbols
+
+```html
+<!-- Icono estándar -->
+<span class="material-symbols-outlined">sports_tennis</span>
+
+<!-- Icono con tamaño personalizado -->
+<span class="material-symbols-outlined text-lg">calendar_month</span>
+<span class="material-symbols-outlined text-xl">group</span>
+<span class="material-symbols-outlined text-2xl">emoji_events</span>
+
+<!-- Icono relleno (para estados activos) -->
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">
+  verified_user
+</span>
+
+<!-- Icono con color primary -->
+<span class="material-symbols-outlined text-primary">location_on</span>
+```
+
+### Iconos Comunes en la App
+
+| Contexto | Icono |
+|----------|-------|
+| Torneos | `emoji_events`, `trophy` |
+| Calendario | `calendar_month`, `event` |
+| Ubicación | `location_on` |
+| Jugadores/Parejas | `group`, `groups`, `person` |
+| Canchas | `table_view`, `grid_view` |
+| Configuración | `settings` |
+| Búsqueda | `search` |
+| Añadir | `add`, `add_circle` |
+| Editar | `edit` |
+| Eliminar | `delete` |
+| Notificaciones | `notifications` |
+| Cerrar sesión | `logout` |
+| Navegación | `chevron_right`, `chevron_left`, `expand_more` |
+
+---
+
+## Componentes Base
+
+### Botones
+
+#### Botón Primario
+```html
+<button class="
+  bg-primary hover:bg-primary-hover 
+  text-white 
+  px-6 py-3 
+  text-xs font-black uppercase tracking-widest 
+  transition-all 
+  shadow-lg shadow-primary/20
+">
+  Inscribirse Ahora
+</button>
+```
+
+#### Botón Secundario (Negro)
+```html
+<button class="
+  bg-neutral-black dark:bg-white 
+  text-white dark:text-black 
+  px-6 py-3 
+  text-xs font-black uppercase tracking-widest 
+  hover:bg-primary 
+  transition-all
+">
+  Ver Detalles
+</button>
+```
+
+#### Botón Outline
+```html
+<button class="
+  border border-gray-200 dark:border-zinc-800 
+  bg-white dark:bg-transparent 
+  text-neutral-black dark:text-white 
+  px-5 py-2.5 
+  text-sm font-bold 
+  hover:border-primary hover:text-primary 
+  transition-all
+">
+  Cancelar
+</button>
+```
+
+#### Botón Icono
+```html
+<button class="
+  p-2 
+  text-gray-400 
+  hover:text-primary 
+  transition-colors
+">
+  <span class="material-symbols-outlined">edit</span>
+</button>
+```
+
+#### Botón con Icono y Texto
+```html
+<button class="
+  flex items-center gap-2 
+  bg-primary hover:bg-primary-hover 
+  text-white 
+  px-5 py-2.5 
+  text-sm font-bold 
+  transition-all
+">
+  <span class="material-symbols-outlined text-lg">add</span>
+  <span>Agregar Partido</span>
+</button>
+```
+
+### Inputs
+
+#### Input de Texto Estándar
+```html
+<div class="flex flex-col gap-2">
+  <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+    Nombre del Torneo
+  </label>
+  <input 
+    type="text"
+    class="
+      w-full px-4 py-3 
+      bg-white dark:bg-zinc-900 
+      border border-gray-200 dark:border-zinc-800 
+      text-neutral-black dark:text-white 
+      placeholder:text-gray-400 
+      focus:ring-2 focus:ring-primary/20 focus:border-primary 
+      outline-none transition-all
+    "
+    placeholder="Ej: Summer Open 2024"
+  />
+</div>
+```
+
+#### Input con Icono (Búsqueda)
+```html
+<div class="flex items-stretch bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800">
+  <div class="flex items-center justify-center px-4 text-gray-400 border-r border-gray-200 dark:border-zinc-800">
+    <span class="material-symbols-outlined">search</span>
+  </div>
+  <input 
+    type="text"
+    class="
+      flex-1 px-4 py-3 
+      bg-transparent 
+      border-none 
+      text-neutral-black dark:text-white 
+      placeholder:text-gray-400 
+      focus:ring-0 focus:outline-none
+    "
+    placeholder="Buscar torneos, clubes o ciudades..."
+  />
+</div>
+```
+
+#### Select / Dropdown Button
+```html
+<button class="
+  flex items-center justify-between gap-3 
+  bg-white dark:bg-zinc-900 
+  border border-gray-200 dark:border-zinc-800 
+  px-5 py-3 
+  min-w-[180px]
+  hover:border-primary 
+  transition-all
+">
+  <span class="text-xs font-bold uppercase tracking-wider text-neutral-black dark:text-white">
+    Ubicación: Madrid
+  </span>
+  <span class="material-symbols-outlined text-sm text-gray-400">expand_more</span>
+</button>
+```
+
+### Cards
+
+#### Card de Torneo (con imagen)
+```html
+<div class="
+  flex flex-col 
+  bg-white dark:bg-surface-dark-alt 
+  border border-gray-200 dark:border-zinc-800 
+  overflow-hidden 
+  group 
+  hover:border-primary 
+  transition-all duration-300
+">
+  <!-- Imagen -->
+  <div class="relative overflow-hidden">
+    <div 
+      class="w-full aspect-video bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+      style="background-image: url('imagen.jpg');"
+    ></div>
+    <!-- Badge superior -->
+    <div class="absolute top-0 left-0 bg-primary text-white text-[10px] font-black uppercase tracking-widest px-3 py-2">
+      Inscripciones Abiertas
+    </div>
+    <!-- Badge precio -->
+    <div class="absolute bottom-4 right-4 bg-white/90 dark:bg-black/90 backdrop-blur px-3 py-1 text-[10px] font-black uppercase">
+      Desde 25€
+    </div>
+  </div>
+  
+  <!-- Contenido -->
+  <div class="p-6 flex flex-col flex-1 border-l-4 border-primary">
+    <h3 class="text-xl font-black uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">
+      Summer Open 2024
+    </h3>
+    
+    <!-- Metadatos -->
+    <div class="space-y-3 mb-6">
+      <div class="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-sm">
+        <span class="material-symbols-outlined text-lg text-primary">location_on</span>
+        <span class="font-medium">Padel Pro Center, Madrid</span>
+      </div>
+      <div class="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-sm">
+        <span class="material-symbols-outlined text-lg text-primary">calendar_month</span>
+        <span class="font-medium">12 Oct - 14 Oct</span>
+      </div>
+    </div>
+    
+    <!-- Tags -->
+    <div class="flex flex-wrap gap-2 mb-6">
+      <span class="px-3 py-1 bg-neutral-gray dark:bg-zinc-800 text-[10px] font-bold uppercase tracking-wider">
+        Masculino A
+      </span>
+      <span class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
+        Avanzado
+      </span>
+    </div>
+    
+    <!-- CTA -->
+    <button class="w-full py-4 mt-auto bg-neutral-black dark:bg-white text-white dark:text-black text-xs font-black uppercase tracking-widest hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-all">
+      Inscribirse Ahora
+    </button>
+  </div>
+</div>
+```
+
+#### Card de Estadística (KPI)
+```html
+<div class="
+  flex flex-col gap-2 
+  p-6 
+  bg-white dark:bg-surface-dark-alt 
+  border border-gray-200 dark:border-zinc-800
+">
+  <p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">
+    Total Categorías
+  </p>
+  <div class="flex items-baseline gap-3">
+    <p class="text-neutral-black dark:text-white text-4xl font-black">8</p>
+    <p class="text-primary text-sm font-bold">+1 esta semana</p>
+  </div>
+</div>
+
+<!-- Variante con borde de acento -->
+<div class="
+  flex flex-col gap-2 
+  p-6 
+  bg-white dark:bg-surface-dark-alt 
+  border border-gray-200 dark:border-zinc-800 
+  border-l-4 border-l-success
+">
+  <p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">
+    Canchas Activas
+  </p>
+  <div class="flex items-baseline gap-3">
+    <p class="text-neutral-black dark:text-white text-4xl font-black">10</p>
+    <p class="text-success text-sm font-bold">+2 esta semana</p>
+  </div>
+</div>
+```
+
+### Tablas
+
+```html
+<div class="overflow-hidden border border-gray-200 dark:border-zinc-800 bg-white dark:bg-surface-dark-alt">
+  <table class="w-full text-left">
+    <thead class="bg-gray-50 dark:bg-zinc-800/50">
+      <tr>
+        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+          Categoría
+        </th>
+        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+          Modalidad
+        </th>
+        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 text-right">
+          Precio
+        </th>
+        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 text-center">
+          Acciones
+        </th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200 dark:divide-zinc-800">
+      <tr class="hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
+        <td class="px-6 py-5">
+          <div class="flex flex-col">
+            <span class="text-neutral-black dark:text-white font-semibold">1ª Categoría</span>
+            <span class="text-gray-500 text-xs">Nivel Avanzado</span>
+          </div>
+        </td>
+        <td class="px-6 py-5">
+          <span class="px-2.5 py-1 bg-gray-100 dark:bg-zinc-800 text-neutral-black dark:text-white text-xs font-bold uppercase tracking-wider">
+            Masculino
+          </span>
+        </td>
+        <td class="px-6 py-5 text-right font-medium text-neutral-black dark:text-white">
+          50,00 €
+        </td>
+        <td class="px-6 py-5">
+          <div class="flex justify-center gap-2">
+            <button class="p-2 text-gray-400 hover:text-primary transition-colors">
+              <span class="material-symbols-outlined">edit</span>
+            </button>
+            <button class="p-2 text-gray-400 hover:text-error transition-colors">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+### Navegación / Tabs
+
+```html
+<div class="flex border-b border-gray-200 dark:border-zinc-800 gap-8">
+  <!-- Tab Activo -->
+  <a 
+    href="#" 
+    class="flex items-center pb-3 pt-4 border-b-[3px] border-primary text-primary"
+  >
+    <span class="text-sm font-bold tracking-wide">Todas</span>
+  </a>
+  
+  <!-- Tab Inactivo -->
+  <a 
+    href="#" 
+    class="flex items-center pb-3 pt-4 border-b-[3px] border-transparent text-gray-500 dark:text-gray-400 hover:text-neutral-black dark:hover:text-white transition-colors"
+  >
+    <span class="text-sm font-bold tracking-wide">Masculino</span>
+  </a>
+</div>
+```
+
+### Badges / Status Indicators
+
+```html
+<!-- Estado: Abierto -->
+<span class="
+  inline-flex items-center gap-1.5 
+  px-3 py-1 
+  bg-success-light dark:bg-success/20 
+  text-success 
+  text-xs font-bold
+">
+  <span class="w-2 h-2 rounded-full bg-success"></span>
+  Abierto
+</span>
+
+<!-- Estado: Completo -->
+<span class="
+  inline-flex items-center gap-1.5 
+  px-3 py-1 
+  bg-warning-light dark:bg-warning/20 
+  text-warning 
+  text-xs font-bold
+">
+  <span class="w-2 h-2 rounded-full bg-warning"></span>
+  Completo
+</span>
+
+<!-- Estado: Cerrado -->
+<span class="
+  inline-flex items-center gap-1.5 
+  px-3 py-1 
+  bg-error-light dark:bg-error/20 
+  text-error 
+  text-xs font-bold
+">
+  <span class="w-2 h-2 rounded-full bg-error"></span>
+  Cerrado
+</span>
+
+<!-- Rol / Categoría -->
+<span class="
+  inline-flex items-center 
+  px-3 py-1 
+  bg-primary/10 
+  text-primary 
+  text-xs font-bold uppercase tracking-wider 
+  border border-primary/20
+">
+  Director
+</span>
+
+<!-- Tag neutral -->
+<span class="
+  px-3 py-1 
+  bg-neutral-gray dark:bg-zinc-800 
+  text-neutral-black dark:text-white 
+  text-[10px] font-bold uppercase tracking-wider
+">
+  Mixto C
+</span>
+```
+
+### Progress Bars
+
+```html
+<div class="flex items-center gap-3">
+  <div class="flex-1 max-w-[120px] overflow-hidden bg-gray-200 dark:bg-zinc-800">
+    <div 
+      class="h-2 bg-primary" 
+      style="width: 75%;"
+    ></div>
+  </div>
+  <span class="text-neutral-black dark:text-white text-sm font-bold">24/32</span>
+</div>
+```
+
+---
+
+## Patrones de Layout
+
+### Container Principal
+
+```html
+<main class="flex-1 max-w-[1200px] mx-auto w-full px-4 md:px-10 py-12">
+  <!-- Contenido -->
+</main>
+```
+
+### Header de Página
+
+```html
+<div class="flex flex-wrap justify-between items-end gap-6 mb-10 border-l-4 border-primary pl-6">
+  <div class="flex flex-col gap-2">
+    <span class="text-primary text-xs font-black uppercase tracking-[4px]">
+      Panel de Jugador
+    </span>
+    <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tight text-neutral-black dark:text-white">
+      Explorar Torneos
+    </h1>
+    <p class="text-gray-500 dark:text-gray-400 text-lg font-medium max-w-2xl">
+      Descripción de la sección.
+    </p>
+  </div>
+  <div class="flex gap-3">
+    <!-- Acciones -->
+  </div>
+</div>
+```
+
+### Sidebar (Admin)
+
+```html
+<aside class="w-64 flex-shrink-0 bg-black text-white flex flex-col">
+  <!-- Logo -->
+  <div class="p-6 flex items-center gap-3">
+    <div class="bg-primary p-2 text-white">
+      <span class="material-symbols-outlined">sports_tennis</span>
+    </div>
+    <div>
+      <h1 class="text-xs font-bold uppercase tracking-wider text-gray-400">Panel Admin</h1>
+      <p class="text-sm text-white font-medium">Padel Pro 2024</p>
+    </div>
+  </div>
+  
+  <!-- Navegación -->
+  <nav class="flex flex-col gap-1 px-4">
+    <!-- Item activo -->
+    <a href="#" class="flex items-center gap-3 px-3 py-2.5 bg-primary text-white">
+      <span class="material-symbols-outlined">calendar_month</span>
+      <span class="text-sm font-semibold">Calendario</span>
+    </a>
+    
+    <!-- Item inactivo -->
+    <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-gray-400 hover:bg-white/10 hover:text-white transition-colors">
+      <span class="material-symbols-outlined">settings</span>
+      <span class="text-sm font-medium">Configuración</span>
+    </a>
+  </nav>
+  
+  <!-- Footer con usuario -->
+  <div class="mt-auto p-4 border-t border-white/10">
+    <div class="flex items-center gap-3">
+      <div class="size-10 rounded-full bg-cover bg-center border-2 border-primary" style="background-image: url('avatar.jpg');"></div>
+      <div class="flex-1">
+        <p class="text-sm font-semibold">Alex Rivera</p>
+        <p class="text-xs text-gray-500">Super Admin</p>
+      </div>
+      <span class="material-symbols-outlined text-gray-500 hover:text-primary cursor-pointer">logout</span>
+    </div>
+  </div>
+</aside>
+```
+
+### Breadcrumbs
+
+```html
+<nav class="flex items-center gap-2 mb-6 text-sm">
+  <a href="#" class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
+    Admin
+  </a>
+  <span class="material-symbols-outlined text-gray-300 dark:text-zinc-700 text-sm">chevron_right</span>
+  <a href="#" class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
+    Configuración
+  </a>
+  <span class="material-symbols-outlined text-gray-300 dark:text-zinc-700 text-sm">chevron_right</span>
+  <span class="text-neutral-black dark:text-white font-semibold">
+    Permisos
+  </span>
+</nav>
+```
+
+### Grid de Cards
+
+```html
+<!-- Grid responsive 1-2-3 columnas -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+  <!-- Cards -->
+</div>
+
+<!-- Grid de KPIs -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+  <!-- KPI Cards -->
+</div>
+```
+
+---
+
+## Estados y Feedback
+
+### Hover States
+
+```html
+<!-- Card hover -->
+<div class="hover:border-primary transition-all duration-300">
+
+<!-- Botón hover con sombra -->
+<button class="hover:bg-primary-hover shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all">
+
+<!-- Row de tabla hover -->
+<tr class="hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
+
+<!-- Link hover -->
+<a class="hover:text-primary transition-colors">
+
+<!-- Icono hover -->
+<button class="text-gray-400 hover:text-primary transition-colors">
+```
+
+### Focus States
+
+```html
+<!-- Input focus -->
+<input class="
+  focus:ring-2 focus:ring-primary/20 focus:border-primary 
+  outline-none transition-all
+"/>
+
+<!-- Botón focus (accesibilidad) -->
+<button class="
+  focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+">
+```
+
+### Estados de Carga
+
+```html
+<!-- Skeleton loader para card -->
+<div class="animate-pulse">
+  <div class="aspect-video bg-gray-200 dark:bg-zinc-800"></div>
+  <div class="p-6 space-y-4">
+    <div class="h-6 bg-gray-200 dark:bg-zinc-800 w-3/4"></div>
+    <div class="h-4 bg-gray-200 dark:bg-zinc-800 w-1/2"></div>
+    <div class="h-4 bg-gray-200 dark:bg-zinc-800 w-2/3"></div>
+  </div>
+</div>
+
+<!-- Spinner -->
+<div class="animate-spin size-6 border-2 border-primary border-t-transparent rounded-full"></div>
+```
+
+---
+
+## Modo Oscuro
+
+### Reglas Obligatorias
+
+Todo componente DEBE incluir variantes `dark:` para:
+
+| Propiedad | Light | Dark |
+|-----------|-------|------|
+| **Background principal** | `bg-white` | `dark:bg-surface-dark` |
+| **Background alternativo** | `bg-neutral-gray` | `dark:bg-surface-dark-alt` |
+| **Background sidebar** | `bg-white` | `dark:bg-black` |
+| **Texto principal** | `text-neutral-black` | `dark:text-white` |
+| **Texto secundario** | `text-gray-500` | `dark:text-gray-400` |
+| **Bordes** | `border-gray-200` | `dark:border-zinc-800` |
+| **Inputs background** | `bg-white` | `dark:bg-zinc-900` |
+
+### Patrón de Aplicación
+
+```html
+<!-- ✅ SIEMPRE incluir ambos modos -->
+<div class="bg-white dark:bg-surface-dark">
+  <h1 class="text-neutral-black dark:text-white">Título</h1>
+  <p class="text-gray-500 dark:text-gray-400">Subtítulo</p>
+  <div class="border border-gray-200 dark:border-zinc-800">
+    <!-- Contenido -->
+  </div>
+</div>
+
+<!-- ❌ NUNCA dejar sin dark mode -->
+<div class="bg-white">
+  <h1 class="text-black">Título</h1>
+</div>
+```
+
+---
+
+## Ejemplos de Componentes
+
+> **⚠️ Nota:** Los siguientes ejemplos muestran la estructura completa para referencia.
+> En producción, usar archivos separados según [Frontend Architecture Skill](./skill-frontend.md).
+
+### Componente Angular: Tournament Card
+
+**Estructura de archivos:**
+```
+tournament-card/
+├── tournament-card.component.ts
+├── tournament-card.component.html
+└── tournament-card.component.css
+```
+
+```typescript
+// tournament-card.component.ts
+import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Tournament } from '../../models/tournament.model';
+
+@Component({
+  selector: 'app-tournament-card',
+  standalone: true,
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './tournament-card.component.html',
+  styleUrl: './tournament-card.component.css'
+})
+export class TournamentCardComponent {
+  // Usar input() signal en lugar de @Input
+  tournament = input.required<Tournament>();
+  
+  // Usar output() signal en lugar de @Output
+  registerClick = output<Tournament>();
+  
+  onRegister(): void {
+    this.registerClick.emit(this.tournament());
+  }
+}
+```
+
+```html
+<!-- tournament-card.component.html -->
+<article class="
+  flex flex-col 
+  bg-white dark:bg-surface-dark-alt 
+  border border-gray-200 dark:border-zinc-800 
+  overflow-hidden 
+  group 
+  hover:border-primary 
+  transition-all duration-300
+">
+  <!-- Image Section -->
+  <div class="relative overflow-hidden">
+    <div 
+      class="w-full aspect-video bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+      [style.background-image]="'url(' + tournament().imageUrl + ')'"
+    ></div>
+    
+    @if (tournament().status === 'open') {
+      <div class="absolute top-0 left-0 bg-primary text-white text-[10px] font-black uppercase tracking-widest px-3 py-2">
+        Open for Registration
+      </div>
+    }
+    
+    <div class="absolute bottom-4 right-4 bg-white/90 dark:bg-black/90 backdrop-blur px-3 py-1 text-[10px] font-black uppercase">
+      From {{ tournament().price }}€
+    </div>
+  </div>
+  
+  <!-- Content Section -->
+  <div class="p-6 flex flex-col flex-1 border-l-4 border-primary">
+    <h3 class="text-xl font-black uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">
+      {{ tournament().name }}
+    </h3>
+    
+    <div class="space-y-3 mb-6">
+      <div class="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-sm">
+        <span class="material-symbols-outlined text-lg text-primary">location_on</span>
+        <span class="font-medium">{{ tournament().location }}</span>
+      </div>
+      <div class="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-sm">
+        <span class="material-symbols-outlined text-lg text-primary">calendar_month</span>
+        <span class="font-medium">{{ tournament().dates }}</span>
+      </div>
+      <div class="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-sm">
+        <span class="material-symbols-outlined text-lg text-primary">group</span>
+        <span class="font-medium">{{ tournament().registeredPairs }}/{{ tournament().maxPairs }} Pairs</span>
+      </div>
+    </div>
+    
+    <div class="flex flex-wrap gap-2 mb-6">
+      @for (category of tournament().categories; track category) {
+        <span class="px-3 py-1 bg-neutral-gray dark:bg-zinc-800 text-[10px] font-bold uppercase tracking-wider">
+          {{ category }}
+        </span>
+      }
+    </div>
+    
+    <button 
+      (click)="onRegister()"
+      class="
+        w-full py-4 mt-auto 
+        bg-neutral-black dark:bg-white 
+        text-white dark:text-black 
+        text-xs font-black uppercase tracking-widest 
+        hover:bg-primary dark:hover:bg-primary dark:hover:text-white 
+        transition-all
+      "
+    >
+      Register Now
+    </button>
+  </div>
+</article>
+```
+
+```css
+/* tournament-card.component.css */
+/* Tailwind handles all styling - file can be empty or contain @apply for complex cases */
+```
+```
+
+### Componente Angular: Status Badge
+
+**Estructura de archivos:**
+```
+status-badge/
+├── status-badge.component.ts
+├── status-badge.component.html
+└── status-badge.component.css
+```
+
+```typescript
+// status-badge.component.ts
+import { Component, ChangeDetectionStrategy, input, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+type BadgeStatus = 'open' | 'full' | 'closed' | 'maintenance';
+
+@Component({
+  selector: 'app-status-badge',
+  standalone: true,
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './status-badge.component.html',
+  styleUrl: './status-badge.component.css'
+})
+export class StatusBadgeComponent {
+  // Usar input() signal
+  status = input<BadgeStatus>('open');
+  
+  private statusConfig: Record<BadgeStatus, { container: string; dot: string; label: string }> = {
+    open: {
+      container: 'bg-success-light dark:bg-success/20 text-success',
+      dot: 'bg-success',
+      label: 'Open'
+    },
+    full: {
+      container: 'bg-warning-light dark:bg-warning/20 text-warning',
+      dot: 'bg-warning',
+      label: 'Full'
+    },
+    closed: {
+      container: 'bg-error-light dark:bg-error/20 text-error',
+      dot: 'bg-error',
+      label: 'Closed'
+    },
+    maintenance: {
+      container: 'bg-info-light dark:bg-info/20 text-info',
+      dot: 'bg-info',
+      label: 'Maintenance'
+    }
+  };
+  
+  // Usar computed() para valores derivados
+  statusClasses = computed(() => this.statusConfig[this.status()].container);
+  dotClass = computed(() => this.statusConfig[this.status()].dot);
+  label = computed(() => this.statusConfig[this.status()].label);
+}
+```
+
+```html
+<!-- status-badge.component.html -->
+<span 
+  class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold"
+  [ngClass]="statusClasses()"
+>
+  <span class="w-2 h-2 rounded-full" [ngClass]="dotClass()"></span>
+  {{ label() }}
+</span>
+```
+```
+
+---
+
+## ✅ Checklist de Validación UI
+
+Antes de hacer merge de cualquier componente UI, verificar:
+
+### Estilos (Este Skill)
+- [ ] Usa colores del sistema (`primary`, `neutral-black`, etc.)
+- [ ] Tipografía sigue la escala definida
+- [ ] Bordes son cuadrados (excepto círculos con `rounded-full`)
+- [ ] Incluye variantes `dark:` para todos los colores
+- [ ] Usa Material Symbols Outlined para iconos
+- [ ] Estados hover tienen `transition-colors` o `transition-all`
+- [ ] Espaciado usa valores estándar de Tailwind (4, 6, 8, etc.)
+- [ ] Textos de botones/labels usan `uppercase tracking-wider`
+- [ ] Cards tienen borde sutil y hover state con `border-primary`
+
+### Arquitectura ([Frontend Skill](./skill-frontend.md))
+- [ ] Archivos separados: `.ts`, `.html`, `.css`
+- [ ] Usa `input()` / `output()` signals (no `@Input` / `@Output`)
+- [ ] Usa `computed()` para valores derivados
+- [ ] `ChangeDetectionStrategy.OnPush` configurado
+- [ ] Usa `@if` / `@for` (no `*ngIf` / `*ngFor`)
+- [ ] Código en inglés
+
+---
+
+## 🚫 Anti-patrones a Evitar
+
+### Estilos (Este Skill)
+```html
+<!-- ❌ NO usar bordes redondeados (excepto full para círculos) -->
+<div class="rounded-lg">...</div>
+
+<!-- ❌ NO usar colores hardcodeados -->
+<div class="bg-[#FF6B00]">...</div>
+<span class="text-[#333]">...</span>
+
+<!-- ❌ NO olvidar dark mode -->
+<div class="bg-white text-black">...</div>
+
+<!-- ❌ NO usar tipografías no definidas -->
+<p class="font-sans">...</p>
+
+<!-- ❌ NO usar iconos que no sean Material Symbols -->
+<svg><!-- custom icon --></svg>
+
+<!-- ❌ NO usar hover sin transiciones -->
+<button class="hover:bg-primary">...</button>
+
+<!-- ✅ CORRECTO -->
+<button class="hover:bg-primary transition-colors">...</button>
+```
+
+### Arquitectura ([Frontend Skill](./skill-frontend.md))
+```typescript
+// ❌ NO usar template inline
+@Component({
+  template: `<div>...</div>`  // PROHIBIDO
+})
+
+// ❌ NO usar @Input/@Output decoradores
+@Input() data!: Data;  // PROHIBIDO
+@Output() clicked = new EventEmitter();  // PROHIBIDO
+
+// ✅ CORRECTO - Usar signals
+data = input.required<Data>();
+clicked = output<void>();
+
+// ❌ NO usar getters para valores derivados
+get fullName() { return this.first + this.last; }  // PROHIBIDO
+
+// ✅ CORRECTO - Usar computed()
+fullName = computed(() => this.first() + ' ' + this.last());
+```
+
+---
+
+## 📚 Referencias
+
+| Skill | Propósito |
+|-------|----------|
+| **Este skill** | Colores, tipografía, iconos, componentes UI, dark mode |
+| [Frontend Architecture](./skill-frontend.md) | Estructura, signals, patterns, arquitectura Angular 20 |
+
+---
+
+> **Última actualización:** Enero 2026  
+> **Versión:** 1.1  
+> **Stack:** Angular 20 + Tailwind CSS 4.x
