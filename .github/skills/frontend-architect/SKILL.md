@@ -29,10 +29,70 @@ src/app/
 │   ├── pipes/
 │   └── directives/
 ├── features/                  # Módulos de características (lazy-loaded)
-│   └── [feature-name]/
-│       ├── components/
-│       ├── services/
-│       └── models/
+│   └── admin/                 # Feature principal
+│       ├── tournament/
+│       │   ├── pages/
+│       │   │   ├── tournament-dashboard/
+│       │   │   │   ├── tournament-dashboard.page.ts
+│       │   │   │   ├── tournament-dashboard.page.html
+│       │   │   │   └── tournament-dashboard.page.css
+│       │   │   └── tournament-config/
+│       │   │       ├── tournament-config.page.ts
+│       │   │       ├── tournament-config.page.html
+│       │   │       └── tournament-config.page.css
+│       │   ├── services/
+│       │   │   └── admin-tournament.service.ts
+│       │   └── models/
+│       │       └── admin-tournament.model.ts
+│       ├── matches/
+│       │   ├── pages/
+│       │   │   ├── match-calendar/
+│       │   │   │   ├── match-calendar.page.ts
+│       │   │   │   ├── match-calendar.page.html
+│       │   │   │   └── match-calendar.page.css
+│       │   │   └── match-form/
+│       │   │       ├── match-form.page.ts
+│       │   │       ├── match-form.page.html
+│       │   │       └── match-form.page.css
+│       │   ├── components/
+│       │   │   ├── match-card.component.ts
+│       │   │   ├── match-card.component.html
+│       │   │   └── match-card.component.css
+│       │   ├── services/
+│       │   │   └── match.service.ts
+│       │   └── models/
+│       │       └── match.model.ts
+│       ├── courts/
+│       │   ├── pages/
+│       │   │   └── court-list/
+│       │   │       ├── court-list.page.ts
+│       │   │       ├── court-list.page.html
+│       │   │       └── court-list.page.css
+│       │   ├── services/
+│       │   │   └── court.service.ts
+│       │   └── models/
+│       │       └── court.model.ts
+│       ├── categories/
+│       │   ├── pages/
+│       │   │   └── category-list/
+│       │   │       ├── category-list.page.ts
+│       │   │       ├── category-list.page.html
+│       │   │       └── category-list.page.css
+│       │   ├── services/
+│       │   │   └── category.service.ts
+│       │   └── models/
+│       │       └── category.model.ts
+│       ├── administrators/
+│       │   ├── pages/
+│       │   │   └── admin-list/
+│       │   │       ├── admin-list.page.ts
+│       │   │       ├── admin-list.page.html
+│       │   │       └── admin-list.page.css
+│       │   ├── services/
+│       │   │   └── administrator.service.ts
+│       │   └── models/
+│       │       └── administrator.model.ts
+│       └── admin.routes.ts
 ├── layouts/                   # Layouts de la aplicación
 └── environments/              # Configuración por ambiente
 ```
@@ -224,9 +284,65 @@ user-list/
 
 ---
 
-## 3. PATRONES OBLIGATORIOS
+## 3. CONFIGURACIÓN DE PATH ALIASES
 
-### 2.1 Standalone Components y Zoneless Development
+**Configurar alias de importación para rutas más limpias y mantenibles.**
+
+### 3.1 Configuración TypeScript
+
+```jsonc
+// tsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@core/*": ["src/app/core/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@features/*": ["src/app/features/*"],
+      "@layouts/*": ["src/app/layouts/*"],
+      "@environments/*": ["src/environments/*"]
+    }
+  }
+}
+```
+
+### 3.2 Uso de Path Aliases
+
+```typescript
+// ❌ INCORRECTO - Rutas relativas difíciles de mantener
+import { AuthService } from '../../../core/services/auth.service';
+import { User } from '../../../../core/models/user.model';
+import { environment } from '../../../../../environments/environment';
+
+// ✅ CORRECTO - Path aliases claros y mantenibles
+import { AuthService } from '@core/services/auth.service';
+import { User } from '@core/models/user.model';
+import { environment } from '@environments/environment';
+
+// ✅ CORRECTO - Importaciones de features
+import { UserListComponent } from '@features/users/components/user-list/user-list.component';
+import { UserService } from '@features/users/services/user.service';
+
+// ✅ CORRECTO - Shared components
+import { HeaderComponent } from '@shared/components/header/header.component';
+import { DatePipe } from '@shared/pipes/date.pipe';
+
+// ✅ CORRECTO - Layouts
+import { MainLayoutComponent } from '@layouts/main-layout/main-layout.component';
+```
+
+### 3.3 Beneficios
+
+- ✅ **Legibilidad**: Imports más claros y comprensibles
+- ✅ **Mantenibilidad**: Fácil refactorizar y mover archivos
+- ✅ **Escalabilidad**: Estructura independiente de la ubicación
+- ✅ **Consistencia**: Mismas rutas en toda la aplicación
+
+---
+
+## 4. PATRONES OBLIGATORIOS
+
+### 4.1 Standalone Components y Zoneless Development
 **Todos los componentes deben ser standalone. Angular 20 promueve aplicaciones sin zone.js.**
 
 ```typescript
@@ -273,7 +389,7 @@ export class UserModule {}
 })
 ```
 
-### 2.2 Signals para Estado (Signal-First Architecture)
+### 4.2 Signals para Estado (Signal-First Architecture)
 **Usar Signals como base para la reactividad. Evitar RxJS para estado interno.**
 
 ```typescript
@@ -319,7 +435,7 @@ export class UserListComponent {
 }
 ```
 
-### 2.3 Servicios con RxJS
+### 4.3 Servicios con RxJS
 **Los servicios usan HttpClient con Observables.**
 
 ```typescript
@@ -356,7 +472,7 @@ async getAll(): Promise<User[]> {
 }
 ```
 
-### 2.3.1 Encapsulación de Librerías de Terceros
+### 4.3.1 Encapsulación de Librerías de Terceros
 **TODA librería de terceros DEBE ser encapsulada en un servicio. La aplicación NUNCA debe usar directamente librerías externas.**
 
 Esta regla garantiza:
@@ -489,7 +605,7 @@ export class ReportComponent {
 - **Validación**: validator.js → `ValidationService`
 - **Formato**: numeral.js → `FormatService`
 
-### 2.4 Reactive Forms
+### 4.4 Reactive Forms
 **Usar FormBuilder para formularios con validaciones.**
 
 ```typescript
@@ -519,7 +635,7 @@ export class UserFormComponent {
 </form>
 ```
 
-### 2.5 Interceptors Funcionales
+### 4.5 Interceptors Funcionales
 **Usar HttpInterceptorFn para interceptors.**
 
 ```typescript
@@ -564,7 +680,7 @@ export class AuthInterceptor implements HttpInterceptor {
 }
 ```
 
-### 2.6 Guards Funcionales
+### 4.6 Guards Funcionales
 **Usar CanActivateFn para guards.**
 
 ```typescript
@@ -606,7 +722,7 @@ export class AuthGuard implements CanActivate {
 }
 ```
 
-### 2.7 Lazy Loading de Rutas
+### 4.7 Lazy Loading de Rutas
 **Cargar componentes de forma lazy.**
 
 ```typescript
@@ -642,7 +758,7 @@ export const routes: Routes = [
 ];
 ```
 
-### 2.8 Inyección de Dependencias Funcional e Input/Output Signals
+### 4.8 Inyección de Dependencias Funcional e Input/Output Signals
 **Usar inject() y las nuevas APIs de input(), output() y model().**
 
 ```typescript
@@ -718,7 +834,7 @@ export class UserCardComponent {
 }
 ```
 
-### 2.9 Control Flow Syntax (Angular 17+) y @defer
+### 4.9 Control Flow Syntax (Angular 17+) y @defer
 **Usar @if, @for, @switch en lugar de directivas estructurales. Implementar @defer para optimización.**
 
 **NOTA**: Los siguientes ejemplos muestran templates inline solo con fines didácticos. En código de producción, **SIEMPRE** usar archivos HTML separados con `templateUrl`.
@@ -789,7 +905,7 @@ export class UserCardComponent {
 </ng-container>
 ```
 
-### 2.10 Manejo de Subscripciones
+### 4.10 Manejo de Subscripciones
 **Usar async pipe o effect() para manejar subscripciones automáticamente.**
 
 ```typescript
@@ -842,7 +958,7 @@ export class UserListComponent implements OnInit {
 
 ---
 
-## 3. RENDERIZADO Y RENDIMIENTO (SSR & HYDRATION)
+## 5. RENDERIZADO Y RENDIMIENTO (SSR & HYDRATION)
 
 ### 3.1 Server-Side Rendering con Event Replay
 **Habilitar hidratación completa con Event Replay para capturar interacciones antes de la carga de JS.**
@@ -947,7 +1063,7 @@ export class MainPageComponent {
 
 ---
 
-## 4. CONVENCIONES DE NOMBRADO
+## 6. CONVENCIONES DE NOMBRADO
 
 | Tipo | Convención | Ejemplo |
 |------|------------|---------|
@@ -966,7 +1082,7 @@ export class MainPageComponent {
 
 ---
 
-## 5. ESTRUCTURA DE ARCHIVOS POR FEATURE
+## 7. ESTRUCTURA DE ARCHIVOS POR FEATURE
 
 ```
 features/
@@ -992,7 +1108,7 @@ features/
 
 ---
 
-## 6. REGLAS DE CÓDIGO
+## 8. REGLAS DE CÓDIGO
 
 1. **NO usar módulos NgModule** - Solo standalone components (legacy code)
 2. **SIEMPRE separar HTML, CSS y TS** - Usar templateUrl/styleUrl (NUNCA inline)
@@ -1019,7 +1135,7 @@ features/
 
 ---
 
-## 7. EJEMPLO COMPLETO DE FEATURE
+## 9. EJEMPLO COMPLETO DE FEATURE
 
 ```typescript
 // models/product.model.ts
@@ -1339,7 +1455,7 @@ export class ProductFormComponent implements OnInit {
 
 ---
 
-## 8. TOOLING Y BUILD (ESBUILD/VITE)
+## 10. TOOLING Y BUILD (ESBUILD/VITE)
 
 ### 8.1 Angular CLI con Esbuild
 **Angular 20 usa Esbuild y Vite por defecto - compilaciones hasta 5-10x más rápidas.**
@@ -1394,7 +1510,7 @@ export class ProductFormComponent implements OnInit {
 
 ---
 
-## 9. CHECKLIST PARA NUEVO CÓDIGO
+## 11. CHECKLIST PARA NUEVO CÓDIGO
 
 - [ ] Componente es standalone
 - [ ] Archivos separados: .ts, .html, .css (NO inline template/styles)
@@ -1424,7 +1540,7 @@ export class ProductFormComponent implements OnInit {
 
 ---
 
-## 10. DOCUMENTACIÓN DE FEATURES
+## 12. DOCUMENTACIÓN DE FEATURES
 
 **⚠️ OBLIGATORIO**: Al completar el desarrollo de cualquier feature o modificación, debes actualizar la documentación siguiendo el **[Feature Documentation Skill](../feature-documentation/SKILL.md)**.
 
@@ -1478,7 +1594,7 @@ Componente/Servicio Completo → Actualizar Docs → Commit (código + docs) →
 
 ---
 
-## 11. TECNOLOGÍAS Y VERSIONES
+## 13. TECNOLOGÍAS Y VERSIONES
 
 - Angular 20
 - TypeScript 5.5+

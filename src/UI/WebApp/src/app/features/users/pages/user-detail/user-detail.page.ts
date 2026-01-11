@@ -1,63 +1,59 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
 
 @Component({
-  selector: 'app-user-list',
+  selector: 'app-user-detail-page',
   standalone: true,
   imports: [CommonModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css'
+  templateUrl: './user-detail.page.html',
+  styleUrl: './user-detail.page.css'
 })
-export class UserListComponent implements OnInit {
+export class UserDetailPage implements OnInit {
   private userService = inject(UserService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
-  users = signal<User[]>([]);
+  user = signal<User | null>(null);
   loading = signal(false);
   error = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.loadUsers();
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.loadUser(+id);
+    }
   }
 
-  loadUsers(): void {
+  loadUser(id: number): void {
     this.loading.set(true);
     this.error.set(null);
 
-    this.userService.getAll().subscribe({
-      next: (users) => {
-        this.users.set(users);
+    this.userService.getById(id).subscribe({
+      next: (user) => {
+        this.user.set(user);
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set('Failed to load users. Please try again.');
+        this.error.set('Failed to load user details. Please try again.');
         this.loading.set(false);
-        console.error('Error loading users:', err);
+        console.error('Error loading user:', err);
       }
     });
   }
 
-  navigateToCreate(): void {
-    this.router.navigate(['/users/create']);
+  editUser(): void {
+    this.router.navigate(['/app/users', this.user()!.id, 'edit']);
   }
 
-  viewUser(id: number): void {
-    this.router.navigate(['/users', id]);
-  }
-
-  editUser(id: number): void {
-    this.router.navigate(['/users', id, 'edit']);
-  }
-
-  deleteUser(id: number): void {
+  deleteUser(): void {
     if (confirm('Are you sure you want to delete this user?')) {
-      this.userService.delete(id).subscribe({
+      this.userService.delete(this.user()!.id).subscribe({
         next: () => {
-          this.loadUsers();
+          this.router.navigate(['/app/users']);
         },
         error: (err) => {
           this.error.set('Failed to delete user. Please try again.');
@@ -65,5 +61,9 @@ export class UserListComponent implements OnInit {
         }
       });
     }
+  }
+
+  goBack(): void {
+    this.router.navigate(['/app/users']);
   }
 }

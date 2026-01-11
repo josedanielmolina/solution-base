@@ -2,8 +2,8 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { StorageUtils } from '../utils/common.utils';
+import { environment } from '@environments/environment';
+import { StorageUtils } from '@core/utils/common.utils';
 
 export interface LoginCredentials {
   email: string;

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
-import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { authGuard } from '@core/guards/auth.guard';
+import { MainLayoutComponent } from '@layouts/main-layout/main-layout.component';
 
 export const routes: Routes = [
   {
@@ -10,7 +10,8 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    loadComponent: () => import('./features/auth/components/login.component').then(m => m.LoginComponent)
+    loadComponent: () => import('./features/auth/pages/login/login.page')
+      .then(m => m.LoginPage)
   },
   {
     path: 'app',
@@ -24,24 +25,8 @@ export const routes: Routes = [
       },
       {
         path: 'users',
-        children: [
-          {
-            path: '',
-            loadComponent: () => import('./features/users/components/user-list/user-list.component').then(m => m.UserListComponent)
-          },
-          {
-            path: 'create',
-            loadComponent: () => import('./features/users/components/user-form/user-form.component').then(m => m.UserFormComponent)
-          },
-          {
-            path: ':id',
-            loadComponent: () => import('./features/users/components/user-detail/user-detail.component').then(m => m.UserDetailComponent)
-          },
-          {
-            path: ':id/edit',
-            loadComponent: () => import('./features/users/components/user-form/user-form.component').then(m => m.UserFormComponent)
-          }
-        ]
+        loadChildren: () => import('./features/users/users.routes')
+          .then(m => m.USERS_ROUTES)
       }
     ]
   },

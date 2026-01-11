@@ -6,14 +6,14 @@ import { UserService } from '../../services/user.service';
 import { CreateUser, UpdateUser } from '../../models/user.model';
 
 @Component({
-  selector: 'app-user-form',
+  selector: 'app-user-form-page',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './user-form.component.html',
-  styleUrl: './user-form.component.css'
+  templateUrl: './user-form.page.html',
+  styleUrl: './user-form.page.css'
 })
-export class UserFormComponent implements OnInit {
+export class UserFormPage implements OnInit {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
   private router = inject(Router);
@@ -93,7 +93,7 @@ export class UserFormComponent implements OnInit {
     this.userService.create(userData).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.router.navigate(['/users']);
+        this.router.navigate(['/app/users']);
       },
       error: (err) => {
         this.error.set('Failed to create user. Please check your data and try again.');
@@ -113,7 +113,7 @@ export class UserFormComponent implements OnInit {
     this.userService.update(this.userId()!, userData).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.router.navigate(['/users']);
+        this.router.navigate(['/app/users']);
       },
       error: (err) => {
         this.error.set('Failed to update user. Please try again.');
@@ -129,6 +129,6 @@ export class UserFormComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/users']);
+    this.router.navigate(['/app/users']);
   }
 }
