@@ -273,6 +273,139 @@ async getAll(): Promise<User[]> {
 }
 ```
 
+### 2.3.1 Encapsulación de Librerías de Terceros
+**TODA librería de terceros DEBE ser encapsulada en un servicio. La aplicación NUNCA debe usar directamente librerías externas.**
+
+Esta regla garantiza:
+- **Desacoplamiento**: Si necesitas cambiar de librería, solo modificas el servicio
+- **Testabilidad**: Fácil crear mocks de servicios para testing
+- **Consistencia**: Uso centralizado y controlado de librerías
+- **Mantenibilidad**: Actualizaciones de librerías sin afectar toda la aplicación
+
+```typescript
+// ✅ CORRECTO - Encapsular librería en servicio
+// notification.service.ts - Encapsula toastr
+import { Injectable, inject } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+
+@Injectable({ providedIn: 'root' })
+export class NotificationService {
+  private toastr = inject(ToastrService);
+
+  success(message: string, title?: string): void {
+    this.toastr.success(message, title);
+  }
+
+  error(message: string, title?: string): void {
+    this.toastr.error(message, title);
+  }
+
+  warning(message: string, title?: string): void {
+    this.toastr.warning(message, title);
+  }
+
+  info(message: string, title?: string): void {
+    this.toastr.info(message, title);
+  }
+}
+
+// En el componente - usar el servicio, NO la librería directamente
+export class UserListComponent {
+  private notificationService = inject(NotificationService);
+
+  saveUser() {
+    this.notificationService.success('User saved successfully');
+  }
+}
+
+// ✅ CORRECTO - Encapsular librería de gráficos
+// chart.service.ts - Encapsula Chart.js
+import { Injectable } from '@angular/core';
+import { Chart, ChartConfiguration } from 'chart.js';
+
+@Injectable({ providedIn: 'root' })
+export class ChartService {
+  createLineChart(canvas: HTMLCanvasElement, data: any[]): Chart {
+    const config: ChartConfiguration = {
+      type: 'line',
+      data: {
+        labels: data.map(d => d.label),
+        datasets: [{
+          label: 'Dataset',
+          data: data.map(d => d.value)
+        }]
+      }
+    };
+    return new Chart(canvas, config);
+  }
+
+  createBarChart(canvas: HTMLCanvasElement, data: any[]): Chart {
+    // Implementación...
+    return new Chart(canvas, { type: 'bar', data: {} });
+  }
+}
+
+// ✅ CORRECTO - Encapsular librería de fechas
+// date.service.ts - Encapsula date-fns
+import { Injectable } from '@angular/core';
+import { format, parseISO, addDays, differenceInDays } from 'date-fns';
+
+@Injectable({ providedIn: 'root' })
+export class DateService {
+  formatDate(date: Date | string, pattern: string = 'yyyy-MM-dd'): string {
+    const dateObj = typeof date === 'string' ? parseISO(date) : date;
+    return format(dateObj, pattern);
+  }
+
+  addDays(date: Date, days: number): Date {
+    return addDays(date, days);
+  }
+
+  daysBetween(date1: Date, date2: Date): number {
+    return differenceInDays(date2, date1);
+  }
+}
+
+// En el componente
+export class ReportComponent {
+  private dateService = inject(DateService);
+
+  getFormattedDate(): string {
+    return this.dateService.formatDate(new Date(), 'dd/MM/yyyy');
+  }
+}
+
+// ❌ INCORRECTO - Usar librería directamente en componente
+import { ToastrService } from 'ngx-toastr';
+
+export class UserListComponent {
+  private toastr = inject(ToastrService); // ❌ NO usar librería directamente
+
+  saveUser() {
+    this.toastr.success('User saved'); // ❌ Uso directo de librería externa
+  }
+}
+
+// ❌ INCORRECTO - Importar funciones de librería directamente
+import { format, parseISO } from 'date-fns'; // ❌ NO importar directamente
+
+export class ReportComponent {
+  formatDate(date: Date): string {
+    return format(date, 'yyyy-MM-dd'); // ❌ Uso directo de librería externa
+  }
+}
+```
+
+**Ejemplos de librerías que deben encapsularse:**
+- **Notificaciones**: toastr, sweetalert → `NotificationService`
+- **Gráficos**: Chart.js, D3.js → `ChartService`
+- **Fechas**: date-fns, moment → `DateService`
+- **HTTP alternativas**: axios → `HttpService` (aunque se recomienda HttpClient)
+- **Almacenamiento**: localStorage, sessionStorage → `StorageService`
+- **Logging**: console, logging libs → `LoggerService`
+- **Validación**: validator.js → `ValidationService`
+- **Formato**: numeral.js → `FormatService`
+
 ### 2.4 Reactive Forms
 **Usar FormBuilder para formularios con validaciones.**
 

@@ -38,7 +38,7 @@ export class LoginComponent {
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
         this.notificationService.success('¡Bienvenido!');
-        this.router.navigate(['/users']);
+        this.router.navigate(['/app']);
       },
       error: (error) => {
         this.loading.set(false);

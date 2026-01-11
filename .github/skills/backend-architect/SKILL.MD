@@ -11,7 +11,7 @@ Este skill define las reglas de arquitectura, patrones y convenciones para el de
 src/
 ├── Core/
 │   ├── Core.Domain/           # Entidades, ValueObjects, Interfaces de repositorios
-│   └── Core.Application/      # Operaciones, Facades, DTOs, Validators, Result Pattern
+│   └── Core.Application/      # Features, Facades, DTOs, Validators, Result Pattern
 ├── Infrastructure/
 │   ├── Infrastructure.Persistence/   # DbContext, Repositories, UnitOfWork, Migrations
 │   └── Infrastructure.Services/      # Servicios externos (Email, Storage, Cache, JWT)
@@ -78,17 +78,17 @@ public interface IUserFacade
 }
 ```
 
-### 2.4 Operations Pattern
-**Cada operación de negocio es una clase independiente.**
+### 2.4 Features Pattern
+**Cada caso de uso es una clase independiente nombrada simplemente por lo que hace.**
 
 ```csharp
-// Estructura de Operation
-public class CreateUserOperation
+// Estructura de Feature (caso de uso)
+public class CreateUser
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
 
-    public CreateUserOperation(IUnitOfWork unitOfWork, IPasswordHasher passwordHasher)
+    public CreateUser(IUnitOfWork unitOfWork, IPasswordHasher passwordHasher)
     {
         _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
@@ -262,8 +262,8 @@ public class PasswordHasher : IPasswordHasher
     }
 }
 
-// ✅ CORRECTO - Uso en Operations a través de la interfaz
-public class CreateUserOperation
+// ✅ CORRECTO - Uso en Features a través de la interfaz
+public class CreateUser
 {
     private readonly IPasswordHasher _passwordHasher;
     
@@ -275,7 +275,7 @@ public class CreateUserOperation
 }
 
 // ❌ INCORRECTO - Usar librería directamente en la lógica de negocio
-public class CreateUserOperation
+public class CreateUser
 {
     public async Task<Result<UserDto>> ExecuteAsync(CreateUserDto dto)
     {
@@ -546,12 +546,12 @@ Core.Application/
 │       ├── [Entity]Dto.cs
 │       ├── Create[Entity]Dto.cs
 │       └── Update[Entity]Dto.cs
-├── Operations/
+├── Features/
 │   └── [Entity]s/
-│       ├── Create[Entity]Operation.cs
-│       ├── Get[Entity]Operation.cs
-│       ├── Update[Entity]Operation.cs
-│       └── Delete[Entity]Operation.cs
+│       ├── Create[Entity].cs
+│       ├── Get[Entity].cs
+│       ├── Update[Entity].cs
+│       └── Delete[Entity].cs
 ├── Facades/
 │   ├── I[Entity]Facade.cs
 │   └── [Entity]Facade.cs
@@ -1076,7 +1076,7 @@ public void Configure(EntityTypeBuilder<User> builder)
 - [ ] Mapping Extensions implementados
 - [ ] Errors tipados definidos
 - [ ] Validators con FluentValidation
-- [ ] Operations creadas
+- [ ] Features creados (casos de uso)
 - [ ] Facade implementado
 - [ ] Repository configurado (si necesario)
 - [ ] Controller con Result Pattern

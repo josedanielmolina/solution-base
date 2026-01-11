@@ -3,14 +3,14 @@ using Core.Application.Common.Result;
 using Core.Domain.Interfaces;
 using Core.Domain.Interfaces.Repositories;
 
-namespace Core.Application.Operations.Users;
+namespace Core.Application.Features.Users;
 
-public class DeleteUserOperation
+public class DeleteUser
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
 
-    public DeleteUserOperation(
+    public DeleteUser(
         IUnitOfWork unitOfWork,
         IUserRepository userRepository)
     {

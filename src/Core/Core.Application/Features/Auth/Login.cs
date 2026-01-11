@@ -5,16 +5,16 @@ using Core.Application.Interfaces;
 using Core.Domain.Interfaces;
 using Core.Domain.Interfaces.Repositories;
 
-namespace Core.Application.Operations.Auth;
+namespace Core.Application.Features.Auth;
 
-public class LoginOperation
+public class Login
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IUnitOfWork _unitOfWork;
 
-    public LoginOperation(
+    public Login(
         IUserRepository userRepository,
         IPasswordHasher passwordHasher,
         IJwtTokenGenerator jwtTokenGenerator,

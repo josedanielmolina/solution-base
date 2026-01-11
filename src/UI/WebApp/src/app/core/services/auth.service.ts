@@ -38,7 +38,7 @@ export class AuthService {
   isAuthenticated = computed(() => !!this.token());
 
   login(credentials: LoginCredentials): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, credentials)
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/api/auth/login`, credentials)
       .pipe(
         tap(response => {
           this.setToken(response.token);

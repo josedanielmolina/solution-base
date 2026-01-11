@@ -6,15 +6,15 @@ using Core.Application.Mappings;
 using Core.Domain.Interfaces;
 using Core.Domain.Interfaces.Repositories;
 
-namespace Core.Application.Operations.Users;
+namespace Core.Application.Features.Users;
 
-public class CreateUserOperation
+public class CreateUser
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
 
-    public CreateUserOperation(
+    public CreateUser(
         IUnitOfWork unitOfWork,
         IUserRepository userRepository,
         IPasswordHasher passwordHasher)

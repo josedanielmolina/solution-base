@@ -5,14 +5,14 @@ using Core.Application.Mappings;
 using Core.Domain.Interfaces;
 using Core.Domain.Interfaces.Repositories;
 
-namespace Core.Application.Operations.Users;
+namespace Core.Application.Features.Users;
 
-public class UpdateUserOperation
+public class UpdateUser
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
 
-    public UpdateUserOperation(
+    public UpdateUser(
         IUnitOfWork unitOfWork,
         IUserRepository userRepository)
     {

@@ -4,13 +4,13 @@ using Core.Application.DTOs.Users;
 using Core.Application.Mappings;
 using Core.Domain.Interfaces.Repositories;
 
-namespace Core.Application.Operations.Users;
+namespace Core.Application.Features.Users;
 
-public class GetUserOperation
+public class GetUser
 {
     private readonly IUserRepository _userRepository;
 
-    public GetUserOperation(IUserRepository userRepository)
+    public GetUser(IUserRepository userRepository)
     {
         _userRepository = userRepository;
     }

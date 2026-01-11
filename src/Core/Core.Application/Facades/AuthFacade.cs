@@ -1,20 +1,20 @@
 using Core.Application.Common.Result;
 using Core.Application.DTOs.Auth;
-using Core.Application.Operations.Auth;
+using Core.Application.Features.Auth;
 
 namespace Core.Application.Facades;
 
 public class AuthFacade : IAuthFacade
 {
-    private readonly LoginOperation _loginOperation;
+    private readonly Login _login;
 
-    public AuthFacade(LoginOperation loginOperation)
+    public AuthFacade(Login login)
     {
-        _loginOperation = loginOperation;
+        _login = login;
     }
 
     public async Task<Result<AuthResponseDto>> LoginAsync(LoginDto dto)
     {
-        return await _loginOperation.ExecuteAsync(dto);
+        return await _login.ExecuteAsync(dto);
     }
 }

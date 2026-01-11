@@ -1,6 +1,6 @@
 using Core.Application.Facades;
-using Core.Application.Operations.Users;
-using Core.Application.Operations.Auth;
+using Core.Application.Features.Users;
+using Core.Application.Features.Auth;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,12 +13,12 @@ public static class DependencyInjection
         // Register FluentValidation
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
-        // Register Operations
-        services.AddScoped<CreateUserOperation>();
-        services.AddScoped<GetUserOperation>();
-        services.AddScoped<UpdateUserOperation>();
-        services.AddScoped<DeleteUserOperation>();
-        services.AddScoped<LoginOperation>();
+        // Register Features
+        services.AddScoped<CreateUser>();
+        services.AddScoped<GetUser>();
+        services.AddScoped<UpdateUser>();
+        services.AddScoped<DeleteUser>();
+        services.AddScoped<Login>();
 
         // Register Facades
         services.AddScoped<IUserFacade, UserFacade>();
