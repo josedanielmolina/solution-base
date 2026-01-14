@@ -1,0 +1,13 @@
+// Placeholder: Aquí se crearán los tests de Features/Users
+// Ejemplo de estructura esperada:
+//
+// namespace Core.Application.Tests.Features.Users;
+//
+// public class CreateUserTests
+// {
+//     [Fact]
+//     public async Task ExecuteAsync_WithValidData_ReturnsSuccess()
+//     {
+//         // Test implementation
+//     }
+// }

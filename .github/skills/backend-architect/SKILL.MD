@@ -17,6 +17,11 @@ src/
 │   └── Infrastructure.Services/      # Servicios externos (Email, Storage, Cache, JWT)
 └── Presentation/
     └── API/                   # Controllers, Middleware, Filters, Extensions
+
+tests/
+├── Core.Application.Tests/           # Tests unitarios de Features, Facades, Validators
+├── Infrastructure.Persistence.Tests/ # Tests de integración con BD
+└── API.Tests/                        # Tests de integración de endpoints
 ```
 
 ---
@@ -510,6 +515,425 @@ public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
 
 ---
 
+## 3.6 DOCUMENTACIÓN DE CÓDIGO OBLIGATORIA
+
+**⚠️ REGLA FUNDAMENTAL**: Todo método público, clase, propiedad e interfaz DEBE estar documentado con XML comments siguiendo las [Guías Oficiales de .NET](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/).
+
+### Elementos XML Obligatorios
+
+| Elemento | Cuándo Usar | Obligatorio |
+|----------|-------------|-------------|
+| `<summary>` | Todas las clases, métodos, propiedades | ✅ SÍ |
+| `<param>` | Cada parámetro de método | ✅ SÍ |
+| `<returns>` | Métodos que retornan valor | ✅ SÍ |
+| `<exception>` | Cuando se lanzan excepciones | ✅ SÍ |
+| `<remarks>` | Explicación adicional compleja | 📝 Opcional |
+| `<example>` | Ejemplos de uso | 📝 Opcional |
+| `<seealso>` | Referencias cruzadas | 📝 Opcional |
+
+### Clases y Interfaces
+
+```csharp
+/// <summary>
+/// Repositorio para operaciones de datos de usuarios en la base de datos.
+/// Proporciona acceso especializado para consultas complejas relacionadas con usuarios.
+/// </summary>
+/// <remarks>
+/// Este repositorio hereda de <see cref="GenericRepository{User}"/> y extiende
+/// funcionalidades específicas para el dominio de usuarios.
+/// </remarks>
+public interface IUserRepository : IGenericRepository<User>
+{
+    /// <summary>
+    /// Obtiene un usuario por su dirección de correo electrónico.
+    /// </summary>
+    /// <param name="email">Correo electrónico del usuario a buscar.</param>
+    /// <returns>
+    /// Una tarea que representa la operación asíncrona.
+    /// El resultado contiene el usuario encontrado o <c>null</c> si no existe.
+    /// </returns>
+    Task<User?> GetByEmailAsync(string email);
+
+    /// <summary>
+    /// Obtiene una lista paginada de usuarios activos.
+    /// </summary>
+    /// <param name="pageNumber">Número de página (base 1).</param>
+    /// <param name="pageSize">Cantidad de registros por página.</param>
+    /// <returns>
+    /// Una tarea que representa la operación asíncrona.
+    /// El resultado contiene la lista paginada de usuarios activos.
+    /// </returns>
+    Task<PaginatedList<User>> GetActiveUsersAsync(int pageNumber, int pageSize);
+}
+```
+
+### Facades
+
+```csharp
+/// <summary>
+/// Fachada para operaciones de gestión de usuarios.
+/// Orquesta casos de uso y coordina múltiples servicios relacionados con usuarios.
+/// </summary>
+public interface IUserFacade
+{
+    /// <summary>
+    /// Obtiene un usuario por su identificador único.
+    /// </summary>
+    /// <param name="id">Identificador único del usuario.</param>
+    /// <returns>
+    /// Un <see cref="Result{UserDto}"/> que contiene el DTO del usuario si existe,
+    /// o un error <see cref="UserErrors.NotFound"/> si no se encuentra.
+    /// </returns>
+    Task<Result<UserDto>> GetUserByIdAsync(int id);
+
+    /// <summary>
+    /// Crea un nuevo usuario en el sistema.
+    /// </summary>
+    /// <param name="dto">Datos del usuario a crear.</param>
+    /// <returns>
+    /// Un <see cref="Result{UserDto}"/> que contiene el usuario creado si la operación es exitosa,
+    /// o un error de validación/duplicidad si falla.
+    /// </returns>
+    /// <remarks>
+    /// La contraseña será hasheada automáticamente antes de ser almacenada.
+    /// Se validará que el email no exista previamente en el sistema.
+    /// </remarks>
+    Task<Result<UserDto>> CreateUserAsync(CreateUserDto dto);
+
+    /// <summary>
+    /// Actualiza los datos de un usuario existente.
+    /// </summary>
+    /// <param name="id">Identificador del usuario a actualizar.</param>
+    /// <param name="dto">Nuevos datos del usuario.</param>
+    /// <returns>
+    /// Un <see cref="Result{UserDto}"/> que contiene el usuario actualizado si la operación es exitosa,
+    /// o un error si el usuario no existe o falla la validación.
+    /// </returns>
+    Task<Result<UserDto>> UpdateUserAsync(int id, UpdateUserDto dto);
+
+    /// <summary>
+    /// Elimina un usuario del sistema (soft delete).
+    /// </summary>
+    /// <param name="id">Identificador del usuario a eliminar.</param>
+    /// <returns>
+    /// Un <see cref="Result"/> que indica si la operación fue exitosa o contiene un error.
+    /// </returns>
+    /// <remarks>
+    /// Realiza un borrado lógico, marcando el usuario como inactivo sin eliminarlo físicamente.
+    /// </remarks>
+    Task<Result> DeleteUserAsync(int id);
+}
+```
+
+### Features (Casos de Uso)
+
+```csharp
+/// <summary>
+/// Caso de uso para crear un nuevo usuario en el sistema.
+/// </summary>
+/// <remarks>
+/// Este caso de uso valida los datos, verifica que el email no exista,
+/// hashea la contraseña y persiste el usuario en la base de datos.
+/// </remarks>
+public class CreateUser
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IPasswordHasher _passwordHasher;
+
+    /// <summary>
+    /// Inicializa una nueva instancia de <see cref="CreateUser"/>.
+    /// </summary>
+    /// <param name="unitOfWork">Unidad de trabajo para operaciones de base de datos.</param>
+    /// <param name="passwordHasher">Servicio para hashear contraseñas.</param>
+    public CreateUser(IUnitOfWork unitOfWork, IPasswordHasher passwordHasher)
+    {
+        _unitOfWork = unitOfWork;
+        _passwordHasher = passwordHasher;
+    }
+
+    /// <summary>
+    /// Ejecuta el caso de uso de creación de usuario.
+    /// </summary>
+    /// <param name="dto">Datos del usuario a crear.</param>
+    /// <returns>
+    /// Un <see cref="Result{UserDto}"/> con el usuario creado si la operación es exitosa,
+    /// o un error si falla la validación o el email ya existe.
+    /// </returns>
+    public async Task<Result<UserDto>> ExecuteAsync(CreateUserDto dto)
+    {
+        // Validar email único
+        var existingUser = await _unitOfWork.Repository<User>()
+            .FirstOrDefaultAsync(u => u.Email == dto.Email);
+        
+        if (existingUser != null)
+            return UserErrors.EmailAlreadyExists(dto.Email);
+
+        // Hashear contraseña
+        var passwordHash = _passwordHasher.Hash(dto.Password);
+
+        // Crear entidad
+        var user = dto.ToEntity(passwordHash);
+
+        // Persistir
+        await _unitOfWork.Repository<User>().AddAsync(user);
+        await _unitOfWork.SaveChangesAsync();
+
+        return user.ToDto();
+    }
+}
+```
+
+### Servicios de Infraestructura
+
+```csharp
+/// <summary>
+/// Servicio para hashear y verificar contraseñas usando BCrypt.
+/// </summary>
+public interface IPasswordHasher
+{
+    /// <summary>
+    /// Genera un hash seguro a partir de una contraseña en texto plano.
+    /// </summary>
+    /// <param name="password">Contraseña en texto plano.</param>
+    /// <returns>Hash de la contraseña usando BCrypt.</returns>
+    string Hash(string password);
+
+    /// <summary>
+    /// Verifica si una contraseña en texto plano coincide con un hash.
+    /// </summary>
+    /// <param name="password">Contraseña en texto plano a verificar.</param>
+    /// <param name="hash">Hash de contraseña almacenado.</param>
+    /// <returns><c>true</c> si la contraseña coincide; de lo contrario, <c>false</c>.</returns>
+    bool Verify(string password, string hash);
+}
+
+/// <summary>
+/// Implementación de <see cref="IPasswordHasher"/> usando BCrypt.
+/// </summary>
+public class PasswordHasher : IPasswordHasher
+{
+    /// <inheritdoc/>
+    public string Hash(string password)
+    {
+        return BCrypt.Net.BCrypt.HashPassword(password);
+    }
+
+    /// <inheritdoc/>
+    public bool Verify(string password, string hash)
+    {
+        return BCrypt.Net.BCrypt.Verify(password, hash);
+    }
+}
+```
+
+### DTOs y Modelos
+
+```csharp
+/// <summary>
+/// DTO para la creación de un nuevo usuario.
+/// </summary>
+public class CreateUserDto
+{
+    /// <summary>
+    /// Nombre del usuario.
+    /// </summary>
+    public required string FirstName { get; set; }
+
+    /// <summary>
+    /// Apellido del usuario.
+    /// </summary>
+    public required string LastName { get; set; }
+
+    /// <summary>
+    /// Dirección de correo electrónico única del usuario.
+    /// </summary>
+    public required string Email { get; set; }
+
+    /// <summary>
+    /// Contraseña del usuario en texto plano.
+    /// Será hasheada antes de ser almacenada.
+    /// </summary>
+    public required string Password { get; set; }
+}
+
+/// <summary>
+/// DTO de usuario para respuestas de API.
+/// No incluye información sensible como contraseñas.
+/// </summary>
+public class UserDto
+{
+    /// <summary>
+    /// Identificador único del usuario.
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Nombre completo del usuario.
+    /// </summary>
+    public string FullName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Correo electrónico del usuario.
+    /// </summary>
+    public string Email { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Indica si el usuario está activo en el sistema.
+    /// </summary>
+    public bool IsActive { get; set; }
+
+    /// <summary>
+    /// Fecha de creación del usuario.
+    /// </summary>
+    public DateTime CreatedAt { get; set; }
+}
+```
+
+### Entidades de Dominio
+
+```csharp
+/// <summary>
+/// Entidad de usuario del sistema.
+/// Representa un usuario registrado con sus credenciales y datos básicos.
+/// </summary>
+public class User : BaseEntity
+{
+    /// <summary>
+    /// Nombre del usuario.
+    /// </summary>
+    public string FirstName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Apellido del usuario.
+    /// </summary>
+    public string LastName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Dirección de correo electrónico única del usuario.
+    /// Utilizada para autenticación.
+    /// </summary>
+    public string Email { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Hash de la contraseña del usuario.
+    /// Nunca almacenar contraseñas en texto plano.
+    /// </summary>
+    public string PasswordHash { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Indica si el usuario está activo en el sistema.
+    /// Los usuarios inactivos no pueden autenticarse.
+    /// </summary>
+    public bool IsActive { get; set; }
+}
+```
+
+### Controllers
+
+```csharp
+/// <summary>
+/// Controlador para la gestión de usuarios.
+/// </summary>
+[ApiController]
+[Route("api/[controller]")]
+public class UsersController : ControllerBase
+{
+    private readonly IUserFacade _userFacade;
+
+    /// <summary>
+    /// Inicializa una nueva instancia de <see cref="UsersController"/>.
+    /// </summary>
+    /// <param name="userFacade">Fachada de usuarios.</param>
+    public UsersController(IUserFacade userFacade)
+    {
+        _userFacade = userFacade;
+    }
+
+    /// <summary>
+    /// Obtiene todos los usuarios del sistema.
+    /// </summary>
+    /// <returns>Lista de usuarios.</returns>
+    /// <response code="200">Retorna la lista de usuarios.</response>
+    [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await _userFacade.GetAllUsersAsync();
+        return result.ToActionResult();
+    }
+
+    /// <summary>
+    /// Obtiene un usuario por su ID.
+    /// </summary>
+    /// <param name="id">Identificador único del usuario.</param>
+    /// <returns>Detalles del usuario.</returns>
+    /// <response code="200">Usuario encontrado.</response>
+    /// <response code="404">Usuario no encontrado.</response>
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await _userFacade.GetUserByIdAsync(id);
+        return result.ToActionResult();
+    }
+
+    /// <summary>
+    /// Crea un nuevo usuario.
+    /// </summary>
+    /// <param name="dto">Datos del usuario a crear.</param>
+    /// <returns>Usuario creado.</returns>
+    /// <response code="201">Usuario creado exitosamente.</response>
+    /// <response code="400">Datos de entrada inválidos.</response>
+    /// <response code="409">El email ya está registrado.</response>
+    [HttpPost]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
+    {
+        var result = await _userFacade.CreateUserAsync(dto);
+        return result.ToActionResult();
+    }
+}
+```
+
+### Reglas de Documentación
+
+✅ **OBLIGATORIO:**
+- Documentar TODAS las clases públicas
+- Documentar TODOS los métodos públicos
+- Documentar TODAS las propiedades públicas
+- Documentar TODOS los parámetros con `<param>`
+- Documentar TODOS los valores de retorno con `<returns>`
+- Usar `<remarks>` para lógica compleja o consideraciones especiales
+- Incluir `<exception>` para todas las excepciones que se lanzan
+
+📝 **RECOMENDADO:**
+- Incluir `<example>` para APIs complejas
+- Usar `<seealso>` para referencias cruzadas
+- Documentar el propósito, no el "cómo" (el código debe ser auto-documentado)
+- Mantener la documentación actualizada con cambios de código
+
+❌ **EVITAR:**
+- Documentación genérica sin valor ("Gets or sets the value")
+- Documentación que repite el nombre del método
+- Comentarios obvios que no agregan información
+- Documentación desactualizada
+
+### Habilitando Generación de XML Documentation
+
+En cada proyecto `.csproj`:
+
+```xml
+<PropertyGroup>
+  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  <NoWarn>$(NoWarn);1591</NoWarn> <!-- Suprimir warnings de documentación faltante en desarrollo -->
+</PropertyGroup>
+```
+
+---
+
 ## 4. CONVENCIONES DE NOMBRADO
 
 | Tipo | Convención | Ejemplo |
@@ -570,16 +994,6 @@ Infrastructure.Persistence/
 └── Repositories/
     └── [Entity]Repository.cs
 
-API/
-├── Controllers/
-│   └── [Entity]sController.cs
-├── Middleware/
-│   ├── ExceptionMiddleware.cs
-│   └── LoggingMiddleware.cs
-├── Extensions/
-│   └── ResultToActionResultExtensions.cs
-└── Filters/
-    └── ValidateModelAttribute.cs
 ```
 
 ---
@@ -1064,9 +1478,473 @@ public void Configure(EntityTypeBuilder<User> builder)
 - **Microsoft.Extensions.Configuration.Abstractions** 8.0.0
 - **Swashbuckle.AspNetCore** 6.6.2
 
+### Testing
+- **xUnit** 2.6.2
+- **xUnit.runner.visualstudio** 2.5.4
+- **FluentAssertions** 6.12.0
+- **NSubstitute** 5.1.0
+- **Microsoft.NET.Test.Sdk** 17.8.0
+- **Testcontainers.MySql** 3.6.0
+- **Microsoft.AspNetCore.Mvc.Testing** 8.0.11
+- **Bogus** 35.4.0
+
 ---
 
-## 10. CHECKLIST PARA NUEVO CÓDIGO
+## 10. TESTING
+
+### 10.1 Estructura de Proyectos de Tests
+
+```
+tests/
+├── Core.Application.Tests/      # Tests unitarios de Features, Facades, Validators
+├── Infrastructure.Persistence.Tests/  # Tests de integración con BD
+└── API.Tests/                   # Tests de integración de endpoints
+```
+
+### 10.2 Stack de Testing
+
+| Paquete | Versión | Propósito |
+|---------|---------|-----------|
+| xUnit | 2.6.2 | Framework de testing |
+| xUnit.runner.visualstudio | 2.5.4 | Runner para Visual Studio |
+| FluentAssertions | 6.12.0 | Aserciones expresivas |
+| NSubstitute | 5.1.0 | Mocking de dependencias |
+| Microsoft.NET.Test.Sdk | 17.8.0 | SDK de testing |
+| Testcontainers.MySql | 3.6.0 | Contenedores para tests de integración |
+| Microsoft.AspNetCore.Mvc.Testing | 8.0.11 | Tests de integración de API |
+| Bogus | 35.4.0 | Generación de datos de prueba |
+
+### 10.3 Convenciones de Nombrado
+
+| Tipo | Convención | Ejemplo |
+|------|------------|---------|
+| Clase de Test | [ClaseBajoTest]Tests | `CreateUserTests`, `UserFacadeTests` |
+| Método de Test | [Método]_[Escenario]_[ResultadoEsperado] | `ExecuteAsync_WithValidData_ReturnsSuccess` |
+| Archivo | [ClaseBajoTest]Tests.cs | `CreateUserTests.cs` |
+
+### 10.4 Tests Unitarios (Core.Application.Tests)
+
+**Tests unitarios para Features, Facades y Validators.**
+
+```csharp
+// ✅ CORRECTO - Test unitario de Feature
+public class CreateUserTests
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IPasswordHasher _passwordHasher;
+    private readonly CreateUser _sut; // System Under Test
+
+    public CreateUserTests()
+    {
+        // Arrange - Mocks
+        _unitOfWork = Substitute.For<IUnitOfWork>();
+        _passwordHasher = Substitute.For<IPasswordHasher>();
+        _sut = new CreateUser(_unitOfWork, _passwordHasher);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WithValidData_ReturnsSuccessWithUserDto()
+    {
+        // Arrange
+        var dto = new CreateUserDto
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "john@example.com",
+            Password = "SecurePassword123!"
+        };
+
+        var repository = Substitute.For<IGenericRepository<User>>();
+        repository.FirstOrDefaultAsync(Arg.Any<Expression<Func<User, bool>>>())
+            .Returns((User?)null); // Email no existe
+
+        _unitOfWork.Repository<User>().Returns(repository);
+        _passwordHasher.Hash(dto.Password).Returns("hashed_password");
+
+        // Act
+        var result = await _sut.ExecuteAsync(dto);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+        result.Value!.Email.Should().Be(dto.Email);
+        
+        await repository.Received(1).AddAsync(Arg.Any<User>());
+        await _unitOfWork.Received(1).SaveChangesAsync();
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WithExistingEmail_ReturnsEmailAlreadyExistsError()
+    {
+        // Arrange
+        var dto = new CreateUserDto
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "existing@example.com",
+            Password = "SecurePassword123!"
+        };
+
+        var existingUser = new User { Id = 1, Email = dto.Email };
+        var repository = Substitute.For<IGenericRepository<User>>();
+        repository.FirstOrDefaultAsync(Arg.Any<Expression<Func<User, bool>>>())
+            .Returns(existingUser);
+
+        _unitOfWork.Repository<User>().Returns(repository);
+
+        // Act
+        var result = await _sut.ExecuteAsync(dto);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.Error!.Code.Should().Be("User.EmailAlreadyExists");
+        
+        await repository.DidNotReceive().AddAsync(Arg.Any<User>());
+    }
+}
+```
+
+### 10.5 Tests de Validators
+
+```csharp
+public class CreateUserValidatorTests
+{
+    private readonly CreateUserValidator _validator = new();
+
+    [Fact]
+    public void Validate_WithValidData_ShouldNotHaveErrors()
+    {
+        // Arrange
+        var dto = new CreateUserDto
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "john@example.com",
+            Password = "SecurePass123!"
+        };
+
+        // Act
+        var result = _validator.Validate(dto);
+
+        // Assert
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    public void Validate_WithEmptyEmail_ShouldHaveError(string? email)
+    {
+        // Arrange
+        var dto = new CreateUserDto
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = email!,
+            Password = "SecurePass123!"
+        };
+
+        // Act
+        var result = _validator.Validate(dto);
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.PropertyName == "Email");
+    }
+
+    [Theory]
+    [InlineData("short")]           // Muy corta
+    [InlineData("nouppercase1")]    // Sin mayúscula
+    [InlineData("NOLOWERCASE1")]    // Sin minúscula
+    [InlineData("NoNumbers!")]      // Sin número
+    public void Validate_WithInvalidPassword_ShouldHaveError(string password)
+    {
+        // Arrange
+        var dto = new CreateUserDto
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "john@example.com",
+            Password = password
+        };
+
+        // Act
+        var result = _validator.Validate(dto);
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.PropertyName == "Password");
+    }
+}
+```
+
+### 10.6 Tests de Integración con BD (Testcontainers)
+
+**Para tests que requieren base de datos real.**
+
+```csharp
+// Fixture compartido para contenedor MySQL
+public class DatabaseFixture : IAsyncLifetime
+{
+    private readonly MySqlContainer _container = new MySqlBuilder()
+        .WithImage("mysql:8.0")
+        .WithDatabase("testdb")
+        .WithUsername("test")
+        .WithPassword("test")
+        .Build();
+
+    public string ConnectionString => _container.GetConnectionString();
+
+    public async Task InitializeAsync()
+    {
+        await _container.StartAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _container.DisposeAsync();
+    }
+}
+
+[Collection("Database")]
+public class UserRepositoryTests : IClassFixture<DatabaseFixture>
+{
+    private readonly DatabaseFixture _fixture;
+    private readonly ApplicationDbContext _context;
+
+    public UserRepositoryTests(DatabaseFixture fixture)
+    {
+        _fixture = fixture;
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseMySql(_fixture.ConnectionString, ServerVersion.AutoDetect(_fixture.ConnectionString))
+            .Options;
+        
+        _context = new ApplicationDbContext(options);
+        _context.Database.EnsureCreated();
+    }
+
+    [Fact]
+    public async Task GetByEmailAsync_WithExistingEmail_ReturnsUser()
+    {
+        // Arrange
+        var user = new User
+        {
+            FirstName = "Test",
+            LastName = "User",
+            Email = "test@example.com",
+            PasswordHash = "hash",
+            IsActive = true
+        };
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
+
+        var repository = new UserRepository(_context);
+
+        // Act
+        var result = await repository.GetByEmailAsync("test@example.com");
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.Email.Should().Be("test@example.com");
+    }
+}
+```
+
+### 10.7 Tests de Integración de API
+
+```csharp
+public class UsersControllerTests : IClassFixture<WebApplicationFactory<Program>>
+{
+    private readonly HttpClient _client;
+    private readonly WebApplicationFactory<Program> _factory;
+
+    public UsersControllerTests(WebApplicationFactory<Program> factory)
+    {
+        _factory = factory.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureServices(services =>
+            {
+                // Reemplazar servicios para testing
+                var descriptor = services.SingleOrDefault(d => 
+                    d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
+                
+                if (descriptor != null)
+                    services.Remove(descriptor);
+
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseInMemoryDatabase("TestDb"));
+            });
+        });
+        
+        _client = _factory.CreateClient();
+    }
+
+    [Fact]
+    public async Task GetAll_ReturnsOkWithUsers()
+    {
+        // Act
+        var response = await _client.GetAsync("/api/users");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Create_WithValidData_ReturnsCreatedUser()
+    {
+        // Arrange
+        var dto = new CreateUserDto
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "john@example.com",
+            Password = "SecurePass123!"
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/users", dto);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var user = await response.Content.ReadFromJsonAsync<UserDto>();
+        user.Should().NotBeNull();
+        user!.Email.Should().Be(dto.Email);
+    }
+
+    [Fact]
+    public async Task GetById_WithNonExistentId_ReturnsNotFound()
+    {
+        // Act
+        var response = await _client.GetAsync("/api/users/99999");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+}
+```
+
+### 10.8 Generación de Datos con Bogus
+
+```csharp
+// Fakers para generación de datos de prueba
+public static class UserFakers
+{
+    public static Faker<CreateUserDto> CreateUserDtoFaker => new Faker<CreateUserDto>()
+        .RuleFor(u => u.FirstName, f => f.Name.FirstName())
+        .RuleFor(u => u.LastName, f => f.Name.LastName())
+        .RuleFor(u => u.Email, f => f.Internet.Email())
+        .RuleFor(u => u.Password, f => $"{f.Internet.Password(8)}A1!");
+
+    public static Faker<User> UserFaker => new Faker<User>()
+        .RuleFor(u => u.Id, f => f.IndexFaker + 1)
+        .RuleFor(u => u.FirstName, f => f.Name.FirstName())
+        .RuleFor(u => u.LastName, f => f.Name.LastName())
+        .RuleFor(u => u.Email, f => f.Internet.Email())
+        .RuleFor(u => u.PasswordHash, f => "hashed_password")
+        .RuleFor(u => u.IsActive, true)
+        .RuleFor(u => u.CreatedAt, f => f.Date.Past());
+}
+
+// Uso en tests
+[Fact]
+public async Task GetAllUsers_WithMultipleUsers_ReturnsAllUsers()
+{
+    // Arrange
+    var users = UserFakers.UserFaker.Generate(10);
+    foreach (var user in users)
+    {
+        await _context.Users.AddAsync(user);
+    }
+    await _context.SaveChangesAsync();
+
+    // Act
+    var result = await _facade.GetAllUsersAsync();
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    result.Value.Should().HaveCount(10);
+}
+```
+
+### 10.9 Estructura de Carpetas de Tests
+
+```
+tests/
+├── Core.Application.Tests/
+│   ├── Core.Application.Tests.csproj
+│   ├── Features/
+│   │   └── Users/
+│   │       ├── CreateUserTests.cs
+│   │       ├── GetUserTests.cs
+│   │       ├── UpdateUserTests.cs
+│   │       └── DeleteUserTests.cs
+│   ├── Facades/
+│   │   └── UserFacadeTests.cs
+│   ├── Validators/
+│   │   ├── CreateUserValidatorTests.cs
+│   │   └── UpdateUserValidatorTests.cs
+│   └── Fakers/
+│       └── UserFakers.cs
+│
+├── Infrastructure.Persistence.Tests/
+│   ├── Infrastructure.Persistence.Tests.csproj
+│   ├── Fixtures/
+│   │   └── DatabaseFixture.cs
+│   └── Repositories/
+│       └── UserRepositoryTests.cs
+│
+└── API.Tests/
+    ├── API.Tests.csproj
+    ├── Controllers/
+    │   └── UsersControllerTests.cs
+    └── Integration/
+        └── AuthenticationTests.cs
+```
+
+### 10.10 Comandos para Ejecutar Tests
+
+```bash
+# Ejecutar todos los tests
+dotnet test
+
+# Ejecutar tests de un proyecto específico
+dotnet test tests/Core.Application.Tests
+
+# Ejecutar con cobertura
+dotnet test --collect:"XPlat Code Coverage"
+
+# Ejecutar tests con filtro por nombre
+dotnet test --filter "FullyQualifiedName~CreateUser"
+
+# Ejecutar tests con output detallado
+dotnet test --logger "console;verbosity=detailed"
+```
+
+### 10.11 Reglas de Testing
+
+#### ✅ DO (Hacer)
+
+- ✅ Un test por escenario/comportamiento
+- ✅ Nombres descriptivos que expliquen el caso
+- ✅ Usar Arrange-Act-Assert (AAA)
+- ✅ Mockear dependencias externas en tests unitarios
+- ✅ Usar Testcontainers para tests de BD
+- ✅ Generar datos con Bogus
+- ✅ Tests independientes entre sí
+- ✅ Limpiar estado entre tests
+
+#### ❌ DON'T (No Hacer)
+
+- ❌ Tests que dependen del orden de ejecución
+- ❌ Tests que dependen de BD externa/real
+- ❌ Múltiples aserciones no relacionadas
+- ❌ Lógica condicional en tests
+- ❌ Hardcodear datos que pueden cambiar
+- ❌ Tests lentos sin razón (usar mocks)
+
+---
+
+## 11. CHECKLIST PARA NUEVO CÓDIGO
 
 - [ ] Entidad hereda de `BaseEntity`
 - [ ] Entity Configuration para EF Core (`IEntityTypeConfiguration`)
@@ -1084,6 +1962,7 @@ public void Configure(EntityTypeBuilder<User> builder)
 - [ ] JWT configurado si requiere auth
 - [ ] CORS configurado correctamente
 - [ ] Código en inglés
+- [ ] **Tests unitarios creados** (Features, Validators)
 - [ ] **Documentación actualizada** (ver [Feature Documentation Skill](../feature-documentation/SKILL.md))
 
 ---

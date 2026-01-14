@@ -1,3 +1,8 @@
+---
+name: ui-designer
+description: Define el sistema de diseño visual con Tailwind CSS para Angular 20. Úsalo cuando necesites estilos, colores, tipografía, componentes UI, dark mode o lineamientos visuales.
+---
+
 # 🎾 PadelTourney UI Design System
 
 > **Skill de lineamientos visuales para Angular 20 + Tailwind CSS**
@@ -15,15 +20,16 @@
 ## 📋 Índice
 
 1. [Filosofía de Diseño](#filosofía-de-diseño)
-2. [Configuración de Tailwind](#configuración-de-tailwind)
-3. [Sistema de Colores](#sistema-de-colores)
-4. [Tipografía](#tipografía)
-5. [Iconografía](#iconografía)
-6. [Componentes Base](#componentes-base)
-7. [Patrones de Layout](#patrones-de-layout)
-8. [Estados y Feedback](#estados-y-feedback)
-9. [Modo Oscuro](#modo-oscuro)
-10. [Ejemplos de Componentes](#ejemplos-de-componentes)
+2. [Mobile First - Diseño Responsivo](#mobile-first---diseño-responsivo)
+3. [Configuración de Tailwind](#configuración-de-tailwind)
+4. [Sistema de Colores](#sistema-de-colores)
+5. [Tipografía](#tipografía)
+6. [Iconografía](#iconografía)
+7. [Componentes Base](#componentes-base)
+8. [Patrones de Layout](#patrones-de-layout)
+9. [Estados y Feedback](#estados-y-feedback)
+10. [Modo Oscuro](#modo-oscuro)
+11. [Ejemplos de Componentes](#ejemplos-de-componentes)
 
 ---
 
@@ -45,6 +51,7 @@ Este skill define **QUÉ** estilos usar. Para **CÓMO** estructurar el código A
 
 | Principio | Descripción |
 |-----------|-------------|
+| **Mobile First** | Diseñar primero para móvil, luego escalar a desktop. Clases sin prefijo = mobile, usar `sm:`, `md:`, `lg:`, `xl:` para pantallas mayores |
 | **Brutalist** | Bordes cuadrados (`rounded-none`), sin curvas suaves. Solo `rounded-full` para elementos circulares (avatares, badges de estado) |
 | **Alto Contraste** | Negro sobre blanco, naranja como acento dominante |
 | **Tipografía Bold** | Uso intensivo de `font-bold`, `font-black`, `uppercase`, `tracking-wider` |
@@ -60,6 +67,258 @@ Este skill define **QUÉ** estilos usar. Para **CÓMO** estructurar el código A
 │  INSPIRACIÓN: Apps deportivas de élite      │
 └─────────────────────────────────────────────┘
 ```
+
+---
+
+## Mobile First - Diseño Responsivo
+
+### 📱 Filosofía Mobile First
+
+> **Regla de Oro:** Todo componente DEBE funcionar perfectamente en móvil (320px+) ANTES de agregar estilos para desktop.
+
+**Flujo de Desarrollo:**
+```
+1. Diseñar en móvil (sin breakpoints)
+2. Probar en 320px - 640px
+3. Agregar ajustes para tablet (sm:, md:)
+4. Optimizar para desktop (lg:, xl:, 2xl:)
+```
+
+### 🎯 Breakpoints de Tailwind
+
+| Breakpoint | Min Width | Dispositivo | Uso Principal |
+|------------|-----------|-------------|---------------|
+| **Default** | 0px | Mobile | Base (sin prefijo) |
+| `sm:` | 640px | Large Mobile | Ajustes para móviles grandes |
+| `md:` | 768px | Tablet | Layouts de 2 columnas |
+| `lg:` | 1024px | Desktop | Sidebar + contenido |
+| `xl:` | 1280px | Large Desktop | Contenido ancho |
+| `2xl:` | 1536px | Extra Large | Márgenes generosos |
+
+### ✅ Reglas Obligatorias
+
+#### 1. **Clases Base = Mobile**
+```html
+<!-- ✅ CORRECTO: Base es mobile, escala a desktop -->
+<div class="p-4 lg:p-8">
+  <h1 class="text-2xl lg:text-4xl font-bold">Título</h1>
+</div>
+
+<!-- ❌ INCORRECTO: Empezar con desktop -->
+<div class="p-8 sm:p-4">
+  <h1 class="text-4xl sm:text-2xl">Título</h1>
+</div>
+```
+
+#### 2. **Touch Targets Mínimos**
+- Botones/enlaces: **Mínimo 44x44px** (área táctil)
+- Inputs: **Mínimo 48px de altura**
+- Checkboxes/radios: **Mínimo 24x24px**
+
+```html
+<!-- ✅ Touch-friendly -->
+<button class="h-12 px-6 min-w-[120px]">Acción</button>
+<input class="h-12 px-4" type="text">
+```
+
+#### 3. **Espaciado Vertical Generoso en Mobile**
+```html
+<!-- Mobile: más espacio vertical -->
+<section class="space-y-6 lg:space-y-4">
+  <div class="mb-6 lg:mb-4">...</div>
+</section>
+```
+
+#### 4. **Stack en Mobile, Grid/Flex en Desktop**
+```html
+<!-- ✅ Vertical en mobile, horizontal en desktop -->
+<div class="flex flex-col lg:flex-row gap-4">
+  <aside class="w-full lg:w-64">Sidebar</aside>
+  <main class="flex-1">Contenido</main>
+</div>
+
+<!-- ✅ 1 columna mobile, 2+ en desktop -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div>Card 1</div>
+  <div>Card 2</div>
+  <div>Card 3</div>
+</div>
+```
+
+#### 5. **Ocultar/Mostrar Elementos**
+```html
+<!-- Hamburger solo en mobile -->
+<button class="lg:hidden">
+  <span class="material-symbols-outlined">menu</span>
+</button>
+
+<!-- Desktop nav oculto en mobile -->
+<nav class="hidden lg:block">
+  <ul>...</ul>
+</nav>
+```
+
+### 📐 Patrones de Layout Responsivo
+
+#### Layout Principal de App
+```html
+<div class="min-h-screen">
+  <!-- Header: Full width en mobile, con sidebar en desktop -->
+  <header class="h-16 border-b-4 border-black dark:border-white
+                 lg:ml-64">
+    <!-- Contenido -->
+  </header>
+  
+  <!-- Sidebar: Drawer en mobile, fijo en desktop -->
+  <aside class="fixed inset-y-0 left-0 w-64 
+                transform -translate-x-full lg:translate-x-0
+                transition-transform duration-300
+                bg-white dark:bg-sidebar-dark
+                border-r-4 border-black dark:border-white
+                z-50">
+    <!-- Nav -->
+  </aside>
+  
+  <!-- Main: Full width en mobile, con margen en desktop -->
+  <main class="pt-16 lg:ml-64 p-4 lg:p-8">
+    <!-- Contenido -->
+  </main>
+</div>
+```
+
+#### Cards Responsivas
+```html
+<div class="bg-white dark:bg-surface-dark-alt
+            border-4 border-black dark:border-white
+            p-4 lg:p-6
+            space-y-4 lg:space-y-6">
+  
+  <!-- Header: Stack en mobile, row en desktop -->
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between
+              gap-4 lg:gap-6">
+    <h2 class="text-xl lg:text-2xl font-bold">Título</h2>
+    <button class="w-full lg:w-auto">Acción</button>
+  </div>
+  
+  <!-- Contenido -->
+</div>
+```
+
+#### Formularios Responsivos
+```html
+<form class="space-y-4">
+  <!-- 1 columna mobile, 2 en desktop -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-sm font-bold mb-2">Campo 1</label>
+      <input class="w-full h-12 px-4 border-2" type="text">
+    </div>
+    <div>
+      <label class="block text-sm font-bold mb-2">Campo 2</label>
+      <input class="w-full h-12 px-4 border-2" type="text">
+    </div>
+  </div>
+  
+  <!-- Botones: Stack mobile, inline desktop -->
+  <div class="flex flex-col lg:flex-row gap-3 lg:gap-4">
+    <button class="w-full lg:w-auto h-12 px-6">Guardar</button>
+    <button class="w-full lg:w-auto h-12 px-6">Cancelar</button>
+  </div>
+</form>
+```
+
+#### Tablas Responsivas
+```html
+<!-- Mobile: Cards stacked -->
+<div class="lg:hidden space-y-4">
+  @for (item of items(); track item.id) {
+    <div class="border-4 border-black dark:border-white p-4">
+      <div class="font-bold mb-2">{{ item.name }}</div>
+      <div class="text-sm space-y-1">
+        <div><span class="font-bold">Estado:</span> {{ item.status }}</div>
+        <div><span class="font-bold">Fecha:</span> {{ item.date }}</div>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Desktop: Table normal -->
+<div class="hidden lg:block overflow-x-auto">
+  <table class="w-full">
+    <thead>
+      <tr class="border-b-4 border-black dark:border-white">
+        <th class="text-left p-4 font-bold">Nombre</th>
+        <th class="text-left p-4 font-bold">Estado</th>
+        <th class="text-left p-4 font-bold">Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of items(); track item.id) {
+        <tr class="border-b-2">
+          <td class="p-4">{{ item.name }}</td>
+          <td class="p-4">{{ item.status }}</td>
+          <td class="p-4">{{ item.date }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+```
+
+### 🎨 Tipografía Responsiva
+
+```html
+<!-- Títulos principales -->
+<h1 class="text-3xl lg:text-5xl font-black">Hero Title</h1>
+<h2 class="text-2xl lg:text-4xl font-bold">Section Title</h2>
+<h3 class="text-xl lg:text-2xl font-bold">Subsection</h3>
+
+<!-- Texto de cuerpo -->
+<p class="text-base lg:text-lg">Párrafo normal</p>
+
+<!-- Reducir padding en mobile -->
+<section class="px-4 py-6 lg:px-8 lg:py-12">
+  <div class="max-w-7xl mx-auto">
+    <!-- Contenido limitado -->
+  </div>
+</section>
+```
+
+### 🚫 Anti-Patrones (NO HACER)
+
+```html
+<!-- ❌ Tamaños fijos en mobile -->
+<div class="w-[800px]">Contenido</div>
+
+<!-- ✅ Full width en mobile, limitado en desktop -->
+<div class="w-full lg:w-[800px]">Contenido</div>
+
+<!-- ❌ Scroll horizontal en mobile -->
+<div class="flex space-x-4 w-max">Items</div>
+
+<!-- ✅ Wrap en mobile -->
+<div class="flex flex-wrap gap-4">Items</div>
+
+<!-- ❌ Hover como único feedback en mobile -->
+<button class="hover:bg-primary">Botón</button>
+
+<!-- ✅ Estados claros (active, focus) -->
+<button class="active:bg-primary-hover focus:ring-4">Botón</button>
+```
+
+### 📱 Testing Checklist
+
+Antes de aprobar un componente:
+
+- [ ] Funciona en **320px** (iPhone SE)
+- [ ] Funciona en **375px** (iPhone 12/13)
+- [ ] Funciona en **768px** (iPad portrait)
+- [ ] Funciona en **1024px** (iPad landscape / Desktop pequeño)
+- [ ] Funciona en **1920px** (Desktop estándar)
+- [ ] Áreas táctiles >= 44px
+- [ ] Sin scroll horizontal
+- [ ] Texto legible sin zoom
+- [ ] Imágenes responsive (sin overflow)
 
 ---
 

@@ -1082,6 +1082,557 @@ export class MainPageComponent {
 
 ---
 
+## 6.1 DOCUMENTACIÓN DE CÓDIGO OBLIGATORIA
+
+**⚠️ REGLA FUNDAMENTAL**: Todo método público, clase, propiedad e interfaz DEBE estar documentado con JSDoc siguiendo las [Guías Oficiales de TypeScript](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html) y las [Mejores Prácticas de Angular](https://angular.dev/style-guide#documentation).
+
+### Elementos JSDoc Obligatorios
+
+| Elemento | Cuándo Usar | Obligatorio |
+|----------|-------------|-------------|
+| `@description` | Todas las clases, métodos, propiedades | ✅ SÍ |
+| `@param` | Cada parámetro de método/función | ✅ SÍ |
+| `@returns` | Funciones/métodos que retornan valor | ✅ SÍ |
+| `@throws` | Cuando se lanzan errores | ✅ SÍ |
+| `@example` | APIs complejas o no obvias | 📝 Recomendado |
+| `@see` | Referencias a otros componentes | 📝 Opcional |
+| `@deprecated` | Código legacy a remover | ✅ SÍ si aplica |
+
+### Componentes
+
+```typescript
+/**
+ * Componente de lista de usuarios con funcionalidades de búsqueda, filtrado y paginación.
+ * 
+ * Este componente maneja la visualización de usuarios en formato de tabla/tarjetas,
+ * con soporte para ordenamiento, búsqueda en tiempo real y navegación paginada.
+ * 
+ * @example
+ * // Uso básico
+ * <app-user-list />
+ * 
+ * // Con filtros pre-aplicados
+ * <app-user-list [initialFilters]="{ status: 'active' }" />
+ */
+@Component({
+  selector: 'app-user-list',
+  standalone: true,
+  templateUrl: './user-list.html',
+  styleUrl: './user-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class UserListComponent {
+  /**
+   * Servicio para operaciones CRUD de usuarios.
+   * @private
+   */
+  private readonly userService = inject(UserService);
+
+  /**
+   * Servicio de notificaciones para feedback al usuario.
+   * @private
+   */
+  private readonly notificationService = inject(NotificationService);
+
+  /**
+   * Lista de usuarios cargados desde el servidor.
+   * Signal de solo lectura expuesto para el template.
+   */
+  readonly users = signal<User[]>([]);
+
+  /**
+   * Estado de carga para mostrar spinners/skeletons.
+   */
+  readonly isLoading = signal<boolean>(false);
+
+  /**
+   * Término de búsqueda actual para filtrar usuarios.
+   */
+  readonly searchTerm = signal<string>('');
+
+  /**
+   * Inicializa el componente y carga la lista de usuarios.
+   */
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  /**
+   * Carga todos los usuarios desde el servidor.
+   * 
+   * Actualiza el signal `users` con los datos obtenidos y maneja
+   * los estados de carga y error.
+   * 
+   * @private
+   */
+  private async loadUsers(): Promise<void> {
+    this.isLoading.set(true);
+    
+    try {
+      const response = await firstValueFrom(this.userService.getAll());
+      this.users.set(response);
+    } catch (error) {
+      this.notificationService.showError('Error al cargar usuarios');
+      console.error('Error loading users:', error);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
+   * Maneja el evento de búsqueda de usuarios.
+   * 
+   * Actualiza el término de búsqueda y filtra la lista de usuarios
+   * en tiempo real basándose en nombre, email o cualquier campo relevante.
+   * 
+   * @param term - Término de búsqueda ingresado por el usuario
+   */
+  onSearch(term: string): void {
+    this.searchTerm.set(term);
+    // La búsqueda se realiza mediante computed o effect
+  }
+
+  /**
+   * Elimina un usuario del sistema.
+   * 
+   * Solicita confirmación al usuario antes de proceder con la eliminación.
+   * Actualiza la lista local al completar la operación exitosamente.
+   * 
+   * @param userId - Identificador único del usuario a eliminar
+   * @throws {Error} Si falla la operación de eliminación en el servidor
+   */
+  async deleteUser(userId: number): Promise<void> {
+    const confirmed = confirm('¿Está seguro de eliminar este usuario?');
+    
+    if (!confirmed) return;
+
+    try {
+      await firstValueFrom(this.userService.delete(userId));
+      
+      // Actualizar lista local
+      this.users.update(users => users.filter(u => u.id !== userId));
+      
+      this.notificationService.showSuccess('Usuario eliminado correctamente');
+    } catch (error) {
+      this.notificationService.showError('Error al eliminar usuario');
+      throw error;
+    }
+  }
+}
+```
+
+### Servicios
+
+```typescript
+/**
+ * Servicio para la gestión de usuarios.
+ * 
+ * Proporciona operaciones CRUD completas para usuarios, incluyendo
+ * autenticación, validación y caché de datos.
+ * 
+ * @see AuthService Para operaciones de autenticación
+ */
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  /**
+   * Cliente HTTP para realizar peticiones al backend.
+   * @private
+   */
+  private readonly http = inject(HttpClient);
+
+  /**
+   * URL base de la API de usuarios.
+   * @private
+   */
+  private readonly apiUrl = `${environment.apiUrl}/users`;
+
+  /**
+   * Cache en memoria de usuarios para reducir llamadas al servidor.
+   * @private
+   */
+  private readonly usersCache = signal<Map<number, User>>(new Map());
+
+  /**
+   * Obtiene todos los usuarios del sistema.
+   * 
+   * @returns Observable que emite la lista completa de usuarios
+   */
+  getAll(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl);
+  }
+
+  /**
+   * Obtiene un usuario por su identificador único.
+   * 
+   * Primero verifica el caché local antes de realizar la petición HTTP.
+   * 
+   * @param id - Identificador único del usuario
+   * @returns Observable que emite el usuario encontrado o null
+   * @throws {HttpErrorResponse} Si el usuario no existe (404) o hay error de servidor
+   */
+  getById(id: number): Observable<User | null> {
+    // Verificar caché
+    const cached = this.usersCache().get(id);
+    if (cached) {
+      return of(cached);
+    }
+
+    return this.http.get<User>(`${this.apiUrl}/${id}`).pipe(
+      tap(user => {
+        // Actualizar caché
+        this.usersCache.update(cache => {
+          cache.set(id, user);
+          return new Map(cache);
+        });
+      }),
+      catchError(error => {
+        console.error(`Error fetching user ${id}:`, error);
+        return of(null);
+      })
+    );
+  }
+
+  /**
+   * Crea un nuevo usuario en el sistema.
+   * 
+   * @param userData - Datos del usuario a crear (sin ID)
+   * @returns Observable que emite el usuario creado con su ID asignado
+   * @throws {HttpErrorResponse} Si hay error de validación (400) o conflicto (409)
+   * 
+   * @example
+   * const newUser: CreateUserDto = {
+   *   firstName: 'Juan',
+   *   lastName: 'Pérez',
+   *   email: 'juan@example.com'
+   * };
+   * 
+   * this.userService.create(newUser).subscribe({
+   *   next: user => console.log('Usuario creado:', user.id),
+   *   error: err => console.error('Error:', err)
+   * });
+   */
+  create(userData: CreateUserDto): Observable<User> {
+    return this.http.post<User>(this.apiUrl, userData).pipe(
+      tap(user => {
+        // Agregar al caché
+        this.usersCache.update(cache => {
+          cache.set(user.id, user);
+          return new Map(cache);
+        });
+      })
+    );
+  }
+
+  /**
+   * Actualiza los datos de un usuario existente.
+   * 
+   * @param id - Identificador del usuario a actualizar
+   * @param userData - Datos parciales o completos a actualizar
+   * @returns Observable que emite el usuario actualizado
+   * @throws {HttpErrorResponse} Si el usuario no existe (404) o hay error de validación (400)
+   */
+  update(id: number, userData: UpdateUserDto): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${id}`, userData).pipe(
+      tap(user => {
+        // Actualizar caché
+        this.usersCache.update(cache => {
+          cache.set(id, user);
+          return new Map(cache);
+        });
+      })
+    );
+  }
+
+  /**
+   * Elimina un usuario del sistema.
+   * 
+   * Realiza un borrado lógico (soft delete) en el backend.
+   * 
+   * @param id - Identificador del usuario a eliminar
+   * @returns Observable que emite void al completar la operación
+   * @throws {HttpErrorResponse} Si el usuario no existe (404) o no puede ser eliminado (409)
+   */
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        // Remover del caché
+        this.usersCache.update(cache => {
+          cache.delete(id);
+          return new Map(cache);
+        });
+      })
+    );
+  }
+
+  /**
+   * Limpia el caché interno de usuarios.
+   * 
+   * Útil al cerrar sesión o forzar recarga de datos.
+   */
+  clearCache(): void {
+    this.usersCache.set(new Map());
+  }
+}
+```
+
+### Modelos e Interfaces
+
+```typescript
+/**
+ * Representa un usuario del sistema con todos sus datos.
+ */
+export interface User {
+  /**
+   * Identificador único del usuario.
+   */
+  id: number;
+
+  /**
+   * Nombre del usuario.
+   */
+  firstName: string;
+
+  /**
+   * Apellido del usuario.
+   */
+  lastName: string;
+
+  /**
+   * Dirección de correo electrónico única del usuario.
+   */
+  email: string;
+
+  /**
+   * Indica si el usuario está activo en el sistema.
+   * Los usuarios inactivos no pueden iniciar sesión.
+   */
+  isActive: boolean;
+
+  /**
+   * Fecha y hora de creación del usuario.
+   */
+  createdAt: Date;
+
+  /**
+   * Fecha y hora de última actualización del usuario.
+   */
+  updatedAt?: Date;
+}
+
+/**
+ * DTO para la creación de un nuevo usuario.
+ * No incluye campos generados automáticamente como ID o fechas.
+ */
+export interface CreateUserDto {
+  /**
+   * Nombre del usuario.
+   * @minLength 2
+   * @maxLength 50
+   */
+  firstName: string;
+
+  /**
+   * Apellido del usuario.
+   * @minLength 2
+   * @maxLength 50
+   */
+  lastName: string;
+
+  /**
+   * Correo electrónico del usuario.
+   * Debe ser único en el sistema.
+   * @format email
+   */
+  email: string;
+
+  /**
+   * Contraseña del usuario en texto plano.
+   * Será hasheada en el backend.
+   * @minLength 8
+   */
+  password: string;
+}
+
+/**
+ * DTO para actualización parcial de un usuario.
+ * Todos los campos son opcionales.
+ */
+export interface UpdateUserDto {
+  /**
+   * Nombre del usuario.
+   */
+  firstName?: string;
+
+  /**
+   * Apellido del usuario.
+   */
+  lastName?: string;
+
+  /**
+   * Correo electrónico del usuario.
+   */
+  email?: string;
+
+  /**
+   * Estado de activación del usuario.
+   */
+  isActive?: boolean;
+}
+```
+
+### Guards
+
+```typescript
+/**
+ * Guard para proteger rutas que requieren autenticación.
+ * 
+ * Redirige a la página de login si el usuario no está autenticado.
+ * Verifica el token JWT y su validez antes de permitir acceso.
+ * 
+ * @example
+ * // En las rutas
+ * {
+ *   path: 'dashboard',
+ *   component: DashboardPage,
+ *   canActivate: [authGuard]
+ * }
+ */
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isAuthenticated()) {
+    return true;
+  }
+
+  // Guardar URL solicitada para redireccionar después del login
+  return router.createUrlTree(['/login'], {
+    queryParams: { returnUrl: state.url }
+  });
+};
+```
+
+### Pipes
+
+```typescript
+/**
+ * Pipe para truncar texto largo y agregar puntos suspensivos.
+ * 
+ * @example
+ * // En el template
+ * {{ longText | truncate:50 }}
+ * // Resultado: "Este es un texto muy largo que será tru..."
+ */
+@Pipe({
+  name: 'truncate',
+  standalone: true
+})
+export class TruncatePipe implements PipeTransform {
+  /**
+   * Transforma un texto largo en una versión truncada.
+   * 
+   * @param value - Texto a truncar
+   * @param limit - Longitud máxima del texto (por defecto: 50)
+   * @param trail - Sufijo a agregar cuando se trunca (por defecto: '...')
+   * @returns Texto truncado con sufijo si excede el límite
+   */
+  transform(value: string, limit: number = 50, trail: string = '...'): string {
+    if (!value) return '';
+    
+    if (value.length <= limit) {
+      return value;
+    }
+
+    return value.substring(0, limit) + trail;
+  }
+}
+```
+
+### Directivas
+
+```typescript
+/**
+ * Directiva para aplicar auto-focus a un elemento al renderizarse.
+ * 
+ * Útil para campos de formulario que deben tener foco inmediato,
+ * como campos de búsqueda o el primer input de un formulario modal.
+ * 
+ * @example
+ * <input type="text" appAutoFocus>
+ */
+@Directive({
+  selector: '[appAutoFocus]',
+  standalone: true
+})
+export class AutoFocusDirective implements AfterViewInit {
+  /**
+   * Referencia al elemento DOM del host.
+   * @private
+   */
+  private readonly elementRef = inject(ElementRef);
+
+  /**
+   * Aplica el foco al elemento después de que la vista se inicialice.
+   */
+  ngAfterViewInit(): void {
+    // Usar setTimeout para evitar ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      this.elementRef.nativeElement.focus();
+    }, 0);
+  }
+}
+```
+
+### Reglas de Documentación Angular
+
+✅ **OBLIGATORIO:**
+- Documentar TODAS las clases exportadas (componentes, servicios, directivas, pipes)
+- Documentar TODOS los métodos públicos
+- Documentar TODAS las propiedades públicas y @Input/@Output (o input()/output())
+- Documentar TODOS los parámetros con `@param`
+- Documentar TODOS los valores de retorno con `@returns`
+- Incluir `@throws` para métodos que lanzan errores
+- Usar `@example` para APIs complejas o no obvias
+
+📝 **RECOMENDADO:**
+- Documentar signals y computed con su propósito
+- Incluir ejemplos de uso en templates para componentes reutilizables
+- Documentar side effects de métodos (mutaciones, llamadas HTTP, etc.)
+- Referencias cruzadas con `@see` a servicios/componentes relacionados
+- Usar `@deprecated` con fecha y alternativa para código legacy
+
+❌ **EVITAR:**
+- Documentación genérica sin valor ("Gets the value", "Sets the value")
+- Comentarios que simplemente repiten el nombre del método/propiedad
+- Documentación desactualizada
+- Comentarios obvios que no agregan contexto
+
+### Configuración de TSDoc en tsconfig.json
+
+```json
+{
+  "compilerOptions": {
+    "removeComments": false,
+    "stripInternal": true
+  }
+}
+```
+
+### Herramientas Recomendadas
+
+- **Compodoc**: Genera documentación HTML automática desde JSDoc
+  ```bash
+  npm install -D @compodoc/compodoc
+  npx compodoc -p tsconfig.json
+  ```
+
+- **ESLint Plugin JSDoc**: Valida formato y completitud de JSDoc
+  ```bash
+  npm install -D eslint-plugin-jsdoc
+  ```
+
+---
+
 ## 7. ESTRUCTURA DE ARCHIVOS POR FEATURE
 
 ```

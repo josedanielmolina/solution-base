@@ -117,3 +117,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Necesario para que WebApplicationFactory pueda acceder a Program
+public partial class Program { }
