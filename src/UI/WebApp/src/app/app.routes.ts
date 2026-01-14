@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/guards/auth.guard';
 import { MainLayoutComponent } from '@layouts/main-layout/main-layout.component';
+import { ComponentKitLayoutComponent } from '@layouts/component-kit-layout/component-kit-layout.component';
 
 export const routes: Routes = [
   {
@@ -12,6 +13,10 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./features/auth/pages/login/login.page')
       .then(m => m.LoginPage)
+  },
+  {
+    path: 'component-kit',
+    component: ComponentKitLayoutComponent
   },
   {
     path: 'app',

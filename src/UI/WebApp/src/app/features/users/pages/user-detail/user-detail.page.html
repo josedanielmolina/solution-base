@@ -1,83 +1,156 @@
-<div class="user-detail-container">
-  <div class="header">
-    <h2>User Details</h2>
-    <button class="btn btn-secondary" (click)="goBack()">← Back</button>
+<div class="min-h-screen bg-gradient-to-br from-[#f9fafb] to-white">
+  <!-- Header Section -->
+  <div class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+    <div class="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">
+      <div>
+        <h2 class="text-3xl font-extrabold text-gray-900">Detalles del Usuario</h2>
+        <p class="text-sm text-gray-500 mt-1">Información completa del perfil de usuario</p>
+      </div>
+      <button class="border border-gray-200 text-gray-600 px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 active:bg-gray-100 transition-all flex items-center gap-2" (click)="goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>
+        Atrás
+      </button>
+    </div>
   </div>
 
-  @if (loading()) {
-    <div class="loading">Loading user details...</div>
-  }
+  <div class="max-w-4xl mx-auto px-6 py-8">
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="flex items-center justify-center h-64">
+        <div class="animate-spin">
+          <svg class="h-12 w-12 text-[#22c55e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <p class="ml-4 text-gray-600 font-medium">Cargando detalles del usuario...</p>
+      </div>
+    }
 
-  @if (error()) {
-    <div class="error">{{ error() }}</div>
-  }
-
-  @if (!loading() && user()) {
-    <div class="user-detail-card">
-      <div class="detail-section">
-        <h3>Personal Information</h3>
-        <div class="detail-grid">
-          <div class="detail-item">
-            <label>ID:</label>
-            <span>{{ user()!.id }}</span>
-          </div>
-          <div class="detail-item">
-            <label>First Name:</label>
-            <span>{{ user()!.firstName }}</span>
-          </div>
-          <div class="detail-item">
-            <label>Last Name:</label>
-            <span>{{ user()!.lastName }}</span>
-          </div>
-          <div class="detail-item">
-            <label>Email:</label>
-            <span>{{ user()!.email }}</span>
-          </div>
+    <!-- Error State -->
+    @if (error()) {
+      <div class="bg-red-50 border border-red-200 rounded-2xl p-6 mb-6">
+        <div class="flex items-center gap-3">
+          <svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <p class="text-red-700 font-medium">{{ error() }}</p>
         </div>
       </div>
+    }
 
-      <div class="detail-section">
-        <h3>Status & Activity</h3>
-        <div class="detail-grid">
-          <div class="detail-item">
-            <label>Status:</label>
-            <span [class]="user()!.isActive ? 'status-active' : 'status-inactive'">
-              {{ user()!.isActive ? 'Active' : 'Inactive' }}
-            </span>
-          </div>
-          <div class="detail-item">
-            <label>Email Verified:</label>
-            <span [class]="user()!.isEmailVerified ? 'status-active' : 'status-inactive'">
-              {{ user()!.isEmailVerified ? 'Yes' : 'No' }}
-            </span>
-          </div>
-          <div class="detail-item">
-            <label>Created At:</label>
-            <span>{{ user()!.createdAt | date: 'medium' }}</span>
-          </div>
-          @if (user()!.updatedAt) {
-            <div class="detail-item">
-              <label>Updated At:</label>
-              <span>{{ user()!.updatedAt | date: 'medium' }}</span>
+    <!-- User Detail Card -->
+    @if (!loading() && user()) {
+      <div class="space-y-6">
+        <!-- Hero Card with Avatar -->
+        <div class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
+          <div class="flex items-center gap-8">
+            <!-- Avatar -->
+            <div class="h-24 w-24 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-4xl font-bold flex-shrink-0">
+              {{ (user()!.firstName.charAt(0) + user()!.lastName.charAt(0)).toUpperCase() }}
             </div>
-          }
-          @if (user()!.lastLoginAt) {
-            <div class="detail-item">
-              <label>Last Login:</label>
-              <span>{{ user()!.lastLoginAt | date: 'medium' }}</span>
+
+            <!-- User Info -->
+            <div class="flex-1">
+              <h3 class="text-3xl font-extrabold text-gray-900">{{ user()!.firstName }} {{ user()!.lastName }}</h3>
+              <p class="text-gray-500 mt-1">ID: {{ user()!.id }}</p>
+
+              <!-- Status Badges -->
+              <div class="flex gap-2 mt-4">
+                <span [class]="user()!.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'" class="px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
+                  @if (user()!.isActive) {
+                    <span class="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
+                    Activo
+                  } @else {
+                    <span class="h-2 w-2 bg-gray-400 rounded-full"></span>
+                    Inactivo
+                  }
+                </span>
+                <span [class]="user()!.isEmailVerified ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'" class="px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
+                  @if (user()!.isEmailVerified) {
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    Email Verificado
+                  } @else {
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                    Verificación Pendiente
+                  }
+                </span>
+              </div>
             </div>
-          }
+          </div>
+        </div>
+
+        <!-- Information Sections -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Personal Information -->
+          <div class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
+            <div class="flex items-center gap-2 mb-6">
+              <div class="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <h4 class="text-xl font-bold text-gray-900">Información Personal</h4>
+            </div>
+            <div class="space-y-4">
+              <div class="pb-4 border-b border-gray-100">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nombre Completo</p>
+                <p class="text-gray-900 font-medium">{{ user()!.firstName }} {{ user()!.lastName }}</p>
+              </div>
+              <div class="pb-4 border-b border-gray-100">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Email</p>
+                <p class="text-gray-900 font-medium break-all">{{ user()!.email }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">ID de Usuario</p>
+                <p class="text-gray-500 font-mono text-sm">{{ user()!.id }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity Information -->
+          <div class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
+            <div class="flex items-center gap-2 mb-6">
+              <div class="h-10 w-10 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <h4 class="text-xl font-bold text-gray-900">Actividad</h4>
+            </div>
+            <div class="space-y-4">
+              <div class="pb-4 border-b border-gray-100">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Fecha de Creación</p>
+                <p class="text-gray-900 font-medium">{{ user()!.createdAt | date: 'dd/MM/yyyy, HH:mm' }}</p>
+              </div>
+              @if (user()!.updatedAt) {
+                <div class="pb-4 border-b border-gray-100">
+                  <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Última Actualización</p>
+                  <p class="text-gray-900 font-medium">{{ user()!.updatedAt | date: 'dd/MM/yyyy, HH:mm' }}</p>
+                </div>
+              }
+              @if (user()!.lastLoginAt) {
+                <div>
+                  <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Último Acceso</p>
+                  <p class="text-gray-900 font-medium">{{ user()!.lastLoginAt | date: 'dd/MM/yyyy, HH:mm' }}</p>
+                </div>
+              } @else {
+                <div>
+                  <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Último Acceso</p>
+                  <p class="text-gray-500 italic">Nunca ha accedido</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-4 justify-end pt-4">
+          <button class="border border-orange-200 text-orange-600 px-8 py-4 rounded-2xl font-bold hover:bg-orange-50 active:bg-orange-100 transition-all flex items-center gap-2" (click)="editUser()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Editar
+          </button>
+          <button class="border border-red-200 text-red-600 px-8 py-4 rounded-2xl font-bold hover:bg-red-50 active:bg-red-100 transition-all flex items-center gap-2" (click)="deleteUser()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            Eliminar
+          </button>
         </div>
       </div>
-
-      <div class="actions">
-        <button class="btn btn-warning" (click)="editUser()">
-          ✏️ Edit User
-        </button>
-        <button class="btn btn-danger" (click)="deleteUser()">
-          🗑️ Delete User
-        </button>
-      </div>
-    </div>
-  }
+    }
+  </div>
 </div>

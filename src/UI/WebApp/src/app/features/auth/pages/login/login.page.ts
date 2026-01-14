@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
-import { NotificationService } from '@core/services/notification.service';
 
 @Component({
   selector: 'app-login-page',
@@ -17,7 +16,6 @@ export class LoginPage {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
-  private notificationService = inject(NotificationService);
 
   loading = signal<boolean>(false);
   errorMessage = signal<string>('');
@@ -37,14 +35,12 @@ export class LoginPage {
 
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
-        this.notificationService.success('¡Bienvenido!');
         this.router.navigate(['/app']);
       },
       error: (error) => {
         this.loading.set(false);
         const message = error.error?.message || 'Credenciales inválidas';
         this.errorMessage.set(message);
-        this.notificationService.error(message);
       }
     });
   }

@@ -1,126 +1,179 @@
-<div class="user-form-container">
-  <div class="form-header">
-    <h2>{{ isEditMode() ? 'Edit User' : 'Create User' }}</h2>
-    <button class="btn btn-secondary" (click)="goBack()">← Back</button>
+<div class="min-h-screen bg-gradient-to-br from-[#f9fafb] to-white">
+  <!-- Header Section -->
+  <div class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+    <div class="max-w-2xl mx-auto px-6 py-6 flex items-center justify-between">
+      <div>
+        <h2 class="text-3xl font-extrabold text-gray-900">{{ isEditMode() ? 'Editar Usuario' : 'Crear Nuevo Usuario' }}</h2>
+        <p class="text-sm text-gray-500 mt-1">{{ isEditMode() ? 'Actualiza la información del usuario' : 'Completa todos los campos requeridos' }}</p>
+      </div>
+      <button class="border border-gray-200 text-gray-600 px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 active:bg-gray-100 transition-all flex items-center gap-2" (click)="goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>
+        Atrás
+      </button>
+    </div>
   </div>
 
-  @if (loading()) {
-    <div class="loading">Loading...</div>
-  }
-
-  @if (error()) {
-    <div class="error">{{ error() }}</div>
-  }
-
-  @if (!loading()) {
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
-      <div class="form-group">
-        <label for="firstName">First Name *</label>
-        <input
-          id="firstName"
-          type="text"
-          formControlName="firstName"
-          class="form-control"
-          [class.invalid]="isFieldInvalid('firstName')"
-        />
-        @if (isFieldInvalid('firstName')) {
-          <div class="error-message">
-            @if (userForm.get('firstName')?.hasError('required')) {
-              First name is required
-            }
-            @if (userForm.get('firstName')?.hasError('maxlength')) {
-              First name cannot exceed 100 characters
-            }
-          </div>
-        }
+  <div class="max-w-2xl mx-auto px-6 py-8">
+    @if (loading()) {
+      <div class="flex items-center justify-center h-64">
+        <div class="animate-spin">
+          <svg class="h-12 w-12 text-[#22c55e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <p class="ml-4 text-gray-600 font-medium">Cargando...</p>
       </div>
+    }
 
-      <div class="form-group">
-        <label for="lastName">Last Name *</label>
-        <input
-          id="lastName"
-          type="text"
-          formControlName="lastName"
-          class="form-control"
-          [class.invalid]="isFieldInvalid('lastName')"
-        />
-        @if (isFieldInvalid('lastName')) {
-          <div class="error-message">
-            @if (userForm.get('lastName')?.hasError('required')) {
-              Last name is required
-            }
-            @if (userForm.get('lastName')?.hasError('maxlength')) {
-              Last name cannot exceed 100 characters
-            }
-          </div>
-        }
+    @if (error()) {
+      <div class="bg-red-50 border border-red-200 rounded-2xl p-6 mb-6">
+        <div class="flex items-center gap-3">
+          <svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <p class="text-red-700 font-medium">{{ error() }}</p>
+        </div>
       </div>
+    }
 
-      @if (!isEditMode()) {
-        <div class="form-group">
-          <label for="email">Email *</label>
+    @if (!loading()) {
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
+        <!-- First Name -->
+        <div class="mb-8">
+          <label for="firstName" class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+            Nombre *
+          </label>
           <input
-            id="email"
-            type="email"
-            formControlName="email"
-            class="form-control"
-            [class.invalid]="isFieldInvalid('email')"
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            placeholder="Ingresa el nombre"
+            [class.ring-4]="isFieldInvalid('firstName')"
+            [class.ring-red-500/10]="isFieldInvalid('firstName')"
+            [class.border-red-500]="isFieldInvalid('firstName')"
+            class="w-full bg-white border border-gray-200 rounded-2xl px-5 py-4 focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all"
           />
-          @if (isFieldInvalid('email')) {
-            <div class="error-message">
-              @if (userForm.get('email')?.hasError('required')) {
-                Email is required
+          @if (isFieldInvalid('firstName')) {
+            <div class="mt-2 text-red-600 text-sm font-medium">
+              @if (userForm.get('firstName')?.hasError('required')) {
+                El nombre es requerido
               }
-              @if (userForm.get('email')?.hasError('email')) {
-                Invalid email format
+              @if (userForm.get('firstName')?.hasError('maxlength')) {
+                El nombre no puede exceder 100 caracteres
               }
             </div>
           }
         </div>
 
-        <div class="form-group">
-          <label for="password">Password *</label>
+        <!-- Last Name -->
+        <div class="mb-8">
+          <label for="lastName" class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+            Apellido *
+          </label>
           <input
-            id="password"
-            type="password"
-            formControlName="password"
-            class="form-control"
-            [class.invalid]="isFieldInvalid('password')"
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            placeholder="Ingresa el apellido"
+            [class.ring-4]="isFieldInvalid('lastName')"
+            [class.ring-red-500/10]="isFieldInvalid('lastName')"
+            [class.border-red-500]="isFieldInvalid('lastName')"
+            class="w-full bg-white border border-gray-200 rounded-2xl px-5 py-4 focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all"
           />
-          @if (isFieldInvalid('password')) {
-            <div class="error-message">
-              @if (userForm.get('password')?.hasError('required')) {
-                Password is required
+          @if (isFieldInvalid('lastName')) {
+            <div class="mt-2 text-red-600 text-sm font-medium">
+              @if (userForm.get('lastName')?.hasError('required')) {
+                El apellido es requerido
               }
-              @if (userForm.get('password')?.hasError('minlength')) {
-                Password must be at least 8 characters
-              }
-              @if (userForm.get('password')?.hasError('pattern')) {
-                Password must contain uppercase, lowercase, and numbers
+              @if (userForm.get('lastName')?.hasError('maxlength')) {
+                El apellido no puede exceder 100 caracteres
               }
             </div>
           }
         </div>
-      }
 
-      <div class="form-group checkbox-group">
-        <label>
-          <input
-            type="checkbox"
-            formControlName="isActive"
-          />
-          <span>Active User</span>
-        </label>
-      </div>
+        <!-- Email (Creation Only) -->
+        @if (!isEditMode()) {
+          <div class="mb-8">
+            <label for="email" class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+              Email *
+            </label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="usuario@ejemplo.com"
+              [class.ring-4]="isFieldInvalid('email')"
+              [class.ring-red-500/10]="isFieldInvalid('email')"
+              [class.border-red-500]="isFieldInvalid('email')"
+              class="w-full bg-white border border-gray-200 rounded-2xl px-5 py-4 focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all"
+            />
+            @if (isFieldInvalid('email')) {
+              <div class="mt-2 text-red-600 text-sm font-medium">
+                @if (userForm.get('email')?.hasError('required')) {
+                  El email es requerido
+                }
+                @if (userForm.get('email')?.hasError('email')) {
+                  El formato del email no es válido
+                }
+              </div>
+            }
+          </div>
 
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="goBack()">
-          Cancel
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || submitting()">
-          {{ submitting() ? 'Saving...' : (isEditMode() ? 'Update' : 'Create') }}
-        </button>
-      </div>
-    </form>
-  }
+          <!-- Password (Creation Only) -->
+          <div class="mb-8">
+            <label for="password" class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+              Contraseña *
+            </label>
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              placeholder="Mínimo 8 caracteres"
+              [class.ring-4]="isFieldInvalid('password')"
+              [class.ring-red-500/10]="isFieldInvalid('password')"
+              [class.border-red-500]="isFieldInvalid('password')"
+              class="w-full bg-white border border-gray-200 rounded-2xl px-5 py-4 focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all"
+            />
+            @if (isFieldInvalid('password')) {
+              <div class="mt-2 text-red-600 text-sm font-medium">
+                @if (userForm.get('password')?.hasError('required')) {
+                  La contraseña es requerida
+                }
+                @if (userForm.get('password')?.hasError('minlength')) {
+                  La contraseña debe tener al menos 8 caracteres
+                }
+                @if (userForm.get('password')?.hasError('pattern')) {
+                  La contraseña debe contener mayúsculas, minúsculas y números
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Active Status -->
+        <div class="mb-8 p-4 bg-blue-50 rounded-2xl border border-blue-100">
+          <label class="flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              formControlName="isActive"
+              class="w-4 h-4 rounded border-gray-300 text-[#22c55e] focus:ring-2 focus:ring-green-500"
+            />
+            <span class="ml-3 font-medium text-gray-700">Activar usuario</span>
+            <span class="ml-2 text-xs text-gray-500">(El usuario podrá acceder al sistema)</span>
+          </label>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-4 pt-8 border-t border-gray-100">
+          <button type="button" class="flex-1 border border-gray-200 text-gray-600 px-8 py-4 rounded-2xl font-bold hover:bg-gray-50 active:bg-gray-100 transition-all" (click)="goBack()">
+            Cancelar
+          </button>
+          <button type="submit" [disabled]="userForm.invalid || submitting()" [class.opacity-50]="userForm.invalid || submitting()" [class.cursor-not-allowed]="userForm.invalid || submitting()" class="flex-1 bg-[#ff5c35] text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-[#ff5c35]/20 hover:bg-[#ef4e28] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:hover:scale-100 disabled:hover:bg-[#ff5c35]">
+            {{ submitting() ? 'Guardando...' : (isEditMode() ? 'Actualizar' : 'Crear Usuario') }}
+          </button>
+        </div>
+      </form>
+    }
+  </div>
 </div>

@@ -4,23 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '@environments/environment';
 import { StorageUtils } from '@core/utils/common.utils';
-
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface AuthUser {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-}
-
-export interface LoginResponse {
-  token: string;
-  user: AuthUser;
-}
+import { LoginCredentials, AuthUser, LoginResponse } from '@core/models/auth.model';
 
 @Injectable({
   providedIn: 'root'
