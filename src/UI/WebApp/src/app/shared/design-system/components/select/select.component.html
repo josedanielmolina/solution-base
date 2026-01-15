@@ -1,0 +1,112 @@
+<div class="ds-select-container">
+  <!-- Label -->
+  @if (label()) {
+    <label [for]="id()" class="ds-select-label">
+      {{ label() }}
+      @if (required()) {
+        <span class="ds-select-required" aria-hidden="true">*</span>
+      }
+    </label>
+  }
+
+  <!-- Select Trigger -->
+  <div
+    [id]="id()"
+    [class]="selectClasses()"
+    role="combobox"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-haspopup]="true"
+    [attr.aria-invalid]="hasError()"
+    [attr.aria-describedby]="error() ? id() + '-error' : hint() ? id() + '-hint' : null"
+    tabindex="0"
+    (click)="toggleDropdown()"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    (keydown)="onKeydown($event)"
+  >
+    <span class="ds-select-value" [class.ds-select-placeholder]="!value()">
+      {{ displayValue() || placeholder() }}
+    </span>
+
+    <span class="ds-select-actions">
+      @if (clearable() && value()) {
+        <button
+          type="button"
+          class="ds-select-clear"
+          tabindex="-1"
+          aria-label="Limpiar selección"
+          (click)="clear($event)"
+        >
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      }
+
+      <span class="ds-select-arrow" [class.ds-select-arrow--open]="isOpen()">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </span>
+  </div>
+
+  <!-- Dropdown -->
+  @if (isOpen()) {
+    <div class="ds-select-dropdown" role="listbox">
+      @if (searchable()) {
+        <div class="ds-select-search">
+          <input
+            type="text"
+            class="ds-select-search-input"
+            placeholder="Buscar..."
+            [value]="searchQuery()"
+            (input)="onSearchInput($event)"
+          />
+        </div>
+      }
+
+      <ul class="ds-select-options">
+        @for (option of filteredOptions(); track option.value; let i = $index) {
+          <li
+            class="ds-select-option"
+            [class.ds-select-option--selected]="option.value === value()"
+            [class.ds-select-option--highlighted]="i === highlightedIndex()"
+            [class.ds-select-option--disabled]="option.disabled"
+            role="option"
+            [attr.aria-selected]="option.value === value()"
+            [attr.aria-disabled]="option.disabled"
+            (click)="selectOption(option)"
+          >
+            <span class="ds-select-option-label">{{ option.label }}</span>
+            @if (option.value === value()) {
+              <svg class="ds-select-option-check" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M13.5 4.5L6 12L2.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            }
+          </li>
+        } @empty {
+          <li class="ds-select-empty">Sin resultados</li>
+        }
+      </ul>
+    </div>
+  }
+
+  <!-- Hidden ng-content for template-based options -->
+  <div style="display: none;">
+    <ng-content />
+  </div>
+
+  <!-- Hint/Error -->
+  @if (hint() && !hasError()) {
+    <p [id]="id() + '-hint'" class="ds-select-hint">
+      {{ hint() }}
+    </p>
+  }
+
+  @if (hasError()) {
+    <p [id]="id() + '-error'" class="ds-select-error" role="alert">
+      {{ error() }}
+    </p>
+  }
+</div>

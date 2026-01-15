@@ -1,0 +1,81 @@
+<div class="ds-table-container">
+  @if (loading()) {
+    <div class="ds-table-loading">
+      <div class="ds-table-loading-spinner"></div>
+    </div>
+  }
+
+  <table [class]="tableClasses()">
+    <thead class="ds-table-head">
+      <tr>
+        @if (selectable()) {
+          <th class="ds-table-th ds-table-th--checkbox">
+            <input
+              type="checkbox"
+              [checked]="allSelected()"
+              [indeterminate]="someSelected()"
+              (change)="toggleSelectAll()"
+              aria-label="Seleccionar todo"
+            />
+          </th>
+        }
+        @for (column of columns(); track column.key) {
+          <th
+            class="ds-table-th"
+            [class.ds-table-th--sortable]="column.sortable"
+            [style.width]="column.width"
+            [style.text-align]="column.align || 'left'"
+            (click)="onSort(column)"
+          >
+            <span class="ds-table-th-content">
+              {{ column.header }}
+              @if (column.sortable) {
+                <span class="ds-table-sort-icon" [attr.data-sort]="getSortIcon(column)">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path class="ds-sort-asc" d="M8 4L12 8H4L8 4Z" fill="currentColor"/>
+                    <path class="ds-sort-desc" d="M8 12L4 8H12L8 12Z" fill="currentColor"/>
+                  </svg>
+                </span>
+              }
+            </span>
+          </th>
+        }
+      </tr>
+    </thead>
+
+    <tbody class="ds-table-body">
+      @if (data().length === 0) {
+        <tr>
+          <td [attr.colspan]="columns().length + (selectable() ? 1 : 0)" class="ds-table-empty">
+            {{ emptyMessage() }}
+          </td>
+        </tr>
+      } @else {
+        @for (row of data(); track $index; let i = $index) {
+          <tr
+            class="ds-table-row"
+            [class.ds-table-row--selected]="isRowSelected(i)"
+            (click)="onRowClick(row)"
+          >
+            @if (selectable()) {
+              <td class="ds-table-td ds-table-td--checkbox">
+                <input
+                  type="checkbox"
+                  [checked]="isRowSelected(i)"
+                  (change)="toggleRowSelection(i)"
+                  (click)="$event.stopPropagation()"
+                  aria-label="Seleccionar fila"
+                />
+              </td>
+            }
+            @for (column of columns(); track column.key) {
+              <td class="ds-table-td" [style.text-align]="column.align || 'left'">
+                {{ getCellValue(row, column.key) }}
+              </td>
+            }
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>

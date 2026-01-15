@@ -1,0 +1,12 @@
+@if (variant() === 'text' && lines() > 1) {
+  <div class="ds-skeleton-lines">
+    @for (line of lineArray(); track line; let last = $last) {
+      <span 
+        [class]="skeletonClasses()" 
+        [style.width]="last ? '80%' : '100%'"
+      ></span>
+    }
+  </div>
+} @else {
+  <span [class]="skeletonClasses()" [style]="skeletonStyle()"></span>
+}

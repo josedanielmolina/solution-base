@@ -1,0 +1,190 @@
+/**
+ * ============================================================================
+ * DS-STEPPER COMPONENT STYLES
+ * ============================================================================
+ */
+
+.ds-stepper-wrapper {
+  display: block;
+}
+
+.ds-stepper {
+  display: flex;
+}
+
+.ds-stepper--horizontal {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.ds-stepper--vertical {
+  flex-direction: column;
+}
+
+/* Step */
+.ds-step {
+  display: flex;
+  flex: 1;
+}
+
+.ds-stepper--horizontal .ds-step {
+  flex-direction: column;
+  align-items: center;
+}
+
+.ds-stepper--vertical .ds-step {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.ds-step--clickable {
+  cursor: pointer;
+}
+
+/* Step indicator */
+.ds-step-indicator {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.ds-stepper--horizontal .ds-step-indicator {
+  width: 100%;
+  justify-content: center;
+}
+
+.ds-stepper--vertical .ds-step-indicator {
+  flex-direction: column;
+  align-items: center;
+}
+
+.ds-step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: var(--ds-font-weight-semibold);
+  border-radius: var(--ds-radius-full);
+  background-color: var(--stepper-step-bg);
+  color: var(--stepper-step-text);
+  border: 2px solid var(--stepper-step-border);
+  z-index: 1;
+}
+
+.ds-step-number svg {
+  width: 60%;
+  height: 60%;
+}
+
+/* Sizes */
+.ds-stepper--sm .ds-step-number {
+  width: var(--stepper-size-sm);
+  height: var(--stepper-size-sm);
+  font-size: var(--ds-font-size-xs);
+}
+
+.ds-stepper--md .ds-step-number {
+  width: var(--stepper-size-md);
+  height: var(--stepper-size-md);
+  font-size: var(--ds-font-size-sm);
+}
+
+.ds-stepper--lg .ds-step-number {
+  width: var(--stepper-size-lg);
+  height: var(--stepper-size-lg);
+  font-size: var(--ds-font-size-base);
+}
+
+/* Connector */
+.ds-step-connector {
+  background-color: var(--stepper-connector-bg);
+}
+
+.ds-stepper--horizontal .ds-step-connector {
+  flex: 1;
+  height: 2px;
+  min-width: var(--ds-spacing-4);
+}
+
+.ds-stepper--vertical .ds-step-connector {
+  width: 2px;
+  flex: 1;
+  min-height: var(--ds-spacing-6);
+}
+
+/* States */
+.ds-step--completed .ds-step-number {
+  background-color: var(--stepper-step-bg-completed);
+  border-color: var(--stepper-step-border-completed);
+  color: var(--stepper-step-text-completed);
+}
+
+.ds-step--completed .ds-step-connector {
+  background-color: var(--stepper-connector-bg-completed);
+}
+
+.ds-step--active .ds-step-number {
+  background-color: var(--stepper-step-bg-active);
+  border-color: var(--stepper-step-border-active);
+  color: var(--stepper-step-text-active);
+}
+
+.ds-step--error .ds-step-number {
+  background-color: var(--color-danger-light, #fee2e2);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+/* Content */
+.ds-step-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-0-5);
+}
+
+.ds-stepper--horizontal .ds-step-content {
+  align-items: center;
+  text-align: center;
+  margin-top: var(--ds-spacing-2);
+}
+
+.ds-stepper--vertical .ds-step-content {
+  margin-left: var(--ds-spacing-3);
+  padding-bottom: var(--ds-spacing-4);
+}
+
+.ds-step-label {
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-color-gray-900);
+}
+
+.ds-stepper--sm .ds-step-label {
+  font-size: var(--ds-font-size-sm);
+}
+
+.ds-stepper--md .ds-step-label {
+  font-size: var(--ds-font-size-base);
+}
+
+.ds-stepper--lg .ds-step-label {
+  font-size: var(--ds-font-size-lg);
+}
+
+.ds-step-optional {
+  font-weight: var(--ds-font-weight-normal);
+  color: var(--ds-color-gray-500);
+  font-size: 0.85em;
+}
+
+.ds-step-description {
+  color: var(--ds-color-gray-500);
+  font-size: var(--ds-font-size-sm);
+}
+
+.ds-step--active .ds-step-label {
+  color: var(--color-primary);
+}
+
+.ds-step--error .ds-step-label {
+  color: var(--color-danger);
+}

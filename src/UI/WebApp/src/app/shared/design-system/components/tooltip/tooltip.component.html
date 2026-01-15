@@ -1,0 +1,9 @@
+<span class="ds-tooltip-container" [style]="containerStyle()">
+  <ng-content />
+  <span [class]="tooltipClasses()" role="tooltip">
+    {{ content() }}
+    @if (showArrow()) {
+      <span class="ds-tooltip-arrow"></span>
+    }
+  </span>
+</span>

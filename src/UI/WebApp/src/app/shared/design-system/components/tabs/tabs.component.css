@@ -1,0 +1,135 @@
+/**
+ * ============================================================================
+ * DS-TABS COMPONENT STYLES
+ * ============================================================================
+ */
+
+.ds-tabs-wrapper {
+  display: block;
+}
+
+.ds-tabs {
+  display: flex;
+  gap: var(--tabs-gap);
+}
+
+.ds-tabs--full-width {
+  width: 100%;
+}
+
+.ds-tabs--full-width .ds-tab {
+  flex: 1;
+  justify-content: center;
+}
+
+/* Tab button */
+.ds-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  font-weight: var(--tabs-font-weight);
+  color: var(--tabs-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--ds-duration-fast) var(--ds-ease-out),
+              background-color var(--ds-duration-fast) var(--ds-ease-out),
+              border-color var(--ds-duration-fast) var(--ds-ease-out);
+  white-space: nowrap;
+}
+
+.ds-tab:hover:not(.ds-tab--disabled) {
+  color: var(--tabs-text-hover);
+}
+
+.ds-tab--active {
+  color: var(--tabs-text-active);
+}
+
+.ds-tab--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Sizes */
+.ds-tabs--sm .ds-tab {
+  padding: var(--tabs-padding-y-sm) var(--tabs-padding-x-sm);
+  font-size: var(--ds-font-size-sm);
+}
+
+.ds-tabs--md .ds-tab {
+  padding: var(--tabs-padding-y-md) var(--tabs-padding-x-md);
+  font-size: var(--ds-font-size-base);
+}
+
+.ds-tabs--lg .ds-tab {
+  padding: var(--tabs-padding-y-lg) var(--tabs-padding-x-lg);
+  font-size: var(--ds-font-size-lg);
+}
+
+/* Underline variant */
+.ds-tabs--underline {
+  border-bottom: 2px solid var(--tabs-border);
+  gap: 0;
+}
+
+.ds-tabs--underline .ds-tab {
+  margin-bottom: -2px;
+  border-bottom: 2px solid transparent;
+}
+
+.ds-tabs--underline .ds-tab--active {
+  border-bottom-color: var(--tabs-indicator-color);
+}
+
+/* Pills variant */
+.ds-tabs--pills .ds-tab {
+  border-radius: var(--tabs-border-radius);
+}
+
+.ds-tabs--pills .ds-tab--active {
+  background-color: var(--tabs-active-bg);
+  color: var(--tabs-active-text);
+}
+
+/* Boxed variant */
+.ds-tabs--boxed {
+  background-color: var(--ds-color-gray-100);
+  padding: var(--ds-spacing-1);
+  border-radius: var(--tabs-border-radius);
+  gap: var(--ds-spacing-1);
+}
+
+.ds-tabs--boxed .ds-tab {
+  border-radius: calc(var(--tabs-border-radius) - 2px);
+}
+
+.ds-tabs--boxed .ds-tab--active {
+  background-color: white;
+  box-shadow: var(--ds-shadow-sm);
+}
+
+/* Badge */
+.ds-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--ds-spacing-1);
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-medium);
+  background-color: var(--ds-color-gray-200);
+  color: var(--ds-color-gray-600);
+  border-radius: var(--ds-radius-full);
+}
+
+.ds-tab--active .ds-tab-badge {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Panels */
+.ds-tabs-panels {
+  margin-top: var(--ds-spacing-4);
+}

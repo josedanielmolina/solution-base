@@ -1,0 +1,123 @@
+/**
+ * ============================================================================
+ * DS-TOOLTIP COMPONENT STYLES
+ * ============================================================================
+ */
+
+.ds-tooltip-wrapper {
+  display: inline-flex;
+}
+
+.ds-tooltip-container {
+  position: relative;
+  display: inline-flex;
+}
+
+.ds-tooltip {
+  position: absolute;
+  z-index: var(--tooltip-z-index);
+  padding: var(--tooltip-padding-y) var(--tooltip-padding-x);
+  border-radius: var(--tooltip-border-radius);
+  font-size: var(--tooltip-font-size);
+  font-weight: var(--ds-font-weight-medium);
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--ds-duration-fast) var(--ds-ease-out) var(--tooltip-delay, 300ms),
+              visibility var(--ds-duration-fast) var(--ds-ease-out) var(--tooltip-delay, 300ms);
+}
+
+.ds-tooltip-container:hover .ds-tooltip,
+.ds-tooltip-container:focus-within .ds-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Variants */
+.ds-tooltip--dark {
+  background-color: var(--tooltip-bg-dark);
+  color: var(--tooltip-text-dark);
+}
+
+.ds-tooltip--light {
+  background-color: var(--tooltip-bg-light);
+  color: var(--tooltip-text-light);
+  box-shadow: var(--ds-shadow-md);
+  border: 1px solid var(--ds-color-gray-200);
+}
+
+/* Positions */
+.ds-tooltip--top {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.ds-tooltip--bottom {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: var(--ds-spacing-2);
+}
+
+.ds-tooltip--left {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: var(--ds-spacing-2);
+}
+
+.ds-tooltip--right {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: var(--ds-spacing-2);
+}
+
+/* Arrow */
+.ds-tooltip-arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+  transform: rotate(45deg);
+}
+
+.ds-tooltip--top .ds-tooltip-arrow {
+  bottom: -4px;
+  left: 50%;
+  margin-left: -4px;
+}
+
+.ds-tooltip--bottom .ds-tooltip-arrow {
+  top: -4px;
+  left: 50%;
+  margin-left: -4px;
+}
+
+.ds-tooltip--left .ds-tooltip-arrow {
+  right: -4px;
+  top: 50%;
+  margin-top: -4px;
+}
+
+.ds-tooltip--right .ds-tooltip-arrow {
+  left: -4px;
+  top: 50%;
+  margin-top: -4px;
+}
+
+.ds-tooltip--light .ds-tooltip-arrow {
+  border-right: 1px solid var(--ds-color-gray-200);
+  border-bottom: 1px solid var(--ds-color-gray-200);
+}
+
+.ds-tooltip--light.ds-tooltip--top .ds-tooltip-arrow,
+.ds-tooltip--light.ds-tooltip--left .ds-tooltip-arrow {
+  border: none;
+  border-left: 1px solid var(--ds-color-gray-200);
+  border-top: 1px solid var(--ds-color-gray-200);
+}

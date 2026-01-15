@@ -1,0 +1,41 @@
+<label
+  class="ds-checkbox"
+  [class.ds-checkbox--disabled]="disabled()"
+>
+  <input
+    type="checkbox"
+    [id]="id()"
+    [checked]="checked()"
+    [disabled]="disabled()"
+    [indeterminate]="indeterminate()"
+    class="ds-checkbox-input"
+    (change)="toggle()"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    (keydown)="onKeydown($event)"
+  />
+
+  <span [class]="checkboxClasses()">
+    @if (checked() && !indeterminate()) {
+      <svg class="ds-checkbox-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M13.5 4.5L6 12L2.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    }
+    @if (indeterminate()) {
+      <svg class="ds-checkbox-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    }
+  </span>
+
+  @if (label() || description()) {
+    <span class="ds-checkbox-content">
+      @if (label()) {
+        <span class="ds-checkbox-label">{{ label() }}</span>
+      }
+      @if (description()) {
+        <span class="ds-checkbox-description">{{ description() }}</span>
+      }
+    </span>
+  }
+</label>

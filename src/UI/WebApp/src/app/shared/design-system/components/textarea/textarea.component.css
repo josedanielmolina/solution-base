@@ -1,0 +1,81 @@
+/**
+ * DS-TEXTAREA COMPONENT STYLES
+ */
+
+.ds-textarea-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.ds-textarea-label {
+  display: block;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.ds-textarea-required {
+  color: #ef4444;
+  margin-left: 0.125rem;
+}
+
+.ds-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 1rem 1.25rem;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #111827;
+  transition: all 0.2s ease;
+  resize: vertical;
+}
+
+.ds-textarea::placeholder {
+  color: #9ca3af;
+}
+
+.ds-textarea:hover:not(:disabled):not(:read-only) {
+  border-color: #d1d5db;
+}
+
+.ds-textarea:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+}
+
+.ds-textarea--error {
+  border-color: #ef4444;
+}
+
+.ds-textarea--error:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.ds-textarea:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  color: #6b7280;
+}
+
+.ds-textarea--no-resize {
+  resize: none;
+}
+
+.ds-textarea-helper {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.ds-textarea-error {
+  font-size: 0.875rem;
+  color: #ef4444;
+}

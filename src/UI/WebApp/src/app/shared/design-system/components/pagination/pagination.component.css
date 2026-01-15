@@ -1,0 +1,86 @@
+/**
+ * ============================================================================
+ * DS-PAGINATION COMPONENT STYLES
+ * ============================================================================
+ */
+
+.ds-pagination-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.ds-pagination-list {
+  display: flex;
+  align-items: center;
+  gap: var(--pagination-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Button */
+.ds-pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--pagination-text);
+  background-color: var(--pagination-bg);
+  border: 1px solid var(--pagination-border);
+  border-radius: var(--pagination-border-radius);
+  cursor: pointer;
+  transition: all var(--ds-duration-fast) var(--ds-ease-out);
+}
+
+.ds-pagination-btn:hover:not(:disabled):not(.ds-pagination-btn--active) {
+  background-color: var(--pagination-bg-hover);
+  border-color: var(--pagination-border-hover);
+}
+
+.ds-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ds-pagination-btn--active {
+  background-color: var(--pagination-bg-active);
+  border-color: var(--pagination-border-active);
+  color: var(--pagination-text-active);
+}
+
+.ds-pagination-btn--nav {
+  color: var(--ds-color-gray-500);
+}
+
+.ds-pagination-btn--nav svg {
+  width: 50%;
+  height: 50%;
+}
+
+/* Sizes */
+.ds-pagination--sm .ds-pagination-btn {
+  min-width: var(--pagination-size-sm);
+  height: var(--pagination-size-sm);
+  font-size: var(--ds-font-size-xs);
+}
+
+.ds-pagination--md .ds-pagination-btn {
+  min-width: var(--pagination-size-md);
+  height: var(--pagination-size-md);
+  font-size: var(--ds-font-size-sm);
+}
+
+.ds-pagination--lg .ds-pagination-btn {
+  min-width: var(--pagination-size-lg);
+  height: var(--pagination-size-lg);
+  font-size: var(--ds-font-size-base);
+}
+
+/* Ellipsis */
+.ds-pagination-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ds-color-gray-400);
+  padding: 0 var(--ds-spacing-1);
+}

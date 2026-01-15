@@ -1,358 +1,206 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Padelea - UI Kit & Utilidades</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-light: #f9fafb;
-            --card-bg: #ffffff;
-            --accent-green: #22c55e;
-            --accent-orange: #ff5c35;
-            --text-main: #111827;
-            --border-soft: rgba(0, 0, 0, 0.05);
-        }
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-main);
-        }
-        .premium-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-soft);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-        }
-        .section-divider {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            margin-bottom: 3rem;
-            padding-bottom: 1rem;
-        }
-        .swatch {
-            height: 80px;
-            width: 100%;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        .btn-sample-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: center;
-        }
-        .icon-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1.5rem;
-        }
-        .icon-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-            background: white;
-            border: 1px solid var(--border-soft);
-            border-radius: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        .icon-box:hover {
-            border-color: var(--accent-green);
-            color: var(--accent-green);
-            transform: translateY(-2px);
-        }
-        .icon-box svg {
-            margin-bottom: 0.75rem;
-        }
-        .icon-box span {
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #9ca3af;
-        }
-    </style>
-</head>
-<body class="p-8 pb-24">
+<div class="demo-container">
+  <header class="demo-header">
+    <h1>🎨 Padelea Design System</h1>
+    <p>Demo interactiva de todos los componentes</p>
+  </header>
 
-    <div class="max-w-5xl mx-auto">
-        <!-- Header del UI Kit -->
-        <header class="mb-16">
-            <h1 class="text-5xl font-extrabold tracking-tighter mb-4">Padelea <span class="text-green-500 underline decoration-green-200">UI Kit</span></h1>
-            <p class="text-gray-500 text-xl font-medium">Guía de componentes y estilos premium para el ecosistema de torneos.</p>
-        </header>
-
-        <!-- COLORES -->
-        <section class="mb-20">
-            <div class="section-divider">
-                <h2 class="text-2xl font-bold uppercase tracking-widest text-gray-400">01. Paleta de Colores</h2>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                <div>
-                    <div class="swatch bg-[#22c55e]"></div>
-                    <p class="text-xs font-bold uppercase tracking-tighter">Verde Padel</p>
-                    <p class="text-[10px] text-gray-400">#22C55E (Brand Primary)</p>
-                </div>
-                <div>
-                    <div class="swatch bg-[#ff5c35]"></div>
-                    <p class="text-xs font-bold uppercase tracking-tighter">Naranja Coral</p>
-                    <p class="text-[10px] text-gray-400">#FF5C35 (Action CTA)</p>
-                </div>
-                <div>
-                    <div class="swatch bg-[#111827]"></div>
-                    <p class="text-xs font-bold uppercase tracking-tighter">Gris Oscuro</p>
-                    <p class="text-[10px] text-gray-400">#111827 (Text Main)</p>
-                </div>
-                <div>
-                    <div class="swatch bg-[#f9fafb]"></div>
-                    <p class="text-xs font-bold uppercase tracking-tighter">Blanco Gélido</p>
-                    <p class="text-[10px] text-gray-400">#F9FAFB (Background)</p>
-                </div>
-                <div>
-                    <div class="swatch border-2 border-dashed border-gray-200"></div>
-                    <p class="text-xs font-bold uppercase tracking-tighter">Blanco Puro</p>
-                    <p class="text-[10px] text-gray-400">#FFFFFF (Surface)</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- TIPOGRAFÍA -->
-        <section class="mb-20">
-            <div class="section-divider">
-                <h2 class="text-2xl font-bold uppercase tracking-widest text-gray-400">02. Tipografía</h2>
-            </div>
-            <div class="space-y-6">
-                <div>
-                    <p class="text-xs text-gray-400 mb-2">Heading Large (800)</p>
-                    <h3 class="text-4xl font-extrabold tracking-tight">El pádel como nunca antes lo habías visto.</h3>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-400 mb-2">Heading Medium (700)</p>
-                    <h3 class="text-2xl font-bold tracking-tight">Gestión de torneos y parejas.</h3>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-400 mb-2">Body Regular (400)</p>
-                    <p class="text-gray-600 leading-relaxed">Padelea ofrece una experiencia única para organizadores y jugadores. Cada detalle visual ha sido diseñado para transmitir profesionalidad y modernidad.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- GUÍA DE ICONOS -->
-        <section class="mb-20">
-            <div class="section-divider">
-                <h2 class="text-2xl font-bold uppercase tracking-widest text-gray-400">03. Guía de Iconos (Lucide)</h2>
-            </div>
-
-            <p class="text-gray-500 mb-8 text-sm max-w-2xl">Usar trazo de <b>2px (stroke-width: 2)</b> para un look moderno y limpio. Tamaño base recomendado: <b>24x24px</b>.</p>
-
-            <div class="space-y-12">
-                <!-- Gestión de Pádel -->
-                <div>
-                    <h3 class="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                        Torneos & Deporte
-                    </h3>
-                    <div class="icon-grid">
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                            <span>Pelota</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-                            <span>Trofeo</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            <span>Parejas</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            <span>Calendario</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7"/><path d="M16 19h6"/><path d="M19 16v6"/><path d="M15 10V5"/><path d="M9 10V5"/><path d="M3 10h18"/><path d="M3 15h3"/></svg>
-                            <span>Pista</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Acciones & Navegación -->
-                <div>
-                    <h3 class="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
-                        Interfaz & Acciones
-                    </h3>
-                    <div class="icon-grid">
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                            <span>Inicio</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V11a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                            <span>Ajustes</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                            <span>Editar</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                            <span>Borrar</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                            <span>Exportar</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Gestión de Usuarios -->
-                <div>
-                    <h3 class="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
-                        Usuarios & Perfiles
-                    </h3>
-                    <div class="icon-grid">
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                            <span>Usuario</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            <span>Usuarios</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="15" r="3"/><path d="M15.17 12.89a6 6 0 1 0-7.34 0"/></svg>
-                            <span>Perfil</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
-                            <span>Avatar</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                            <span>Email</span>
-                        </div>
-                        <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17.5 5.5c1.38 1.38 2.5 3.26 2.5 5.5 0 4.42-3.58 8-8 8s-8-3.58-8-8c0-2.24 1.12-4.12 2.5-5.5"/></svg>
-                            <span>Verificado</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- GUÍA EXTENDIDA DE BOTONES -->
-        <section class="mb-20">
-            <div class="section-divider">
-                <h2 class="text-2xl font-bold uppercase tracking-widest text-gray-400">04. Guía de Botones</h2>
-            </div>
-
-            <div class="space-y-12">
-                <!-- Variantes Principales -->
-                <div>
-                    <h3 class="text-sm font-bold text-gray-500 mb-6 uppercase tracking-widest">Variantes de Color</h3>
-                    <div class="btn-sample-container">
-                        <button class="bg-[#ff5c35] text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-[#ff5c35]/20 hover:bg-[#ef4e28] hover:scale-[1.02] active:scale-[0.98] transition-all">
-                            Primario Coral
-                        </button>
-                        <button class="bg-[#22c55e] text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-green-100 hover:bg-green-600 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                            Éxito Verde
-                        </button>
-                        <button class="bg-gray-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition-all">
-                            Dark Mode
-                        </button>
-                        <button class="border border-gray-200 text-gray-600 px-8 py-4 rounded-2xl font-bold hover:bg-gray-50 active:bg-gray-100 transition-all">
-                            Secundario Outline
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Tamaños -->
-                <div>
-                    <h3 class="text-sm font-bold text-gray-500 mb-6 uppercase tracking-widest">Tamaños</h3>
-                    <div class="btn-sample-container">
-                        <button class="bg-[#ff5c35] text-white px-10 py-5 rounded-[22px] font-extrabold text-lg shadow-lg shadow-[#ff5c35]/20 transition-all">
-                            Botón XL
-                        </button>
-                        <button class="bg-[#ff5c35] text-white px-8 py-4 rounded-2xl font-bold transition-all">
-                            Estándar (Base)
-                        </button>
-                        <button class="bg-[#ff5c35] text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all">
-                            Compacto
-                        </button>
-                        <button class="bg-[#ff5c35] text-white px-4 py-1.5 rounded-lg font-bold text-xs transition-all">
-                            Tiny
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TARJETAS -->
-        <section class="mb-20">
-            <div class="section-divider">
-                <h2 class="text-2xl font-bold uppercase tracking-widest text-gray-400">05. Cards & Superficies</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Card Standard -->
-                <div class="premium-card rounded-[24px] p-8">
-                    <div class="bg-green-100 text-green-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase w-fit mb-4 tracking-widest">
-                        Status Label
-                    </div>
-                    <h4 class="text-xl font-bold mb-2">Contenedor Premium</h4>
-                    <p class="text-gray-400 text-sm mb-6">Usa `premium-card` con bordes de 24px para mantener la línea visual del proyecto.</p>
-                    <div class="h-1 w-full bg-gray-50 rounded-full overflow-hidden">
-                        <div class="bg-green-500 h-full w-2/3"></div>
-                    </div>
-                </div>
-                <!-- Card Interaction -->
-                <div class="premium-card rounded-[24px] p-8 hover:border-green-400 transition-all cursor-pointer">
-                    <div class="h-12 w-12 bg-orange-50 rounded-xl flex items-center justify-center text-orange-500 mb-6">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                    </div>
-                    <h4 class="text-xl font-bold mb-2">Feedback al Hover</h4>
-                    <p class="text-gray-400 text-sm">Esta tarjeta reacciona al cursor cambiando el color del borde a verde neón.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- FORMULARIOS -->
-        <section class="mb-20">
-            <div class="section-divider">
-                <h2 class="text-2xl font-bold uppercase tracking-widest text-gray-400">06. Formulario & Inputs</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl">
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Input Estándar</label>
-                    <input type="text" placeholder="Escribe aquí..." class="w-full bg-white border border-gray-200 rounded-2xl px-5 py-4 focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all">
-                </div>
-            </div>
-        </section>
-
-        <!-- INSIGNIAS Y ESTADOS -->
-        <section class="mb-20">
-            <div class="section-divider">
-                <h2 class="text-2xl font-bold uppercase tracking-widest text-gray-400">07. Badges & Microinteracciones</h2>
-            </div>
-            <div class="flex gap-4 items-center">
-                <span class="bg-green-100 text-green-600 px-4 py-1.5 rounded-full text-xs font-bold border border-green-200">
-                    Online
-                </span>
-                <span class="bg-orange-100 text-orange-600 px-4 py-1.5 rounded-full text-xs font-bold border border-orange-200">
-                    Inscripción Abierta
-                </span>
-                <div class="flex items-center gap-2 text-sm font-bold text-green-500">
-                    <span class="h-2 w-2 rounded-full bg-green-500 animate-ping"></span>
-                    En directo
-                </div>
-            </div>
-        </section>
-
+  <!-- BUTTONS -->
+  <section class="demo-section">
+    <h2>Buttons</h2>
+    <div class="demo-row">
+      <ds-button variant="primary">Primary</ds-button>
+      <ds-button variant="success">Success</ds-button>
+      <ds-button variant="danger">Danger</ds-button>
+      <ds-button variant="secondary">Secondary</ds-button>
+      <ds-button variant="ghost">Ghost</ds-button>
+      <ds-button variant="link">Link</ds-button>
     </div>
+    <div class="demo-row">
+      <ds-button size="xs">XS</ds-button>
+      <ds-button size="sm">SM</ds-button>
+      <ds-button size="md">MD</ds-button>
+      <ds-button size="lg">LG</ds-button>
+      <ds-button size="xl">XL</ds-button>
+    </div>
+    <div class="demo-row">
+      <ds-button [loading]="isLoading()" (clicked)="simulateLoading()">Click para Loading</ds-button>
+      <ds-button [disabled]="true">Disabled</ds-button>
+    </div>
+  </section>
 
-</body>
-</html>
+  <ds-divider />
+
+  <!-- INPUTS -->
+  <section class="demo-section">
+    <h2>Input & Textarea</h2>
+    <div class="demo-grid">
+      <ds-input placeholder="Input normal" />
+      <ds-input placeholder="Con error" error="Campo requerido" />
+      <ds-input type="password" placeholder="Password" />
+      <ds-input type="email" placeholder="Email" />
+    </div>
+    <div class="demo-grid">
+      <ds-textarea placeholder="Escribe un comentario..." [rows]="3" />
+    </div>
+  </section>
+
+  <ds-divider />
+
+  <!-- FORM CONTROLS -->
+  <section class="demo-section">
+    <h2>Checkbox, Radio & Toggle</h2>
+    <div class="demo-row">
+      <ds-checkbox>Acepto los términos</ds-checkbox>
+      <ds-checkbox [disabled]="true">Disabled</ds-checkbox>
+      <ds-checkbox [indeterminate]="true">Indeterminado</ds-checkbox>
+    </div>
+    <div class="demo-row">
+      <ds-radio name="demo" value="option1">Opción 1</ds-radio>
+      <ds-radio name="demo" value="option2">Opción 2</ds-radio>
+    </div>
+    <div class="demo-row">
+      <ds-toggle>Activar notificaciones</ds-toggle>
+      <ds-toggle size="sm">Pequeño</ds-toggle>
+      <ds-toggle size="lg">Grande</ds-toggle>
+    </div>
+  </section>
+
+  <ds-divider />
+
+  <!-- SELECT -->
+  <section class="demo-section">
+    <h2>Select</h2>
+    <div class="demo-grid">
+      <ds-select
+        [options]="selectOptions"
+        placeholder="Selecciona país"
+        label="País"
+      />
+      <ds-select
+        [options]="selectOptions"
+        placeholder="Buscar país..."
+        label="Con buscador"
+        [searchable]="true"
+        [clearable]="true"
+      />
+      <ds-select
+        [options]="categoryOptions"
+        placeholder="Selecciona categoría"
+        label="Categorías"
+      />
+    </div>
+  </section>
+
+  <ds-divider />
+
+  <!-- ALERTS -->
+  <section class="demo-section">
+    <h2>Alerts</h2>
+    <div class="demo-stack">
+      <ds-alert variant="info" title="Información">Este es un mensaje informativo.</ds-alert>
+      <ds-alert variant="success" title="Éxito">Operación completada correctamente.</ds-alert>
+      <ds-alert variant="warning" title="Advertencia">Revisa los datos antes de continuar.</ds-alert>
+      <ds-alert variant="danger" title="Error">Ha ocurrido un error inesperado.</ds-alert>
+    </div>
+  </section>
+
+  <ds-divider />
+
+  <!-- SPINNERS & PROGRESS -->
+  <section class="demo-section">
+    <h2>Spinner & Progress</h2>
+    <div class="demo-row">
+      <ds-spinner size="sm" />
+      <ds-spinner size="md" />
+      <ds-spinner size="lg" />
+      <ds-spinner size="xl" color="accent" />
+    </div>
+    <div class="demo-grid">
+      <ds-progress [value]="progressValue()" [showLabel]="true" />
+      <ds-progress [value]="40" variant="success" [showLabel]="true" />
+      <ds-progress [value]="80" variant="warning" [showLabel]="true" />
+      <ds-progress [value]="60" variant="danger" [striped]="true" [showLabel]="true" />
+      <ds-progress [value]="50" variant="info" [striped]="true" [animated]="true" [showLabel]="true" />
+      <ds-progress [indeterminate]="true" variant="primary" />
+    </div>
+  </section>
+
+  <ds-divider />
+
+  <!-- SKELETON -->
+  <section class="demo-section">
+    <h2>Skeleton</h2>
+    <div class="demo-row">
+      <ds-skeleton variant="circular" width="48px" height="48px" />
+      <ds-skeleton variant="text" width="200px" />
+      <ds-skeleton variant="rectangular" width="100px" height="60px" />
+    </div>
+  </section>
+
+  <ds-divider />
+
+  <!-- BADGES -->
+  <section class="demo-section">
+    <h2>Badges</h2>
+    <div class="demo-row">
+      <ds-badge variant="secondary">Default</ds-badge>
+      <ds-badge variant="primary">Primary</ds-badge>
+      <ds-badge variant="success">Success</ds-badge>
+      <ds-badge variant="warning">Warning</ds-badge>
+      <ds-badge variant="danger">Danger</ds-badge>
+      <ds-badge variant="info">Info</ds-badge>
+    </div>
+    <div class="demo-row">
+      <ds-badge variant="primary" [outline]="true">Outline</ds-badge>
+      <ds-badge [dot]="true" variant="success">Con dot</ds-badge>
+    </div>
+  </section>
+
+  <ds-divider />
+
+  <!-- AVATARS -->
+  <section class="demo-section">
+    <h2>Avatars</h2>
+    <div class="demo-row">
+      <ds-avatar size="xs" name="Ana García" />
+      <ds-avatar size="sm" name="Juan Pérez" />
+      <ds-avatar size="md" name="María López" status="online" />
+      <ds-avatar size="lg" name="Carlos Ruiz" status="busy" />
+      <ds-avatar size="xl" src="https://i.pravatar.cc/150?img=3" status="online" />
+    </div>
+  </section>
+
+  <ds-divider />
+
+  <!-- CARDS -->
+  <section class="demo-section">
+    <h2>Cards</h2>
+    <div class="demo-cards">
+      <ds-card variant="filled">
+        <span slot="header">Card Filled</span>
+        <p>Contenido de la tarjeta con información relevante.</p>
+      </ds-card>
+      <ds-card variant="elevated" [interactive]="true">
+        <span slot="header">Card Elevated</span>
+        <p>Esta tarjeta tiene interactive effect.</p>
+        <ds-button slot="footer" size="sm">Acción</ds-button>
+      </ds-card>
+      <ds-card variant="outlined">
+        <span slot="header">Card Outlined</span>
+        <p>Variante con borde.</p>
+      </ds-card>
+    </div>
+  </section>
+
+  <ds-divider />
+
+  <!-- EMPTY STATE -->
+  <section class="demo-section">
+    <h2>Empty State</h2>
+    <ds-empty-state
+      icon="inbox"
+      title="No hay resultados"
+      description="Intenta ajustar los filtros de búsqueda">
+    </ds-empty-state>
+  </section>
+</div>

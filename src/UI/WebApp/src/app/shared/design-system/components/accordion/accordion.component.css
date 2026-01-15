@@ -1,0 +1,116 @@
+/**
+ * ============================================================================
+ * DS-ACCORDION COMPONENT STYLES
+ * ============================================================================
+ */
+
+.ds-accordion-wrapper {
+  display: block;
+}
+
+.ds-accordion {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Default variant */
+.ds-accordion--default .ds-accordion-item {
+  border-bottom: 1px solid var(--accordion-border);
+}
+
+.ds-accordion--default .ds-accordion-item:last-child {
+  border-bottom: none;
+}
+
+/* Bordered variant */
+.ds-accordion--bordered {
+  border: 1px solid var(--accordion-border);
+  border-radius: var(--accordion-border-radius);
+  overflow: hidden;
+}
+
+.ds-accordion--bordered .ds-accordion-item:not(:last-child) {
+  border-bottom: 1px solid var(--accordion-border);
+}
+
+/* Separated variant */
+.ds-accordion--separated {
+  gap: var(--ds-spacing-2);
+}
+
+.ds-accordion--separated .ds-accordion-item {
+  border: 1px solid var(--accordion-border);
+  border-radius: var(--accordion-border-radius);
+  overflow: hidden;
+}
+
+/* Accordion item */
+.ds-accordion-item--disabled {
+  opacity: 0.6;
+}
+
+/* Header */
+.ds-accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--accordion-header-padding);
+  background-color: var(--accordion-header-bg);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--ds-duration-fast) var(--ds-ease-out);
+}
+
+.ds-accordion-header:hover:not(:disabled) {
+  background-color: var(--accordion-header-bg-hover);
+}
+
+.ds-accordion-header:disabled {
+  cursor: not-allowed;
+}
+
+.ds-accordion-title {
+  font-size: var(--accordion-title-font-size);
+  font-weight: var(--accordion-title-font-weight);
+  color: var(--accordion-title-color);
+}
+
+.ds-accordion-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--ds-color-gray-400);
+  transition: transform var(--ds-duration-fast) var(--ds-ease-out);
+}
+
+.ds-accordion-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ds-accordion-icon--expanded {
+  transform: rotate(180deg);
+}
+
+/* Panel */
+.ds-accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--ds-duration-normal) var(--ds-ease-out);
+}
+
+.ds-accordion-panel--open {
+  grid-template-rows: 1fr;
+}
+
+.ds-accordion-content {
+  overflow: hidden;
+}
+
+.ds-accordion-panel--open .ds-accordion-content {
+  padding: var(--accordion-content-padding);
+}

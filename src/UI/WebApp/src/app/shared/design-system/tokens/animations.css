@@ -1,0 +1,455 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM - ANIMATION TOKENS
+ * ============================================================================
+ * 
+ * Sistema de animaciones y transiciones.
+ * Incluye duraciones, easings, keyframes y clases utilitarias.
+ * 
+ * ============================================================================
+ */
+
+:root {
+  /* ==========================================================================
+     TRANSITION DURATIONS
+     ========================================================================== */
+  
+  --ds-duration-0: 0ms;
+  --ds-duration-75: 75ms;
+  --ds-duration-100: 100ms;
+  --ds-duration-150: 150ms;
+  --ds-duration-200: 200ms;
+  --ds-duration-300: 300ms;
+  --ds-duration-500: 500ms;
+  --ds-duration-700: 700ms;
+  --ds-duration-1000: 1000ms;
+
+  /* Semantic durations */
+  --ds-duration-instant: 0ms;
+  --ds-duration-fast: 150ms;
+  --ds-duration-normal: 200ms;
+  --ds-duration-slow: 300ms;
+  --ds-duration-slower: 500ms;
+
+  /* ==========================================================================
+     TRANSITION TIMING FUNCTIONS (EASINGS)
+     ========================================================================== */
+  
+  --ds-ease-linear: linear;
+  --ds-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ds-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ds-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Custom easings */
+  --ds-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ds-ease-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  --ds-ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ds-ease-snap: cubic-bezier(0.5, 0, 0.5, 1);
+
+  /* Spring-like easings */
+  --ds-ease-spring-1: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ds-ease-spring-2: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ds-ease-spring-3: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ==========================================================================
+     TRANSITION DELAYS
+     ========================================================================== */
+  
+  --ds-delay-0: 0ms;
+  --ds-delay-75: 75ms;
+  --ds-delay-100: 100ms;
+  --ds-delay-150: 150ms;
+  --ds-delay-200: 200ms;
+  --ds-delay-300: 300ms;
+  --ds-delay-500: 500ms;
+  --ds-delay-700: 700ms;
+  --ds-delay-1000: 1000ms;
+
+  /* ==========================================================================
+     ANIMATION DURATIONS
+     ========================================================================== */
+  
+  --ds-animation-duration-fast: 0.15s;
+  --ds-animation-duration-normal: 0.3s;
+  --ds-animation-duration-slow: 0.5s;
+  --ds-animation-duration-slower: 1s;
+
+  /* ==========================================================================
+     Z-INDEX SCALE
+     ========================================================================== */
+  
+  --ds-z-auto: auto;
+  --ds-z-0: 0;
+  --ds-z-10: 10;
+  --ds-z-20: 20;
+  --ds-z-30: 30;
+  --ds-z-40: 40;
+  --ds-z-50: 50;
+
+  /* Semantic z-index */
+  --ds-z-dropdown: 1000;
+  --ds-z-sticky: 1020;
+  --ds-z-fixed: 1030;
+  --ds-z-modal-backdrop: 1040;
+  --ds-z-modal: 1050;
+  --ds-z-popover: 1060;
+  --ds-z-tooltip: 1070;
+  --ds-z-toast: 1080;
+
+  /* ==========================================================================
+     OPACITY SCALE
+     ========================================================================== */
+  
+  --ds-opacity-0: 0;
+  --ds-opacity-5: 0.05;
+  --ds-opacity-10: 0.1;
+  --ds-opacity-15: 0.15;
+  --ds-opacity-20: 0.2;
+  --ds-opacity-25: 0.25;
+  --ds-opacity-30: 0.3;
+  --ds-opacity-40: 0.4;
+  --ds-opacity-50: 0.5;
+  --ds-opacity-60: 0.6;
+  --ds-opacity-70: 0.7;
+  --ds-opacity-75: 0.75;
+  --ds-opacity-80: 0.8;
+  --ds-opacity-90: 0.9;
+  --ds-opacity-95: 0.95;
+  --ds-opacity-100: 1;
+
+  /* ==========================================================================
+     TRANSFORM SCALE VALUES
+     ========================================================================== */
+  
+  --ds-scale-0: 0;
+  --ds-scale-50: 0.5;
+  --ds-scale-75: 0.75;
+  --ds-scale-90: 0.9;
+  --ds-scale-95: 0.95;
+  --ds-scale-98: 0.98;
+  --ds-scale-100: 1;
+  --ds-scale-102: 1.02;
+  --ds-scale-105: 1.05;
+  --ds-scale-110: 1.1;
+  --ds-scale-125: 1.25;
+  --ds-scale-150: 1.5;
+}
+
+/* ==========================================================================
+   KEYFRAME ANIMATIONS
+   ========================================================================== */
+
+@keyframes ds-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ds-ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes ds-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes ds-bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+@keyframes ds-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes ds-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ds-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes ds-slide-in-up {
+  from {
+    transform: translateY(1rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ds-slide-in-down {
+  from {
+    transform: translateY(-1rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ds-slide-in-left {
+  from {
+    transform: translateX(-1rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ds-slide-in-right {
+  from {
+    transform: translateX(1rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ds-scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ds-scale-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+@keyframes ds-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-4px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes ds-wiggle {
+  0%, 100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes ds-heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* ==========================================================================
+   ANIMATION UTILITY CLASSES
+   ========================================================================== */
+
+.ds-animate-none {
+  animation: none;
+}
+
+.ds-animate-spin {
+  animation: ds-spin 1s linear infinite;
+}
+
+.ds-animate-ping {
+  animation: ds-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.ds-animate-pulse {
+  animation: ds-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.ds-animate-bounce {
+  animation: ds-bounce 1s infinite;
+}
+
+.ds-animate-shimmer {
+  animation: ds-shimmer 2s infinite;
+  background-size: 200% 100%;
+}
+
+.ds-animate-fade-in {
+  animation: ds-fade-in var(--ds-duration-normal) var(--ds-ease-out);
+}
+
+.ds-animate-fade-out {
+  animation: ds-fade-out var(--ds-duration-normal) var(--ds-ease-out);
+}
+
+.ds-animate-slide-in-up {
+  animation: ds-slide-in-up var(--ds-duration-normal) var(--ds-ease-out);
+}
+
+.ds-animate-slide-in-down {
+  animation: ds-slide-in-down var(--ds-duration-normal) var(--ds-ease-out);
+}
+
+.ds-animate-slide-in-left {
+  animation: ds-slide-in-left var(--ds-duration-normal) var(--ds-ease-out);
+}
+
+.ds-animate-slide-in-right {
+  animation: ds-slide-in-right var(--ds-duration-normal) var(--ds-ease-out);
+}
+
+.ds-animate-scale-in {
+  animation: ds-scale-in var(--ds-duration-normal) var(--ds-ease-out);
+}
+
+.ds-animate-scale-out {
+  animation: ds-scale-out var(--ds-duration-normal) var(--ds-ease-out);
+}
+
+.ds-animate-shake {
+  animation: ds-shake 0.5s ease-in-out;
+}
+
+.ds-animate-wiggle {
+  animation: ds-wiggle 1s ease-in-out infinite;
+}
+
+.ds-animate-heartbeat {
+  animation: ds-heartbeat 1.5s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   TRANSITION UTILITY CLASSES
+   ========================================================================== */
+
+.ds-transition-none {
+  transition-property: none;
+}
+
+.ds-transition-all {
+  transition-property: all;
+  transition-timing-function: var(--ds-ease-in-out);
+  transition-duration: var(--ds-duration-normal);
+}
+
+.ds-transition-default {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: var(--ds-ease-in-out);
+  transition-duration: var(--ds-duration-normal);
+}
+
+.ds-transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: var(--ds-ease-in-out);
+  transition-duration: var(--ds-duration-normal);
+}
+
+.ds-transition-opacity {
+  transition-property: opacity;
+  transition-timing-function: var(--ds-ease-in-out);
+  transition-duration: var(--ds-duration-normal);
+}
+
+.ds-transition-shadow {
+  transition-property: box-shadow;
+  transition-timing-function: var(--ds-ease-in-out);
+  transition-duration: var(--ds-duration-normal);
+}
+
+.ds-transition-transform {
+  transition-property: transform;
+  transition-timing-function: var(--ds-ease-in-out);
+  transition-duration: var(--ds-duration-normal);
+}
+
+/* ==========================================================================
+   HOVER/ACTIVE TRANSFORM UTILITIES
+   ========================================================================== */
+
+.ds-hover-scale:hover {
+  transform: scale(var(--ds-scale-102));
+}
+
+.ds-hover-scale-up:hover {
+  transform: scale(var(--ds-scale-105));
+}
+
+.ds-active-scale:active {
+  transform: scale(var(--ds-scale-98));
+}
+
+.ds-active-scale-down:active {
+  transform: scale(var(--ds-scale-95));
+}
+
+.ds-hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.ds-hover-lift-lg:hover {
+  transform: translateY(-4px);
+}
+
+/* ==========================================================================
+   REDUCED MOTION SUPPORT
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

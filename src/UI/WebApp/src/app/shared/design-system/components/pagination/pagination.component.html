@@ -1,0 +1,87 @@
+<nav [class]="paginationClasses()" aria-label="Pagination">
+  <ul class="ds-pagination-list">
+    @if (showFirstLast()) {
+      <li>
+        <button
+          type="button"
+          class="ds-pagination-btn ds-pagination-btn--nav"
+          [disabled]="!canGoPrevious()"
+          aria-label="Primera página"
+          (click)="goToFirst()"
+        >
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M11 12L7 8L11 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 12L3 8L7 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </li>
+    }
+
+    @if (showPrevNext()) {
+      <li>
+        <button
+          type="button"
+          class="ds-pagination-btn ds-pagination-btn--nav"
+          [disabled]="!canGoPrevious()"
+          aria-label="Página anterior"
+          (click)="goToPrevious()"
+        >
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </li>
+    }
+
+    @for (page of visiblePages(); track page) {
+      <li>
+        @if (page === '...') {
+          <span class="ds-pagination-ellipsis">...</span>
+        } @else {
+          <button
+            type="button"
+            class="ds-pagination-btn"
+            [class.ds-pagination-btn--active]="isCurrentPage(page)"
+            [attr.aria-current]="isCurrentPage(page) ? 'page' : null"
+            (click)="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+        }
+      </li>
+    }
+
+    @if (showPrevNext()) {
+      <li>
+        <button
+          type="button"
+          class="ds-pagination-btn ds-pagination-btn--nav"
+          [disabled]="!canGoNext()"
+          aria-label="Página siguiente"
+          (click)="goToNext()"
+        >
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </li>
+    }
+
+    @if (showFirstLast()) {
+      <li>
+        <button
+          type="button"
+          class="ds-pagination-btn ds-pagination-btn--nav"
+          [disabled]="!canGoNext()"
+          aria-label="Última página"
+          (click)="goToLast()"
+        >
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M5 4L9 8L5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </li>
+    }
+  </ul>
+</nav>

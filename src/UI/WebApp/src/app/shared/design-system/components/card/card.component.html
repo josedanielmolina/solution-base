@@ -1,0 +1,21 @@
+<article [class]="cardClasses()">
+  <!-- Header (optional) -->
+  <header class="ds-card-header">
+    <ng-content select="[slot=header]" />
+  </header>
+
+  <!-- Media (optional) -->
+  <div class="ds-card-media">
+    <ng-content select="[slot=media]" />
+  </div>
+
+  <!-- Body -->
+  <div class="ds-card-body">
+    <ng-content />
+  </div>
+
+  <!-- Footer (optional) -->
+  <footer class="ds-card-footer">
+    <ng-content select="[slot=footer]" />
+  </footer>
+</article>

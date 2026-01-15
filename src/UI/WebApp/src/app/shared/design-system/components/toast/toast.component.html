@@ -1,0 +1,32 @@
+<div [class]="toastClasses()">
+  @if (icon()) {
+    <span class="ds-toast-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path [attr.d]="iconPath()" />
+      </svg>
+    </span>
+  }
+
+  <div class="ds-toast-content">
+    @if (title()) {
+      <p class="ds-toast-title">{{ title() }}</p>
+    }
+    @if (message()) {
+      <p class="ds-toast-message">{{ message() }}</p>
+    }
+    <ng-content />
+  </div>
+
+  @if (dismissible()) {
+    <button
+      type="button"
+      class="ds-toast-close"
+      aria-label="Cerrar notificación"
+      (click)="close()"
+    >
+      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+  }
+</div>

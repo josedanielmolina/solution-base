@@ -1,0 +1,117 @@
+/**
+ * DS-CARD COMPONENT STYLES
+ */
+
+.ds-card-wrapper {
+  display: block;
+}
+
+.ds-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+/* Variants */
+.ds-card--elevated {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.ds-card--outlined {
+  border: 1px solid #e5e7eb;
+}
+
+.ds-card--filled {
+  background-color: #f9fafb;
+}
+
+/* Padding */
+.ds-card--padding-none .ds-card-body,
+.ds-card--padding-none .ds-card-header,
+.ds-card--padding-none .ds-card-footer {
+  padding: 0;
+}
+
+.ds-card--padding-sm .ds-card-body,
+.ds-card--padding-sm .ds-card-header,
+.ds-card--padding-sm .ds-card-footer {
+  padding: 1rem;
+}
+
+.ds-card--padding-md .ds-card-body,
+.ds-card--padding-md .ds-card-header,
+.ds-card--padding-md .ds-card-footer {
+  padding: 1.5rem;
+}
+
+.ds-card--padding-lg .ds-card-body,
+.ds-card--padding-lg .ds-card-header,
+.ds-card--padding-lg .ds-card-footer {
+  padding: 2rem;
+}
+
+/* Interactive */
+.ds-card--interactive {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ds-card--interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.ds-card--interactive:active {
+  transform: translateY(0);
+}
+
+/* Selected */
+.ds-card--selected {
+  border: 2px solid #22c55e;
+}
+
+/* Sections */
+.ds-card-header {
+  flex-shrink: 0;
+  padding: 1.5rem 1.5rem 0;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: #111827;
+}
+
+.ds-card-header:empty {
+  display: none;
+}
+
+.ds-card-media {
+  flex-shrink: 0;
+}
+
+.ds-card-media:empty {
+  display: none;
+}
+
+.ds-card-media img,
+.ds-card-media video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ds-card-body {
+  flex: 1;
+  padding: 1.5rem;
+  color: #4b5563;
+}
+
+.ds-card-footer {
+  flex-shrink: 0;
+  padding: 0 1.5rem 1.5rem;
+  border-top: none;
+}
+
+.ds-card-footer:empty {
+  display: none;
+}

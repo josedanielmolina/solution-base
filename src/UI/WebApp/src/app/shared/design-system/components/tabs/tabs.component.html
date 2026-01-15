@@ -1,0 +1,23 @@
+<div [class]="tabsClasses()" role="tablist">
+  @for (tab of tabs(); track tab.id) {
+    <button
+      type="button"
+      role="tab"
+      [id]="'tab-' + tab.id"
+      [class]="getTabClasses(tab)"
+      [attr.aria-selected]="currentTab() === tab.id"
+      [attr.aria-controls]="'panel-' + tab.id"
+      [disabled]="tab.disabled"
+      (click)="selectTab(tab.id)"
+    >
+      {{ tab.label }}
+      @if (tab.badge !== undefined) {
+        <span class="ds-tab-badge">{{ tab.badge }}</span>
+      }
+    </button>
+  }
+</div>
+
+<div class="ds-tabs-panels">
+  <ng-content />
+</div>

@@ -1,0 +1,77 @@
+/**
+ * DS-SPINNER COMPONENT STYLES
+ */
+
+.ds-spinner-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ds-spinner {
+  animation: ds-spin 1s linear infinite;
+}
+
+/* Sizes */
+.ds-spinner--xs {
+  width: 12px;
+  height: 12px;
+}
+
+.ds-spinner--sm {
+  width: 16px;
+  height: 16px;
+}
+
+.ds-spinner--md {
+  width: 24px;
+  height: 24px;
+}
+
+.ds-spinner--lg {
+  width: 32px;
+  height: 32px;
+}
+
+.ds-spinner--xl {
+  width: 48px;
+  height: 48px;
+}
+
+/* Colors */
+.ds-spinner--primary {
+  color: #22c55e;
+}
+
+.ds-spinner--secondary {
+  color: #6b7280;
+}
+
+.ds-spinner--accent {
+  color: #ff5c35;
+}
+
+.ds-spinner--white {
+  color: #ffffff;
+}
+
+/* Track - fondo del círculo */
+.ds-spinner-track {
+  opacity: 0.25;
+}
+
+/* Fill - parte que gira */
+.ds-spinner-fill {
+  stroke-dasharray: 45 200;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+}
+
+@keyframes ds-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

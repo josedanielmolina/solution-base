@@ -1,0 +1,45 @@
+<label
+  class="ds-toggle"
+  [class.ds-toggle--disabled]="disabled()"
+  [class.ds-toggle--label-left]="labelPosition() === 'left'"
+>
+  <input
+    type="checkbox"
+    role="switch"
+    [id]="id()"
+    [checked]="checked()"
+    [disabled]="disabled()"
+    [attr.aria-checked]="checked()"
+    class="ds-toggle-input"
+    (change)="toggle()"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    (keydown)="onKeydown($event)"
+  />
+
+  @if ((label() || description()) && labelPosition() === 'left') {
+    <span class="ds-toggle-content">
+      @if (label()) {
+        <span class="ds-toggle-label">{{ label() }}</span>
+      }
+      @if (description()) {
+        <span class="ds-toggle-description">{{ description() }}</span>
+      }
+    </span>
+  }
+
+  <span [class]="toggleClasses()">
+    <span [class]="thumbClasses()"></span>
+  </span>
+
+  @if ((label() || description()) && labelPosition() === 'right') {
+    <span class="ds-toggle-content">
+      @if (label()) {
+        <span class="ds-toggle-label">{{ label() }}</span>
+      }
+      @if (description()) {
+        <span class="ds-toggle-description">{{ description() }}</span>
+      }
+    </span>
+  }
+</label>
