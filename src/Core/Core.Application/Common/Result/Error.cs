@@ -1,18 +1,11 @@
 namespace Core.Application.Common.Result;
 
-public class Error
+/// <summary>
+/// Representa un error de negocio con código, mensaje y tipo.
+/// Usa record para inmutabilidad garantizada y sintaxis más limpia.
+/// </summary>
+public record Error(string Code, string Message, ErrorType Type)
 {
-    public string Code { get; }
-    public string Message { get; }
-    public ErrorType Type { get; }
-
-    public Error(string code, string message, ErrorType type)
-    {
-        Code = code;
-        Message = message;
-        Type = type;
-    }
-
     public static Error Validation(string code, string message) =>
         new(code, message, ErrorType.Validation);
 

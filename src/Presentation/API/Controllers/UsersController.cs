@@ -1,9 +1,6 @@
 using API.Extensions;
-using API.Filters;
 using Core.Application.DTOs.Users;
-using Core.Application.Facades;
-using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
+using Core.Application.Features.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -12,18 +9,21 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-    private readonly IUserFacade _userFacade;
-    private readonly IValidator<CreateUserDto> _createUserValidator;
-    private readonly IValidator<UpdateUserDto> _updateUserValidator;
+    private readonly CreateUser _createUser;
+    private readonly GetUser _getUser;
+    private readonly UpdateUser _updateUser;
+    private readonly DeleteUser _deleteUser;
 
     public UsersController(
-        IUserFacade userFacade,
-        IValidator<CreateUserDto> createUserValidator,
-        IValidator<UpdateUserDto> updateUserValidator)
+        CreateUser createUser,
+        GetUser getUser,
+        UpdateUser updateUser,
+        DeleteUser deleteUser)
     {
-        _userFacade = userFacade;
-        _createUserValidator = createUserValidator;
-        _updateUserValidator = updateUserValidator;
+        _createUser = createUser;
+        _getUser = getUser;
+        _updateUser = updateUser;
+        _deleteUser = deleteUser;
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _userFacade.GetAllUsersAsync();
+        var result = await _getUser.ExecuteAllAsync();
         return result.ToActionResult();
     }
 
@@ -42,7 +42,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var result = await _userFacade.GetUserByIdAsync(id);
+        var result = await _getUser.ExecuteAsync(id);
         return result.ToActionResult();
     }
 
@@ -50,21 +50,10 @@ public class UsersController : ControllerBase
     /// Create a new user
     /// </summary>
     [HttpPost]
-    [ValidateModel]
     public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
     {
-        var validationResult = await _createUserValidator.ValidateAsync(dto);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(new
-            {
-                error = "Validation.Failed",
-                message = "One or more validation errors occurred.",
-                details = validationResult.Errors.Select(e => e.ErrorMessage)
-            });
-        }
-
-        var result = await _userFacade.CreateUserAsync(dto);
+        // Validación automática por FluentValidationFilter
+        var result = await _createUser.ExecuteAsync(dto);
         
         if (result.IsSuccess)
         {
@@ -78,21 +67,10 @@ public class UsersController : ControllerBase
     /// Update an existing user
     /// </summary>
     [HttpPut("{id}")]
-    [ValidateModel]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateUserDto dto)
     {
-        var validationResult = await _updateUserValidator.ValidateAsync(dto);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(new
-            {
-                error = "Validation.Failed",
-                message = "One or more validation errors occurred.",
-                details = validationResult.Errors.Select(e => e.ErrorMessage)
-            });
-        }
-
-        var result = await _userFacade.UpdateUserAsync(id, dto);
+        // Validación automática por FluentValidationFilter
+        var result = await _updateUser.ExecuteAsync(id, dto);
         return result.ToActionResult();
     }
 
@@ -102,7 +80,7 @@ public class UsersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _userFacade.DeleteUserAsync(id);
+        var result = await _deleteUser.ExecuteAsync(id);
         return result.ToActionResult();
     }
 }
