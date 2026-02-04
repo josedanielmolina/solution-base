@@ -32,4 +32,18 @@ public class EmailService : IEmailService
         var body = $"Please click the following link to reset your password: {resetLink}";
         await SendEmailAsync(to, subject, body);
     }
+
+    public async Task SendPasswordResetCodeAsync(string to, string userName, string code)
+    {
+        var subject = "Your password reset code";
+        var body = $@"Hello {userName},
+
+Your password reset code is: {code}
+
+This code will expire in 5 minutes.
+
+If you did not request a password reset, please ignore this email.";
+        await SendEmailAsync(to, subject, body);
+    }
 }
+

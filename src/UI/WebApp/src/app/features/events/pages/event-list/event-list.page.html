@@ -1,0 +1,73 @@
+<div class="page-container">
+    <div class="page-header">
+        <h1>Mis Eventos</h1>
+        <div class="header-actions">
+            <a routerLink="new" class="btn btn-primary">
+                <span class="icon">+</span>
+                Nuevo Evento
+            </a>
+        </div>
+    </div>
+
+    @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    @if (loading()) {
+    <div class="loading">Cargando eventos...</div>
+    } @else {
+    @if (events().length === 0) {
+    <div class="empty-state">
+        <div class="empty-icon">📅</div>
+        <h2>No tienes eventos</h2>
+        <p>Crea tu primer evento de pádel y comienza a organizarlo</p>
+        <a routerLink="new" class="btn btn-primary">Crear Evento</a>
+    </div>
+    } @else {
+    <div class="events-grid">
+        @for (event of events(); track event.id) {
+        <div class="event-card" [class.inactive]="!event.isActive">
+            <div class="event-header">
+                <h3 class="event-name">{{ event.name }}</h3>
+                <span class="event-badge" [class.active]="event.isActive" [class.inactive]="!event.isActive">
+                    {{ event.isActive ? 'Activo' : 'Inactivo' }}
+                </span>
+            </div>
+
+            @if (event.description) {
+            <p class="event-description">{{ event.description }}</p>
+            }
+
+            <div class="event-details">
+                <div class="detail-item">
+                    <span class="detail-icon">📆</span>
+                    <span>{{ formatDate(event.startDate) }} - {{ formatDate(event.endDate) }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-icon">👤</span>
+                    <span>{{ event.organizerName }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-icon">🏟️</span>
+                    <span>{{ event.establishmentsCount }} establecimiento(s)</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-icon">👥</span>
+                    <span>{{ event.adminsCount }} administrador(es)</span>
+                </div>
+            </div>
+
+            <div class="event-actions">
+                <button class="btn btn-secondary" (click)="onManage(event.publicId)">
+                    Administrar
+                </button>
+                @if (event.isActive) {
+                <button class="btn-icon delete" title="Eliminar" (click)="onDelete(event)">🗑️</button>
+                }
+            </div>
+        </div>
+        }
+    </div>
+    }
+    }
+</div>

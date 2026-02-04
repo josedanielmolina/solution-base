@@ -17,7 +17,7 @@ public class GetUser
 
     public async Task<Result<UserDto>> ExecuteAsync(int id)
     {
-        var user = await _userRepository.GetByIdAsync(id);
+        var user = await _userRepository.GetWithRolesAsync(id);
 
         if (user == null)
         {

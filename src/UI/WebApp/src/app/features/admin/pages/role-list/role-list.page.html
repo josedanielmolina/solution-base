@@ -1,0 +1,32 @@
+<div class="role-list-container">
+    <div class="page-header">
+        <h1>Administración de Roles</h1>
+        <p class="subtitle">Gestiona los roles y permisos del sistema</p>
+    </div>
+
+    @if (loading()) {
+    <div class="loading">Cargando roles...</div>
+    } @else if (errorMessage()) {
+    <div class="alert alert-error">{{ errorMessage() }}</div>
+    } @else {
+    <div class="roles-grid">
+        @for (role of roles(); track role.id) {
+        <div class="role-card">
+            <div class="role-header">
+                <h3>{{ role.name }}</h3>
+            </div>
+            <p class="role-description">{{ role.description || 'Sin descripción' }}</p>
+            <div class="role-actions">
+                <a [routerLink]="['/app/admin/roles', role.id, 'permissions']" class="btn btn-primary">
+                    Gestionar Permisos
+                </a>
+            </div>
+        </div>
+        } @empty {
+        <div class="empty-state">
+            <p>No hay roles configurados</p>
+        </div>
+        }
+    </div>
+    }
+</div>

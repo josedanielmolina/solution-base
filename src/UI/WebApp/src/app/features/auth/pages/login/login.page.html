@@ -41,6 +41,12 @@
         }
       </div>
 
+      <div class="form-actions">
+        <a routerLink="/auth/forgot-password" class="forgot-password-link">
+          ¿Olvidaste tu contraseña?
+        </a>
+      </div>
+
       @if (errorMessage()) {
         <div class="alert alert-error">
           {{ errorMessage() }}
@@ -61,3 +67,4 @@
     </form>
   </div>
 </div>
+

@@ -2,6 +2,11 @@ import { Routes } from '@angular/router';
 
 export const USERS_ROUTES: Routes = [
   {
+    path: 'profile',
+    loadComponent: () => import('./pages/profile/profile.page')
+      .then(m => m.ProfilePage)
+  },
+  {
     path: '',
     loadComponent: () => import('./pages/user-list/user-list.page')
       .then(m => m.UserListPage)
@@ -22,3 +27,4 @@ export const USERS_ROUTES: Routes = [
       .then(m => m.UserFormPage)
   }
 ];
+

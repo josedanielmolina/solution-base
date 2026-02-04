@@ -1,0 +1,46 @@
+<div class="event-layout">
+    @if (loading()) {
+    <div class="loading-full">
+        <div class="spinner"></div>
+        <p>Cargando evento...</p>
+    </div>
+    } @else if (error()) {
+    <div class="error-state">
+        <div class="error-icon">⚠️</div>
+        <h2>{{ error() }}</h2>
+        <a routerLink="/app/events" class="btn btn-primary">Volver a Eventos</a>
+    </div>
+    } @else if (event()) {
+    <header class="event-header">
+        <div class="header-content">
+            <a routerLink="/app/events" class="back-link">← Mis Eventos</a>
+            <h1>{{ event()!.name }}</h1>
+            <div class="event-meta">
+                <span class="meta-item">
+                    <span class="icon">📆</span>
+                    {{ event()!.startDate | date:'dd MMM yyyy' }} - {{ event()!.endDate | date:'dd MMM yyyy' }}
+                </span>
+                <span class="event-badge" [class.active]="event()!.isActive">
+                    {{ event()!.isActive ? 'Activo' : 'Inactivo' }}
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <div class="event-body">
+        <nav class="event-nav">
+            @for (item of navItems; track item.path) {
+            <a [routerLink]="item.path ? ['/app/events', publicId(), item.path] : ['/app/events', publicId()]"
+                class="nav-item" [class.active]="isActive(item.path, item.exact)">
+                <span class="nav-icon">{{ item.icon }}</span>
+                <span class="nav-label">{{ item.label }}</span>
+            </a>
+            }
+        </nav>
+
+        <main class="event-content">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+    }
+</div>

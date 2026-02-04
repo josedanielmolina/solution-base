@@ -1,0 +1,235 @@
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-primary, #1e293b);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary, #3b82f6);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--primary-dark, #2563eb);
+}
+
+.btn-secondary {
+    background: var(--bg-secondary, #f1f5f9);
+    color: var(--text-primary, #1e293b);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.alert-error {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary, #64748b);
+}
+
+.section {
+    margin-bottom: 2rem;
+}
+
+.section h3 {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    color: var(--text-secondary, #64748b);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state p {
+    margin: 0;
+    color: var(--text-secondary, #64748b);
+}
+
+/* Lists */
+.admins-list,
+.invitations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.admin-card,
+.invitation-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.card-name {
+    font-weight: 500;
+    color: var(--text-primary, #1e293b);
+}
+
+.card-email {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #64748b);
+}
+
+.card-date,
+.card-expires {
+    font-size: 0.75rem;
+    color: var(--text-secondary, #64748b);
+}
+
+.expired-badge {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.125rem 0.5rem;
+    background: #fef2f2;
+    color: #dc2626;
+    border-radius: 4px;
+    font-size: 0.625rem;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 1.125rem;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.btn-icon:hover {
+    opacity: 1;
+}
+
+.btn-icon.delete:hover {
+    color: #dc2626;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border, #e2e8f0);
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-secondary, #64748b);
+    line-height: 1;
+}
+
+.modal-body {
+    padding: 1.25rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.modal-help {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-secondary, #64748b);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--border, #e2e8f0);
+}

@@ -1,0 +1,55 @@
+<div class="city-form-container">
+    <div class="page-header">
+        <a routerLink="/app/admin/cities" class="back-link">← Volver a Ciudades</a>
+        <h1>{{ isEditMode() ? 'Editar Ciudad' : 'Nueva Ciudad' }}</h1>
+    </div>
+
+    @if (loading()) {
+    <div class="loading">Cargando...</div>
+    } @else {
+    @if (errorMessage()) {
+    <div class="alert alert-error">{{ errorMessage() }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-card">
+        <div class="form-group">
+            <label for="countryId">País *</label>
+            <select id="countryId" formControlName="countryId" class="form-control">
+                <option value="">Seleccione un país</option>
+                @for (country of countries(); track country.id) {
+                <option [value]="country.id">{{ country.name }}</option>
+                }
+            </select>
+            @if (form.get('countryId')?.touched && form.get('countryId')?.errors?.['required']) {
+            <span class="error-text">Debe seleccionar un país</span>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="name">Nombre *</label>
+            <input type="text" id="name" formControlName="name" class="form-control">
+            @if (form.get('name')?.touched && form.get('name')?.errors) {
+            <span class="error-text">
+                @if (form.get('name')?.errors?.['required']) { El nombre es requerido }
+            </span>
+            }
+        </div>
+
+        @if (isEditMode()) {
+        <div class="form-group">
+            <label class="checkbox-label">
+                <input type="checkbox" formControlName="isActive">
+                <span>Activo</span>
+            </label>
+        </div>
+        }
+
+        <div class="form-actions">
+            <a routerLink="/app/admin/cities" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary" [disabled]="saving()">
+                {{ saving() ? 'Guardando...' : 'Guardar' }}
+            </button>
+        </div>
+    </form>
+    }
+</div>

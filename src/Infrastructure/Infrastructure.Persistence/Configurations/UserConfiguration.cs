@@ -27,6 +27,16 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasIndex(u => u.Email)
             .IsUnique();
 
+        builder.Property(u => u.Document)
+            .HasMaxLength(50);
+
+        builder.HasIndex(u => u.Document)
+            .IsUnique()
+            .HasFilter("[Document] IS NOT NULL");
+
+        builder.Property(u => u.Phone)
+            .HasMaxLength(20);
+
         builder.Property(u => u.PasswordHash)
             .IsRequired()
             .HasMaxLength(500);
@@ -35,7 +45,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasDefaultValue(true);
 
-        builder.Property(u => u.IsEmailVerified)
+        builder.Property(u => u.RequiresPasswordChange)
             .IsRequired()
             .HasDefaultValue(false);
 
@@ -47,5 +57,18 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.LastLoginAt)
             .IsRequired(false);
+
+        // Navigation: User has many UserRoles
+        builder.HasMany(u => u.UserRoles)
+            .WithOne(ur => ur.User)
+            .HasForeignKey(ur => ur.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Navigation: User has one optional Player
+        builder.HasOne(u => u.Player)
+            .WithOne(p => p.User)
+            .HasForeignKey<Player>(p => p.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
+

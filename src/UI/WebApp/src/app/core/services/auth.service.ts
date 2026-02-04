@@ -4,7 +4,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '@environments/environment';
 import { StorageUtils } from '@core/utils/common.utils';
-import { LoginCredentials, AuthUser, LoginResponse } from '@core/models/auth.model';
+import {
+  LoginCredentials,
+  AuthUser,
+  LoginResponse,
+  ChangePasswordRequest,
+  RequestPasswordResetRequest,
+  ResetPasswordRequest
+} from '@core/models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +19,7 @@ import { LoginCredentials, AuthUser, LoginResponse } from '@core/models/auth.mod
 export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'auth_user';
+  private readonly PERMISSIONS_KEY = 'user_permissions';
 
   private http = inject(HttpClient);
   private router = inject(Router);
@@ -19,7 +27,29 @@ export class AuthService {
   // Signals
   token = signal<string | null>(this.getToken());
   currentUser = signal<AuthUser | null>(this.getUser());
+  requiresPasswordChange = signal<boolean>(false);
   isAuthenticated = computed(() => !!this.token());
+
+  // Permission check
+  hasPermission(permission: string): boolean {
+    const user = this.currentUser();
+    if (!user) return false;
+    return user.permissions.includes(permission);
+  }
+
+  hasAnyPermission(permissions: string[]): boolean {
+    return permissions.some(p => this.hasPermission(p));
+  }
+
+  hasAllPermissions(permissions: string[]): boolean {
+    return permissions.every(p => this.hasPermission(p));
+  }
+
+  hasRole(role: string): boolean {
+    const user = this.currentUser();
+    if (!user) return false;
+    return user.roles.includes(role);
+  }
 
   login(credentials: LoginCredentials): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${environment.apiUrl}/api/auth/login`, credentials)
@@ -29,6 +59,34 @@ export class AuthService {
           this.setUser(response.user);
           this.token.set(response.token);
           this.currentUser.set(response.user);
+          this.requiresPasswordChange.set(response.requiresPasswordChange);
+        })
+      );
+  }
+
+  changePassword(request: ChangePasswordRequest): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/api/auth/change-password`, request)
+      .pipe(
+        tap(() => {
+          this.requiresPasswordChange.set(false);
+        })
+      );
+  }
+
+  requestPasswordReset(request: RequestPasswordResetRequest): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/api/auth/request-password-reset`, request);
+  }
+
+  resetPassword(request: ResetPasswordRequest): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/api/auth/reset-password`, request);
+  }
+
+  getCurrentUser(): Observable<AuthUser> {
+    return this.http.get<AuthUser>(`${environment.apiUrl}/api/auth/me`)
+      .pipe(
+        tap(user => {
+          this.setUser(user);
+          this.currentUser.set(user);
         })
       );
   }
@@ -75,6 +133,7 @@ export class AuthService {
     StorageUtils.remove(this.USER_KEY);
     this.token.set(null);
     this.currentUser.set(null);
+    this.requiresPasswordChange.set(false);
   }
 
   private decodeToken(token: string): any {
@@ -100,3 +159,4 @@ export class AuthService {
     }
   }
 }
+

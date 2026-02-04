@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-/* Design System Tokens & Theme */
-@import './app/shared/design-system/tokens/index.css';
-@import './app/shared/design-system/themes/default-theme.css';
-
 /* Global Styles */
 * {
   box-sizing: border-box;
@@ -11,9 +7,9 @@
 
 body {
   margin: 0;
-  font-family: var(--ds-font-family-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
   line-height: 1.5;
-  color: var(--ds-color-gray-900);
-  background-color: var(--ds-color-gray-50);
+  color: #1f2937;
+  background-color: #f9fafb;
 }

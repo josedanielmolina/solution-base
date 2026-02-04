@@ -1,0 +1,71 @@
+<div class="page-container">
+    <div class="page-header">
+        <h1>Establecimientos</h1>
+        <div class="header-actions">
+            <label class="toggle-inactive">
+                <input type="checkbox" [checked]="showInactive()" (change)="toggleShowInactive()">
+                Mostrar inactivos
+            </label>
+            <a routerLink="new" class="btn btn-primary">
+                <span class="icon">+</span>
+                Nuevo Establecimiento
+            </a>
+        </div>
+    </div>
+
+    @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    @if (loading()) {
+    <div class="loading">Cargando...</div>
+    } @else {
+    @if (establishments().length === 0) {
+    <div class="empty-state">
+        <p>No hay establecimientos registrados</p>
+        <a routerLink="new" class="btn btn-primary">Crear el primero</a>
+    </div>
+    } @else {
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>País</th>
+                    <th>Ciudad</th>
+                    <th>Dirección</th>
+                    <th>Canchas</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (item of establishments(); track item.id) {
+                <tr [class.inactive]="!item.isActive">
+                    <td class="name-cell">
+                        <a (click)="onView(item.id)" class="link">{{ item.name }}</a>
+                    </td>
+                    <td>{{ item.countryName }}</td>
+                    <td>{{ item.cityName }}</td>
+                    <td class="address-cell">{{ item.address }}</td>
+                    <td class="center">{{ item.courtsCount }}</td>
+                    <td class="center">
+                        <span class="badge" [class.active]="item.isActive" [class.inactive]="!item.isActive">
+                            {{ item.isActive ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </td>
+                    <td class="actions-cell">
+                        <button class="btn-icon" title="Ver" (click)="onView(item.id)">👁</button>
+                        <button class="btn-icon" title="Editar" (click)="onEdit(item.id)">✏️</button>
+                        @if (item.isActive) {
+                        <button class="btn-icon delete" title="Eliminar" (click)="onDelete(item)">🗑️</button>
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    }
+</div>

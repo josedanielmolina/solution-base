@@ -1,0 +1,48 @@
+<div class="city-list-container">
+    <div class="page-header">
+        <h1>Ciudades</h1>
+        <a routerLink="new" class="btn btn-primary">+ Nueva Ciudad</a>
+    </div>
+
+    @if (loading()) {
+    <div class="loading">Cargando ciudades...</div>
+    } @else if (errorMessage()) {
+    <div class="alert alert-error">{{ errorMessage() }}</div>
+    } @else {
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>País</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (city of cities(); track city.id) {
+                <tr [class.inactive]="!city.isActive">
+                    <td>{{ city.name }}</td>
+                    <td>{{ city.countryName }}</td>
+                    <td>
+                        <span class="badge" [class.active]="city.isActive" [class.inactive]="!city.isActive">
+                            {{ city.isActive ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </td>
+                    <td class="actions">
+                        <a [routerLink]="[city.id, 'edit']" class="btn-icon" title="Editar">✏️</a>
+                        @if (city.isActive) {
+                        <button (click)="deleteCity(city)" class="btn-icon" title="Desactivar">🗑️</button>
+                        }
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="4" class="empty-message">No hay ciudades registradas</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>

@@ -20,6 +20,15 @@ public class CreateUserValidator : AbstractValidator<CreateUserDto>
             .EmailAddress().WithMessage("Email is not valid")
             .MaximumLength(255).WithMessage("Email must not exceed 255 characters");
 
+        RuleFor(x => x.Document)
+            .MaximumLength(50).WithMessage("Document must not exceed 50 characters")
+            .When(x => !string.IsNullOrEmpty(x.Document));
+
+        RuleFor(x => x.Phone)
+            .MaximumLength(20).WithMessage("Phone must not exceed 20 characters")
+            .Matches(@"^[\d\s\-\+\(\)]*$").WithMessage("Phone contains invalid characters")
+            .When(x => !string.IsNullOrEmpty(x.Phone));
+
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required")
             .MinimumLength(8).WithMessage("Password must be at least 8 characters")
@@ -28,3 +37,4 @@ public class CreateUserValidator : AbstractValidator<CreateUserDto>
             .Matches(@"[0-9]").WithMessage("Password must contain at least one number");
     }
 }
+

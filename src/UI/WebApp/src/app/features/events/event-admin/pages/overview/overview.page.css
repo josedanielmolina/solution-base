@@ -1,0 +1,126 @@
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary, #64748b);
+}
+
+.overview-page h2 {
+    margin: 0 0 1.5rem;
+    font-size: 1.5rem;
+    color: var(--text-primary, #1e293b);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary, #1e293b);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #64748b);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.info-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.info-card h3 {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    color: var(--text-primary, #1e293b);
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border, #e2e8f0);
+}
+
+.info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.info-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.info-label {
+    font-weight: 500;
+    color: var(--text-secondary, #64748b);
+    min-width: 100px;
+}
+
+.info-value {
+    color: var(--text-primary, #1e293b);
+}
+
+.no-data {
+    color: var(--text-secondary, #64748b);
+    font-style: italic;
+    margin: 0;
+}
+
+.posters-section {
+    margin-top: 1.5rem;
+}
+
+.posters-section h3 {
+    margin: 0 0 1rem;
+    font-size: 1.125rem;
+    color: var(--text-primary, #1e293b);
+}
+
+.posters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.poster-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.poster-card h4 {
+    margin: 0 0 0.75rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary, #64748b);
+}
+
+.poster-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}

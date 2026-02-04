@@ -1,0 +1,50 @@
+<div class="modal-overlay" (click)="onCancel()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Configurar Horarios</h2>
+            <button class="btn-close" (click)="onCancel()">✕</button>
+        </div>
+
+        @if (error()) {
+        <div class="alert alert-error">{{ error() }}</div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="schedule-container">
+                @for (day of daysOfWeek; track day.value) {
+                <div class="day-row">
+                    <div class="day-name">{{ day.label }}</div>
+                    <div class="day-schedules">
+                        @for (item of getSchedulesForDay(day.value); track item.index) {
+                        <div class="schedule-row" [formGroup]="item.control">
+                            <div class="time-inputs">
+                                <input type="time" formControlName="openTime" class="time-input">
+                                <span class="time-separator">a</span>
+                                <input type="time" formControlName="closeTime" class="time-input">
+                            </div>
+                            @if (scheduleType === 2) {
+                            <span class="block-label">Bloque {{ item.control.value.blockNumber }}</span>
+                            <button type="button" class="btn-icon delete" (click)="removeBlock(item.index)"
+                                [disabled]="getSchedulesForDay(day.value).length <= 1">🗑️</button>
+                            }
+                        </div>
+                        }
+                        @if (scheduleType === 2) {
+                        <button type="button" class="btn-add-block" (click)="addBlock(day.value)">
+                            + Agregar bloque
+                        </button>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="saving()">
+                    {{ saving() ? 'Guardando...' : 'Guardar Horarios' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,9 +1,11 @@
 using System.Text;
+using API.Authorization;
 using API.Middleware;
 using Core.Application;
 using Infrastructure.Persistence;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -56,6 +58,14 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
     };
 });
+
+// Add Permission-based Authorization
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
+// Add HttpContextAccessor and CurrentUserService (Phase 4)
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<Core.Application.Interfaces.ICurrentUserService, API.Services.CurrentUserService>();
 
 // Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();

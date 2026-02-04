@@ -1,0 +1,127 @@
+<div class="page-container">
+    <div class="page-header">
+        <h1>{{ isEdit() ? 'Editar Establecimiento' : 'Nuevo Establecimiento' }}</h1>
+    </div>
+
+    @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    @if (loading()) {
+    <div class="loading">Cargando...</div>
+    } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-card">
+        <div class="form-section">
+            <h2>Información General</h2>
+
+            <div class="form-group">
+                <label for="name">Nombre *</label>
+                <input type="text" id="name" formControlName="name" class="form-control">
+                @if (form.get('name')?.invalid && form.get('name')?.touched) {
+                <span class="error-text">El nombre es requerido</span>
+                }
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="countryId">País *</label>
+                    <select id="countryId" formControlName="countryId" class="form-control">
+                        <option value="">Seleccione un país</option>
+                        @for (country of countries(); track country.id) {
+                        <option [value]="country.id">{{ country.name }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cityId">Ciudad *</label>
+                    <select id="cityId" formControlName="cityId" class="form-control">
+                        <option value="">Seleccione una ciudad</option>
+                        @for (city of cities(); track city.id) {
+                        <option [value]="city.id">{{ city.name }}</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Dirección *</label>
+                <textarea id="address" formControlName="address" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="googleMapsUrl">URL de Google Maps</label>
+                <input type="url" id="googleMapsUrl" formControlName="googleMapsUrl" class="form-control"
+                    placeholder="https://maps.google.com/...">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Contacto</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="phoneLandline">Teléfono Fijo</label>
+                    <input type="tel" id="phoneLandline" formControlName="phoneLandline" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneMobile">Teléfono Móvil</label>
+                    <input type="tel" id="phoneMobile" formControlName="phoneMobile" class="form-control">
+                </div>
+            </div>
+            <p class="hint">* Al menos un teléfono es requerido</p>
+        </div>
+
+        <div class="form-section">
+            <h2>Logo</h2>
+
+            <div class="logo-upload">
+                @if (form.get('logo')?.value) {
+                <div class="logo-preview">
+                    <img [src]="form.get('logo')?.value" alt="Logo">
+                    <button type="button" class="btn-remove" (click)="removeLogo()">✕</button>
+                </div>
+                } @else {
+                <div class="upload-area">
+                    <input type="file" id="logo" accept="image/*" (change)="onLogoChange($event)" hidden>
+                    <label for="logo" class="upload-label">
+                        <span class="upload-icon">📷</span>
+                        <span>Seleccionar imagen</span>
+                    </label>
+                </div>
+                }
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Configuración</h2>
+
+            <div class="form-group">
+                <label for="scheduleType">Tipo de Horario *</label>
+                <select id="scheduleType" formControlName="scheduleType" class="form-control">
+                    @for (type of scheduleTypes; track type.value) {
+                    <option [value]="type.value">{{ type.label }}</option>
+                    }
+                </select>
+            </div>
+
+            @if (isEdit()) {
+            <div class="form-group checkbox-group">
+                <label>
+                    <input type="checkbox" formControlName="isActive">
+                    Activo
+                </label>
+            </div>
+            }
+        </div>
+
+        <div class="form-actions">
+            <a routerLink="/app/admin/establishments" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary" [disabled]="saving()">
+                {{ saving() ? 'Guardando...' : (isEdit() ? 'Guardar Cambios' : 'Crear Establecimiento') }}
+            </button>
+        </div>
+    </form>
+    }
+</div>

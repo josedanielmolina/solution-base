@@ -4,5 +4,9 @@ public record CreateUserDto(
     string FirstName,
     string LastName,
     string Email,
-    string Password
+    string? Document,
+    string? Phone,
+    string Password,
+    IEnumerable<int>? RoleIds
 );
+

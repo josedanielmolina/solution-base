@@ -1,0 +1,57 @@
+<div class="role-permissions-container">
+    <div class="page-header">
+        <a routerLink="/app/admin/roles" class="back-link">← Volver a Roles</a>
+        @if (role()) {
+        <h1>Permisos de {{ role()?.name }}</h1>
+        <p class="subtitle">{{ role()?.description }}</p>
+        }
+    </div>
+
+    @if (loading()) {
+    <div class="loading">Cargando permisos...</div>
+    } @else if (errorMessage()) {
+    <div class="alert alert-error">{{ errorMessage() }}</div>
+    } @else {
+    @if (successMessage()) {
+    <div class="alert alert-success">{{ successMessage() }}</div>
+    }
+
+    <div class="permissions-grid">
+        @for (entry of groupedPermissions() | keyvalue; track entry.key) {
+        <div class="permission-module">
+            <div class="module-header">
+                <label class="checkbox-label">
+                    <input type="checkbox" [checked]="isModuleFullySelected(entry.key)"
+                        (change)="toggleAllInModule(entry.key, $any($event.target).checked)">
+                    <span class="module-name">{{ entry.key }}</span>
+                </label>
+            </div>
+            <div class="permissions-list">
+                @for (permission of entry.value; track permission.id) {
+                <label class="checkbox-label permission-item">
+                    <input type="checkbox" [checked]="isSelected(permission.id)"
+                        (change)="togglePermission(permission.id)">
+                    <div class="permission-info">
+                        <span class="permission-name">{{ permission.name }}</span>
+                        @if (permission.description) {
+                        <span class="permission-description">{{ permission.description }}</span>
+                        }
+                    </div>
+                </label>
+                }
+            </div>
+        </div>
+        }
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-primary" (click)="save()" [disabled]="saving()">
+            @if (saving()) {
+            <span>Guardando...</span>
+            } @else {
+            <span>Guardar Cambios</span>
+            }
+        </button>
+    </div>
+    }
+</div>

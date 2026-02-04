@@ -25,7 +25,18 @@ public static class DependencyInjection
         // Register Repositories
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPlayerRepository, PlayerRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IPermissionRepository, PermissionRepository>();
+        services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
+        services.AddScoped<ICountryRepository, CountryRepository>();
+        services.AddScoped<ICityRepository, CityRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IEstablishmentRepository, EstablishmentRepository>();
+        services.AddScoped<ICourtRepository, CourtRepository>();
 
+        // Phase 4: Events
+        services.AddScoped<IEventRepository, EventRepository>();
         // Register Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 

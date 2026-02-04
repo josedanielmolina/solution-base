@@ -1,0 +1,62 @@
+<div class="page">
+    <div class="page-header">
+        <h2>Establecimientos</h2>
+        <button class="btn btn-primary" (click)="toggleSearch()">
+            {{ showSearch() ? 'Cerrar' : '+ Agregar' }}
+        </button>
+    </div>
+
+    @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    @if (showSearch()) {
+    <div class="search-panel">
+        <h3>Buscar Establecimientos Disponibles</h3>
+        <input type="text" placeholder="Buscar por nombre..." [value]="searchQuery()"
+            (input)="searchQuery.set($any($event.target).value); searchAvailable()">
+
+        @if (availableEstablishments().length === 0) {
+        <p class="no-results">No hay establecimientos disponibles</p>
+        } @else {
+        <div class="available-list">
+            @for (est of availableEstablishments(); track est.id) {
+            <div class="available-item">
+                <div class="item-info">
+                    <span class="item-name">{{ est.name }}</span>
+                    <span class="item-location">{{ est.cityName }}</span>
+                </div>
+                <button class="btn btn-sm btn-primary" (click)="addEstablishment(est.id)" [disabled]="adding()">
+                    Agregar
+                </button>
+            </div>
+            }
+        </div>
+        }
+    </div>
+    }
+
+    @if (loading()) {
+    <div class="loading">Cargando...</div>
+    } @else if (establishments().length === 0) {
+    <div class="empty-state">
+        <p>No hay establecimientos asociados a este evento</p>
+        <button class="btn btn-primary" (click)="toggleSearch()">Agregar Establecimiento</button>
+    </div>
+    } @else {
+    <div class="establishments-list">
+        @for (est of establishments(); track est.id) {
+        <div class="establishment-card">
+            <div class="card-info">
+                <span class="card-name">{{ est.establishmentName }}</span>
+                @if (est.city) {
+                <span class="card-location">📍 {{ est.city }}</span>
+                }
+                <span class="card-date">Agregado: {{ est.createdAt | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <button class="btn-icon delete" title="Eliminar" (click)="removeEstablishment(est)">🗑️</button>
+        </div>
+        }
+    </div>
+    }
+</div>

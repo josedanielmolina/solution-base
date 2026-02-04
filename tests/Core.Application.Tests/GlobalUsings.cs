@@ -5,8 +5,8 @@ global using Bogus;
 global using System.Linq.Expressions;
 global using Core.Application.DTOs.Users;
 global using Core.Application.Features.Users;
-global using Core.Application.Facades;
 global using Core.Application.Common.Result;
 global using Core.Domain.Entities;
 global using Core.Domain.Interfaces;
 global using Core.Domain.Interfaces.Repositories;
+

@@ -1,0 +1,129 @@
+<div class="page-container">
+    <div class="page-header">
+        <a routerLink="/app/events" class="back-link">← Volver a eventos</a>
+        <h1>{{ isEditing() ? 'Editar Evento' : 'Nuevo Evento' }}</h1>
+    </div>
+
+    @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    @if (loading()) {
+    <div class="loading">Cargando...</div>
+    } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="event-form">
+        <div class="form-card">
+            <h2 class="section-title">Información General</h2>
+
+            <div class="form-group">
+                <label for="name">Nombre del Evento *</label>
+                <input type="text" id="name" formControlName="name" [class.error]="hasError('name')"
+                    placeholder="Ej: Torneo de Verano 2024">
+                @if (hasError('name')) {
+                <span class="error-text">El nombre es requerido</span>
+                }
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" formControlName="description" rows="3"
+                    placeholder="Describe tu evento..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="startDate">Fecha de Inicio *</label>
+                    <input type="date" id="startDate" formControlName="startDate" [class.error]="hasError('startDate')">
+                    @if (hasError('startDate')) {
+                    <span class="error-text">La fecha de inicio es requerida</span>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label for="endDate">Fecha de Fin *</label>
+                    <input type="date" id="endDate" formControlName="endDate" [class.error]="hasError('endDate')">
+                    @if (hasError('endDate')) {
+                    <span class="error-text">La fecha de fin es requerida</span>
+                    }
+                </div>
+            </div>
+
+
+            <div class="form-group organizer-search">
+                <label for="organizerSearch">Organizador (opcional)</label>
+                <div class="autocomplete-container">
+                    <input type="text" id="organizerSearch" [value]="organizerSearch()"
+                        (input)="onOrganizerSearch($event)" (blur)="hideDropdown()"
+                        placeholder="Buscar por nombre, email o documento..." autocomplete="off">
+
+                    @if (searchingOrganizers()) {
+                    <span class="search-spinner">🔍</span>
+                    }
+
+                    @if (selectedOrganizer()) {
+                    <button type="button" class="clear-btn" (click)="clearOrganizer()">✕</button>
+                    }
+
+                    @if (showOrganizerDropdown() && organizerResults().length > 0) {
+                    <div class="autocomplete-dropdown">
+                        @for (user of organizerResults(); track user.id) {
+                        <div class="autocomplete-item" (mousedown)="selectOrganizer(user)">
+                            <div class="user-info">
+                                <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+                                <span class="user-email">{{ user.email }}</span>
+                            </div>
+                            @if (user.document) {
+                            <span class="user-document">{{ user.document }}</span>
+                            }
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+
+                @if (selectedOrganizer()) {
+                <div class="selected-organizer">
+                    <span class="badge">✓ Organizador seleccionado:</span>
+                    <span class="organizer-info">{{ selectedOrganizer()!.firstName }} {{ selectedOrganizer()!.lastName
+                        }} ({{ selectedOrganizer()!.email }})</span>
+                </div>
+                }
+                <small class="help-text">Puedes asignar o cambiar el organizador en cualquier momento</small>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h2 class="section-title">Contacto y Redes</h2>
+
+            <div class="form-group">
+                <label for="contactPhone">Teléfono de Contacto</label>
+                <input type="tel" id="contactPhone" formControlName="contactPhone" placeholder="+1 234 567 890">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="whatsApp">WhatsApp</label>
+                    <input type="text" id="whatsApp" formControlName="whatsApp" placeholder="Número o enlace">
+                </div>
+
+                <div class="form-group">
+                    <label for="instagram">Instagram</label>
+                    <input type="text" id="instagram" formControlName="instagram" placeholder="@usuario">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="facebook">Facebook</label>
+                <input type="text" id="facebook" formControlName="facebook" placeholder="URL de la página">
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a routerLink="/app/events" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+                {{ submitting() ? 'Guardando...' : (isEditing() ? 'Guardar Cambios' : 'Crear Evento') }}
+            </button>
+        </div>
+    </form>
+    }
+</div>

@@ -6,8 +6,13 @@
         <h2 class="text-3xl font-extrabold text-gray-900">Detalles del Usuario</h2>
         <p class="text-sm text-gray-500 mt-1">Información completa del perfil de usuario</p>
       </div>
-      <button class="border border-gray-200 text-gray-600 px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 active:bg-gray-100 transition-all flex items-center gap-2" (click)="goBack()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>
+      <button
+        class="border border-gray-200 text-gray-600 px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 active:bg-gray-100 transition-all flex items-center gap-2"
+        (click)="goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 19l-7-7 7-7" />
+        </svg>
         Atrás
       </button>
     </div>
@@ -16,141 +21,241 @@
   <div class="max-w-4xl mx-auto px-6 py-8">
     <!-- Loading State -->
     @if (loading()) {
-      <div class="flex items-center justify-center h-64">
-        <div class="animate-spin">
-          <svg class="h-12 w-12 text-[#22c55e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-        </div>
-        <p class="ml-4 text-gray-600 font-medium">Cargando detalles del usuario...</p>
+    <div class="flex items-center justify-center h-64">
+      <div class="animate-spin">
+        <svg class="h-12 w-12 text-[#22c55e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
       </div>
+      <p class="ml-4 text-gray-600 font-medium">Cargando detalles del usuario...</p>
+    </div>
     }
 
     <!-- Error State -->
     @if (error()) {
-      <div class="bg-red-50 border border-red-200 rounded-2xl p-6 mb-6">
-        <div class="flex items-center gap-3">
-          <svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          <p class="text-red-700 font-medium">{{ error() }}</p>
-        </div>
+    <div class="bg-red-50 border border-red-200 rounded-2xl p-6 mb-6">
+      <div class="flex items-center gap-3">
+        <svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="text-red-700 font-medium">{{ error() }}</p>
       </div>
+    </div>
     }
 
     <!-- User Detail Card -->
     @if (!loading() && user()) {
-      <div class="space-y-6">
-        <!-- Hero Card with Avatar -->
-        <div class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
-          <div class="flex items-center gap-8">
-            <!-- Avatar -->
-            <div class="h-24 w-24 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-4xl font-bold flex-shrink-0">
-              {{ (user()!.firstName.charAt(0) + user()!.lastName.charAt(0)).toUpperCase() }}
-            </div>
-
-            <!-- User Info -->
-            <div class="flex-1">
-              <h3 class="text-3xl font-extrabold text-gray-900">{{ user()!.firstName }} {{ user()!.lastName }}</h3>
-              <p class="text-gray-500 mt-1">ID: {{ user()!.id }}</p>
-
-              <!-- Status Badges -->
-              <div class="flex gap-2 mt-4">
-                <span [class]="user()!.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'" class="px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
-                  @if (user()!.isActive) {
-                    <span class="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
-                    Activo
-                  } @else {
-                    <span class="h-2 w-2 bg-gray-400 rounded-full"></span>
-                    Inactivo
-                  }
-                </span>
-                <span [class]="user()!.isEmailVerified ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'" class="px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
-                  @if (user()!.isEmailVerified) {
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    Email Verificado
-                  } @else {
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-                    Verificación Pendiente
-                  }
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Information Sections -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Personal Information -->
-          <div class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
-            <div class="flex items-center gap-2 mb-6">
-              <div class="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              </div>
-              <h4 class="text-xl font-bold text-gray-900">Información Personal</h4>
-            </div>
-            <div class="space-y-4">
-              <div class="pb-4 border-b border-gray-100">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nombre Completo</p>
-                <p class="text-gray-900 font-medium">{{ user()!.firstName }} {{ user()!.lastName }}</p>
-              </div>
-              <div class="pb-4 border-b border-gray-100">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Email</p>
-                <p class="text-gray-900 font-medium break-all">{{ user()!.email }}</p>
-              </div>
-              <div>
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">ID de Usuario</p>
-                <p class="text-gray-500 font-mono text-sm">{{ user()!.id }}</p>
-              </div>
-            </div>
+    <div class="space-y-6">
+      <!-- Hero Card with Avatar -->
+      <div class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
+        <div class="flex items-center gap-8">
+          <!-- Avatar -->
+          <div
+            class="h-24 w-24 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-4xl font-bold flex-shrink-0">
+            {{ (user()!.firstName.charAt(0) + user()!.lastName.charAt(0)).toUpperCase() }}
           </div>
 
-          <!-- Activity Information -->
-          <div class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
-            <div class="flex items-center gap-2 mb-6">
-              <div class="h-10 w-10 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              </div>
-              <h4 class="text-xl font-bold text-gray-900">Actividad</h4>
-            </div>
-            <div class="space-y-4">
-              <div class="pb-4 border-b border-gray-100">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Fecha de Creación</p>
-                <p class="text-gray-900 font-medium">{{ user()!.createdAt | date: 'dd/MM/yyyy, HH:mm' }}</p>
-              </div>
-              @if (user()!.updatedAt) {
-                <div class="pb-4 border-b border-gray-100">
-                  <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Última Actualización</p>
-                  <p class="text-gray-900 font-medium">{{ user()!.updatedAt | date: 'dd/MM/yyyy, HH:mm' }}</p>
-                </div>
-              }
-              @if (user()!.lastLoginAt) {
-                <div>
-                  <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Último Acceso</p>
-                  <p class="text-gray-900 font-medium">{{ user()!.lastLoginAt | date: 'dd/MM/yyyy, HH:mm' }}</p>
-                </div>
-              } @else {
-                <div>
-                  <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Último Acceso</p>
-                  <p class="text-gray-500 italic">Nunca ha accedido</p>
-                </div>
-              }
+          <!-- User Info -->
+          <div class="flex-1">
+            <h3 class="text-3xl font-extrabold text-gray-900">{{ user()!.firstName }} {{ user()!.lastName }}</h3>
+            <p class="text-gray-500 mt-1">ID: {{ user()!.id }}</p>
+
+            <!-- Status Badges -->
+            <div class="flex gap-2 mt-4">
+              <span [class]="user()!.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'"
+                class="px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
+                @if (user()!.isActive) {
+                <span class="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
+                Activo
+                } @else {
+                <span class="h-2 w-2 bg-gray-400 rounded-full"></span>
+                Inactivo
+                }
+              </span>
+              <span [class]="user()!.isEmailVerified ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'"
+                class="px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
+                @if (user()!.isEmailVerified) {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Email Verificado
+                } @else {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 8v4M12 16h.01" />
+                </svg>
+                Verificación Pendiente
+                }
+              </span>
             </div>
           </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="flex gap-4 justify-end pt-4">
-          <button class="border border-orange-200 text-orange-600 px-8 py-4 rounded-2xl font-bold hover:bg-orange-50 active:bg-orange-100 transition-all flex items-center gap-2" (click)="editUser()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            Editar
-          </button>
-          <button class="border border-red-200 text-red-600 px-8 py-4 rounded-2xl font-bold hover:bg-red-50 active:bg-red-100 transition-all flex items-center gap-2" (click)="deleteUser()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-            Eliminar
-          </button>
         </div>
       </div>
+
+      <!-- Information Sections -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Personal Information -->
+        <div class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <h4 class="text-xl font-bold text-gray-900">Información Personal</h4>
+          </div>
+          <div class="space-y-4">
+            <div class="pb-4 border-b border-gray-100">
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nombre Completo</p>
+              <p class="text-gray-900 font-medium">{{ user()!.firstName }} {{ user()!.lastName }}</p>
+            </div>
+            <div class="pb-4 border-b border-gray-100">
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Email</p>
+              <p class="text-gray-900 font-medium break-all">{{ user()!.email }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">ID de Usuario</p>
+              <p class="text-gray-500 font-mono text-sm">{{ user()!.id }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Information -->
+        <div class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="h-10 w-10 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+            </div>
+            <h4 class="text-xl font-bold text-gray-900">Actividad</h4>
+          </div>
+          <div class="space-y-4">
+            <div class="pb-4 border-b border-gray-100">
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Fecha de Creación</p>
+              <p class="text-gray-900 font-medium">{{ user()!.createdAt | date: 'dd/MM/yyyy, HH:mm' }}</p>
+            </div>
+            @if (user()!.updatedAt) {
+            <div class="pb-4 border-b border-gray-100">
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Última Actualización</p>
+              <p class="text-gray-900 font-medium">{{ user()!.updatedAt | date: 'dd/MM/yyyy, HH:mm' }}</p>
+            </div>
+            }
+            @if (user()!.lastLoginAt) {
+            <div>
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Último Acceso</p>
+              <p class="text-gray-900 font-medium">{{ user()!.lastLoginAt | date: 'dd/MM/yyyy, HH:mm' }}</p>
+            </div>
+            } @else {
+            <div>
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Último Acceso</p>
+              <p class="text-gray-500 italic">Nunca ha accedido</p>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Roles Section -->
+      <div class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-2">
+            <div class="h-10 w-10 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+            </div>
+            <h4 class="text-xl font-bold text-gray-900">Roles del Usuario</h4>
+          </div>
+          @if (rolesSuccess()) {
+          <span class="text-sm text-green-600 font-medium flex items-center gap-1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            {{ rolesSuccess() }}
+          </span>
+          }
+        </div>
+
+        @if (allRoles().length === 0) {
+        <p class="text-gray-500 italic">Cargando roles...</p>
+        } @else {
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+          @for (role of allRoles(); track role.id) {
+          <label class="role-checkbox" [class.selected]="isRoleSelected(role.id)">
+            <input type="checkbox" [checked]="isRoleSelected(role.id)" (change)="toggleRole(role.id)" />
+            <span class="role-name">{{ role.name }}</span>
+            @if (role.description) {
+            <span class="role-desc">{{ role.description }}</span>
+            }
+          </label>
+          }
+        </div>
+
+        <div class="flex justify-end">
+          <button
+            class="bg-purple-600 text-white px-6 py-3 rounded-2xl font-bold hover:bg-purple-700 active:bg-purple-800 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            (click)="saveRoles()" [disabled]="savingRoles()">
+            @if (savingRoles()) {
+            <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="8" />
+            </svg>
+            Guardando...
+            } @else {
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+            Guardar Roles
+            }
+          </button>
+        </div>
+        }
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-4 justify-end pt-4">
+        <button
+          class="border border-orange-200 text-orange-600 px-8 py-4 rounded-2xl font-bold hover:bg-orange-50 active:bg-orange-100 transition-all flex items-center gap-2"
+          (click)="editUser()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
+          Editar
+        </button>
+        <button
+          class="border border-red-200 text-red-600 px-8 py-4 rounded-2xl font-bold hover:bg-red-50 active:bg-red-100 transition-all flex items-center gap-2"
+          (click)="deleteUser()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18" />
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+            <line x1="10" y1="11" x2="10" y2="17" />
+            <line x1="14" y1="11" x2="14" y2="17" />
+          </svg>
+          Eliminar
+        </button>
+      </div>
+    </div>
     }
   </div>
 </div>

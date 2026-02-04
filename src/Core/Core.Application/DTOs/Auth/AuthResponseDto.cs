@@ -2,12 +2,16 @@ namespace Core.Application.DTOs.Auth;
 
 public record AuthResponseDto(
     string Token,
-    AuthUserDto User
+    AuthUserDto User,
+    bool RequiresPasswordChange
 );
 
 public record AuthUserDto(
     int Id,
     string FirstName,
     string LastName,
-    string Email
+    string Email,
+    IEnumerable<string> Roles,
+    IEnumerable<string> Permissions
 );
+

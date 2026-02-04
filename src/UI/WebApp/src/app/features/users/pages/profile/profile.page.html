@@ -1,0 +1,67 @@
+<div class="profile-container">
+    <div class="profile-card">
+        <h1>Mi Perfil</h1>
+        <p class="subtitle">Actualiza tu información personal</p>
+
+        <div class="user-info">
+            <div class="avatar">
+                {{ currentUser()?.firstName?.charAt(0) }}{{ currentUser()?.lastName?.charAt(0) }}
+            </div>
+            <div class="email">{{ currentUser()?.email }}</div>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">Nombre</label>
+                    <input type="text" id="firstName" formControlName="firstName" placeholder="Nombre"
+                        [class.error]="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
+                    @if (profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched) {
+                    <span class="error-message">El nombre es requerido</span>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Apellido</label>
+                    <input type="text" id="lastName" formControlName="lastName" placeholder="Apellido"
+                        [class.error]="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched">
+                    @if (profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched) {
+                    <span class="error-message">El apellido es requerido</span>
+                    }
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="document">Documento</label>
+                    <input type="text" id="document" formControlName="document" placeholder="Documento de identidad">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Teléfono</label>
+                    <input type="tel" id="phone" formControlName="phone" placeholder="+57 300 123 4567">
+                </div>
+            </div>
+
+            @if (errorMessage()) {
+            <div class="alert alert-error">
+                {{ errorMessage() }}
+            </div>
+            }
+
+            @if (successMessage()) {
+            <div class="alert alert-success">
+                {{ successMessage() }}
+            </div>
+            }
+
+            <button type="submit" class="btn btn-primary btn-block" [disabled]="profileForm.invalid || loading()">
+                @if (loading()) {
+                <span>Guardando...</span>
+                } @else {
+                <span>Guardar Cambios</span>
+                }
+            </button>
+        </form>
+    </div>
+</div>

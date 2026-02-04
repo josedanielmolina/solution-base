@@ -12,7 +12,16 @@ public static class AuthErrors
         "Auth.UserNotActive",
         "User account is not active");
 
-    public static Error EmailNotVerified => Error.Unauthorized(
-        "Auth.EmailNotVerified",
-        "Email address is not verified");
+    public static Error InvalidCurrentPassword => Error.Validation(
+        "Auth.InvalidCurrentPassword",
+        "Current password is incorrect");
+
+    public static Error InvalidResetCode => Error.Validation(
+        "Auth.InvalidResetCode",
+        "Invalid or expired reset code");
+
+    public static Error UserNotFound => Error.NotFound(
+        "Auth.UserNotFound",
+        "User not found");
 }
+

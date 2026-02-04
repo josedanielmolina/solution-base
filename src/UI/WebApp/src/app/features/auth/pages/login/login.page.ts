@@ -1,13 +1,13 @@
 import { Component, signal, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login.page.html',
   styleUrl: './login.page.css'
@@ -34,8 +34,14 @@ export class LoginPage {
     this.errorMessage.set('');
 
     this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
-        this.router.navigate(['/app']);
+      next: (response) => {
+        if (response.requiresPasswordChange) {
+          this.router.navigate(['/auth/change-password']);
+        } else {
+          // Role-based redirect
+          const redirectPath = this.getRedirectPath(response.user.roles);
+          this.router.navigate([redirectPath]);
+        }
       },
       error: (error) => {
         this.loading.set(false);
@@ -44,4 +50,14 @@ export class LoginPage {
       }
     });
   }
+
+  private getRedirectPath(roles: string[]): string {
+    // PlatformAdmin goes to admin dashboard
+    if (roles.includes('PlatformAdmin')) {
+      return '/app/admin';
+    }
+    // Organizer and EventAdmin go to events
+    return '/app/events';
+  }
 }
+

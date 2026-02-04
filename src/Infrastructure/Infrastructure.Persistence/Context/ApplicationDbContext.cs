@@ -11,6 +11,28 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<Player> Players { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<Permission> Permissions { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
+    public DbSet<RolePermission> RolePermissions { get; set; }
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+    public DbSet<Country> Countries { get; set; }
+    public DbSet<City> Cities { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    
+    // Phase 3: Establishments
+    public DbSet<Establishment> Establishments { get; set; }
+    public DbSet<EstablishmentPhoto> EstablishmentPhotos { get; set; }
+    public DbSet<EstablishmentSchedule> EstablishmentSchedules { get; set; }
+    public DbSet<Court> Courts { get; set; }
+    public DbSet<CourtPhoto> CourtPhotos { get; set; }
+
+    // Phase 4: Events
+    public DbSet<Event> Events { get; set; }
+    public DbSet<EventEstablishment> EventEstablishments { get; set; }
+    public DbSet<EventAdmin> EventAdmins { get; set; }
+    public DbSet<EventInvitation> EventInvitations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,3 +58,4 @@ public class ApplicationDbContext : DbContext
         return base.SaveChangesAsync(cancellationToken);
     }
 }
+

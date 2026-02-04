@@ -13,7 +13,10 @@ public static class UserFakers
             f.Name.FirstName(),
             f.Name.LastName(),
             f.Internet.Email(),
-            $"{f.Internet.Password(8)}A1!"
+            f.Random.AlphaNumeric(10),
+            f.Phone.PhoneNumber(),
+            $"{f.Internet.Password(8)}A1!",
+            null
         ));
 
     /// <summary>
@@ -23,6 +26,8 @@ public static class UserFakers
         .CustomInstantiator(f => new UpdateUserDto(
             f.Name.FirstName(),
             f.Name.LastName(),
+            f.Random.AlphaNumeric(10),
+            f.Phone.PhoneNumber(),
             true
         ));
 
@@ -34,7 +39,11 @@ public static class UserFakers
         .RuleFor(u => u.FirstName, f => f.Name.FirstName())
         .RuleFor(u => u.LastName, f => f.Name.LastName())
         .RuleFor(u => u.Email, f => f.Internet.Email())
+        .RuleFor(u => u.Document, f => f.Random.AlphaNumeric(10))
+        .RuleFor(u => u.Phone, f => f.Phone.PhoneNumber())
         .RuleFor(u => u.PasswordHash, _ => "hashed_password")
         .RuleFor(u => u.IsActive, true)
+        .RuleFor(u => u.RequiresPasswordChange, false)
         .RuleFor(u => u.CreatedAt, f => f.Date.Past());
 }
+

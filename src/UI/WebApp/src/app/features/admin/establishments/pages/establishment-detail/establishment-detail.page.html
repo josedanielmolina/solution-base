@@ -1,0 +1,219 @@
+<div class="page-container">
+    @if (loading()) {
+    <div class="loading">Cargando...</div>
+    } @else if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+    } @else if (establishment(); as est) {
+    <div class="page-header">
+        <div class="header-info">
+            @if (est.logo) {
+            <img [src]="est.logo" alt="Logo" class="establishment-logo">
+            }
+            <div>
+                <h1>{{ est.name }}</h1>
+                <p class="location">{{ est.cityName }}, {{ est.countryName }}</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a routerLink="/app/admin/establishments" class="btn btn-secondary">← Volver</a>
+            <a [routerLink]="['/app/admin/establishments', est.id, 'edit']" class="btn btn-primary">Editar</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <!-- General Info -->
+        <div class="card">
+            <h2>Información General</h2>
+            <dl class="info-list">
+                <div>
+                    <dt>Dirección</dt>
+                    <dd>{{ est.address }}</dd>
+                </div>
+                @if (est.googleMapsUrl) {
+                <div>
+                    <dt>Google Maps</dt>
+                    <dd><a [href]="est.googleMapsUrl" target="_blank" class="link">Ver en mapa</a></dd>
+                </div>
+                }
+                <div>
+                    <dt>Estado</dt>
+                    <dd>
+                        <span class="badge" [class.active]="est.isActive">
+                            {{ est.isActive ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </dd>
+                </div>
+            </dl>
+        </div>
+
+        <!-- Contact -->
+        <div class="card">
+            <h2>Contacto</h2>
+            <dl class="info-list">
+                @if (est.phoneLandline) {
+                <div>
+                    <dt>Teléfono Fijo</dt>
+                    <dd>{{ est.phoneLandline }}</dd>
+                </div>
+                }
+                @if (est.phoneMobile) {
+                <div>
+                    <dt>Teléfono Móvil</dt>
+                    <dd>{{ est.phoneMobile }}</dd>
+                </div>
+                }
+            </dl>
+        </div>
+
+        <!-- Schedule -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Horario ({{ getScheduleTypeName(est.scheduleType) }})</h2>
+                <button class="btn-icon" title="Configurar horarios" (click)="openScheduleForm()">⚙️</button>
+            </div>
+            @if (est.schedules.length === 0) {
+            <p class="empty-text">Sin horarios configurados</p>
+            <button class="btn btn-outline" (click)="openScheduleForm()">Configurar Horarios</button>
+            } @else {
+            <ul class="schedule-list">
+                @for (s of est.schedules; track s.id) {
+                <li>
+                    <span class="day">{{ s.dayName }}</span>
+                    <span class="time">{{ s.openTime }} - {{ s.closeTime }}</span>
+                    @if (est.scheduleType === 2) {
+                    <span class="block">Bloque {{ s.blockNumber }}</span>
+                    }
+                </li>
+                }
+            </ul>
+            }
+        </div>
+    </div>
+
+    <!-- Courts Section -->
+    <div class="section">
+        <div class="section-header">
+            <h2>Canchas ({{ est.courts.length }})</h2>
+            <button class="btn btn-primary" (click)="openCourtForm()">+ Agregar Cancha</button>
+        </div>
+
+        @if (est.courts.length === 0) {
+        <div class="empty-state">
+            <p>No hay canchas registradas</p>
+            <button class="btn btn-primary" (click)="openCourtForm()">Agregar la primera</button>
+        </div>
+        } @else {
+        <div class="courts-grid">
+            @for (court of est.courts; track court.id) {
+            <div class="court-card" [class.inactive]="!court.isActive">
+                <div class="court-header">
+                    <h3>{{ court.name }}</h3>
+                    <span class="court-type">{{ getCourtTypeName(court.courtType) }}</span>
+                </div>
+                @if (court.photos.length > 0) {
+                <img [src]="court.photos[0].imageData" alt="Foto" class="court-image">
+                } @else {
+                <div class="court-no-image">Sin foto</div>
+                }
+                <div class="court-info">
+                    <span class="photo-count">📷 {{ court.photos.length }} fotos</span>
+                </div>
+                <div class="court-actions">
+                    <button class="btn-icon" title="Fotos" (click)="openCourtPhotos(court)">📷</button>
+                    <button class="btn-icon" title="Editar" (click)="openCourtForm(court)">✏️</button>
+                    <button class="btn-icon delete" title="Eliminar" (click)="deleteCourt(court)">🗑️</button>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+
+    <!-- Photos Section -->
+    <div class="section">
+        <div class="section-header">
+            <h2>Fotos del Establecimiento ({{ est.photos.length }})</h2>
+            <input type="file" id="photoUpload" accept="image/*" (change)="onPhotoUpload($event)" hidden>
+            <label for="photoUpload" class="btn btn-primary">+ Agregar Foto</label>
+        </div>
+
+        @if (est.photos.length === 0) {
+        <div class="empty-state">
+            <p>No hay fotos del establecimiento</p>
+        </div>
+        } @else {
+        <div class="photos-grid">
+            @for (photo of est.photos; track photo.id) {
+            <div class="photo-card">
+                <img [src]="photo.imageData" alt="Foto">
+                <button class="btn-remove" (click)="removePhoto(photo.id)">✕</button>
+            </div>
+            }
+        </div>
+        }
+    </div>
+    }
+</div>
+
+<!-- Court Form Modal -->
+@if (showCourtForm()) {
+<app-court-form [establishmentId]="establishment()!.id" [court]="editingCourt()" (saved)="onCourtSaved()"
+    (cancelled)="closeCourtForm()">
+</app-court-form>
+}
+
+<!-- Schedule Form Modal -->
+@if (showScheduleForm()) {
+<app-schedule-form [establishmentId]="establishment()!.id" [scheduleType]="establishment()!.scheduleType"
+    [schedules]="establishment()!.schedules" (saved)="onSchedulesSaved()" (cancelled)="closeScheduleForm()">
+</app-schedule-form>
+}
+
+<!-- Court Photos Modal -->
+@if (showCourtPhotos(); as court) {
+<div class="modal-overlay" (click)="closeCourtPhotos()">
+    <div class="modal-content photos-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <div class="modal-title">
+                <h2>📷 Fotos de {{ court.name }}</h2>
+                <span class="photo-badge">{{ court.photos.length }} foto(s)</span>
+            </div>
+            <button class="btn-close" (click)="closeCourtPhotos()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="upload-section">
+                <input type="file" id="courtPhotoUpload" accept="image/*" (change)="onCourtPhotoUpload($event)" hidden>
+                <label for="courtPhotoUpload" class="btn btn-primary">
+                    <span class="btn-icon-left">📷</span> Agregar Foto
+                </label>
+                <p class="hint">Formatos: JPG, PNG. Máximo 5MB</p>
+            </div>
+
+            @if (court.photos.length === 0) {
+            <div class="empty-state photos-empty">
+                <div class="empty-icon">🖼️</div>
+                <p>No hay fotos de esta cancha</p>
+                <p class="hint">Agrega fotos para mostrar cómo luce la cancha</p>
+            </div>
+            } @else {
+            <div class="court-photos-gallery">
+                @for (photo of court.photos; track photo.id; let i = $index) {
+                <div class="gallery-photo-card">
+                    <img [src]="photo.imageData" alt="Foto {{ i + 1 }}">
+                    <div class="photo-overlay">
+                        <span class="photo-number">{{ i + 1 }}</span>
+                        <button class="btn-delete-photo" (click)="removeCourtPhoto(photo.id)" title="Eliminar foto">
+                            🗑️ Eliminar
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="closeCourtPhotos()">Cerrar</button>
+        </div>
+    </div>
+</div>
+}

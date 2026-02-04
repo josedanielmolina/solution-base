@@ -5,9 +5,13 @@ public record UserDto(
     string FirstName,
     string LastName,
     string Email,
+    string? Document,
+    string? Phone,
     bool IsActive,
-    bool IsEmailVerified,
+    bool RequiresPasswordChange,
+    IEnumerable<string> Roles,
     DateTime? LastLoginAt,
     DateTime CreatedAt,
     DateTime? UpdatedAt
 );
+

@@ -1,0 +1,106 @@
+@if (loading()) {
+<div class="loading">Cargando...</div>
+} @else if (event()) {
+<div class="overview-page">
+    <h2>Resumen del Evento</h2>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">🏟️</div>
+            <div class="stat-value">{{ event()!.establishments.length }}</div>
+            <div class="stat-label">Establecimientos</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value">{{ event()!.admins.length }}</div>
+            <div class="stat-label">Administradores</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-value">0</div>
+            <div class="stat-label">Torneos</div>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <h3>Información del Evento</h3>
+            <div class="info-content">
+                <div class="info-row">
+                    <span class="info-label">Nombre:</span>
+                    <span class="info-value">{{ event()!.name }}</span>
+                </div>
+                @if (event()!.description) {
+                <div class="info-row">
+                    <span class="info-label">Descripción:</span>
+                    <span class="info-value">{{ event()!.description }}</span>
+                </div>
+                }
+                <div class="info-row">
+                    <span class="info-label">Organizador:</span>
+                    <span class="info-value">{{ event()!.organizerName }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fechas:</span>
+                    <span class="info-value">
+                        {{ event()!.startDate | date:'dd/MM/yyyy' }} - {{ event()!.endDate | date:'dd/MM/yyyy' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h3>Contacto y Redes</h3>
+            <div class="info-content">
+                @if (event()!.contactPhone) {
+                <div class="info-row">
+                    <span class="info-label">Teléfono:</span>
+                    <span class="info-value">{{ event()!.contactPhone }}</span>
+                </div>
+                }
+                @if (event()!.whatsApp) {
+                <div class="info-row">
+                    <span class="info-label">WhatsApp:</span>
+                    <span class="info-value">{{ event()!.whatsApp }}</span>
+                </div>
+                }
+                @if (event()!.instagram) {
+                <div class="info-row">
+                    <span class="info-label">Instagram:</span>
+                    <span class="info-value">{{ event()!.instagram }}</span>
+                </div>
+                }
+                @if (event()!.facebook) {
+                <div class="info-row">
+                    <span class="info-label">Facebook:</span>
+                    <span class="info-value">{{ event()!.facebook }}</span>
+                </div>
+                }
+                @if (!event()!.contactPhone && !event()!.whatsApp && !event()!.instagram && !event()!.facebook) {
+                <p class="no-data">No hay información de contacto</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    @if (event()!.posterVertical || event()!.posterHorizontal) {
+    <div class="posters-section">
+        <h3>Posters</h3>
+        <div class="posters-grid">
+            @if (event()!.posterVertical) {
+            <div class="poster-card">
+                <h4>Poster Vertical</h4>
+                <img [src]="event()!.posterVertical" alt="Poster Vertical">
+            </div>
+            }
+            @if (event()!.posterHorizontal) {
+            <div class="poster-card horizontal">
+                <h4>Poster Horizontal</h4>
+                <img [src]="event()!.posterHorizontal" alt="Poster Horizontal">
+            </div>
+            }
+        </div>
+    </div>
+    }
+</div>
+}

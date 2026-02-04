@@ -1,0 +1,48 @@
+<div class="country-list-container">
+    <div class="page-header">
+        <h1>Países</h1>
+        <a routerLink="new" class="btn btn-primary">+ Nuevo País</a>
+    </div>
+
+    @if (loading()) {
+    <div class="loading">Cargando países...</div>
+    } @else if (errorMessage()) {
+    <div class="alert alert-error">{{ errorMessage() }}</div>
+    } @else {
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Código</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (country of countries(); track country.id) {
+                <tr [class.inactive]="!country.isActive">
+                    <td>{{ country.name }}</td>
+                    <td>{{ country.code }}</td>
+                    <td>
+                        <span class="badge" [class.active]="country.isActive" [class.inactive]="!country.isActive">
+                            {{ country.isActive ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </td>
+                    <td class="actions">
+                        <a [routerLink]="[country.id, 'edit']" class="btn-icon" title="Editar">✏️</a>
+                        @if (country.isActive) {
+                        <button (click)="deleteCountry(country)" class="btn-icon" title="Desactivar">🗑️</button>
+                        }
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="4" class="empty-message">No hay países registrados</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>
